@@ -6,5 +6,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="item_hint">New Item</string>
     <string name="empty_text">No items yet</string>
+    <string name="add_item">Add Item</string>
 
 </resources>
