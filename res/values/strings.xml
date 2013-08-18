@@ -7,5 +7,7 @@
     <string name="item_hint">New Item</string>
     <string name="empty_text">No items yet</string>
     <string name="add_item">Add Item</string>
+    <string name="shopping_cart_empty">Empty shopping cart</string>
+    <string name="lorem_ipsum">Lorem ipsum</string>
 
 </resources>

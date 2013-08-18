@@ -3,20 +3,24 @@
     android:layout_height="fill_parent" >
 
     <CheckBox
-        android:id="@+id/checkBox1"
+        android:id="@+id/item_checkBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/editText1"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="16dp" />
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="45dp"
+        android:layout_marginTop="45dp" />
 
-    <EditText
-        android:id="@+id/editText1"
+    <TextView
+        android:id="@+id/item_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="23dp"
-        android:layout_toRightOf="@+id/checkBox1"
-        android:ems="10"
-        android:hint="@string/item_hint" />
+        android:layout_alignBaseline="@+id/item_checkBox"
+        android:layout_alignBottom="@+id/item_checkBox"
+        android:layout_marginLeft="29dp"
+        android:layout_toRightOf="@+id/item_checkBox"
+        android:text="@string/lorem_ipsum"
+        android:textSize="36sp"
+        android:typeface="normal" />
 
 </RelativeLayout>

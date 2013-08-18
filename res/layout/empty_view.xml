@@ -1,5 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/empty_view"
+    android:id="@id/android:empty"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/addItem_button"
         android:layout_centerHorizontal="true"
+        android:contentDescription="@string/shopping_cart_empty"
         android:src="@drawable/shopping_cart" />
 
 </RelativeLayout>

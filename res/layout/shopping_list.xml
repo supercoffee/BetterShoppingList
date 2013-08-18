@@ -8,31 +8,33 @@
 
      <ListView android:id="@id/android:list"
                android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:background="#00FF00"
+               android:layout_height="0dp"
                android:layout_weight="1"
                android:drawSelectorOnTop="false"/>
-
-<!--      <LinearLayout
-         android:id="@id/android:empty"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_weight="1"
-         android:orientation="vertical" >
-
-         <TextView
-             android:id="@+id/textView1"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:text="@string/empty_text"
-             android:textAppearance="?android:attr/textAppearanceMedium" />
-
-         <Button
-             android:id="@+id/button1"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:text="Button" />
-
-     </LinearLayout>
- -->
+     
+     <include layout="@layout/empty_view"/>
+     
+<!-- 	<RelativeLayout
+	    android:id="@id/android:empty"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent" >
+	
+	    <Button
+	        android:id="@+id/addItem_button"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerHorizontal="true"
+	        android:layout_centerVertical="true"
+	        android:text="@string/add_item" />
+	
+	    <ImageView
+	        android:id="@+id/shoppingCart_image"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_above="@+id/addItem_button"
+	        android:layout_centerHorizontal="true"
+	        android:src="@drawable/shopping_cart" />
+	
+	</RelativeLayout> -->
+	
  </LinearLayout>
