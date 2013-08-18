@@ -9,5 +9,6 @@
     <string name="add_item">Add Item</string>
     <string name="shopping_cart_empty">Empty shopping cart</string>
     <string name="lorem_ipsum">Lorem ipsum</string>
+    <string name="new_item">New Item</string>
 
 </resources>

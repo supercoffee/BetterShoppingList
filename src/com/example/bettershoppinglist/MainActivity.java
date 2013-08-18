@@ -1,6 +1,7 @@
 package com.example.bettershoppinglist;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
@@ -12,7 +13,12 @@ public class MainActivity extends FragmentActivity {
 		setContentView(R.layout.fragment_container);
 		
 		FragmentManager fm = getSupportFragmentManager();
-		fm.beginTransaction().add(R.id.fragmentContainer,new ShoppingListFragment()).commit();
+		Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
+		if (fragment == null) {
+			fm.beginTransaction()
+					.add(R.id.fragmentContainer, new ShoppingListFragment())
+					.commit();
+		}
 
 	}
 
