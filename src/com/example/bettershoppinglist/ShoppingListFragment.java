@@ -2,12 +2,16 @@ package com.example.bettershoppinglist;
 
 import java.util.ArrayList;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -48,6 +52,37 @@ public class ShoppingListFragment extends ListFragment {
 
 		return v;
 	
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item){
+		switch(item.getItemId()){
+			case R.id.add_button:
+				FragmentManager fm = getActivity().getSupportFragmentManager();
+				
+				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+				LayoutInflater inflater = getActivity().getLayoutInflater();
+				builder.setView(inflater.inflate(R.layout.new_item_dialog, null))
+					.setPositiveButton(R.string.add_item, new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface arg0, int arg1) {
+							// TODO Auto-generated method stub
+							
+						}
+					})
+					.setNegativeButton(R.string.lorem_ipsum, new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.cancel();
+							
+						}
+					});
+				builder.show();
+				
+		}
+		return false;
 	}
 	
 	private class ShoppingListAdapter extends ArrayAdapter<Item> {

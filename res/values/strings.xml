@@ -10,5 +10,7 @@
     <string name="shopping_cart_empty">Empty shopping cart</string>
     <string name="lorem_ipsum">Lorem ipsum</string>
     <string name="new_item">New Item</string>
+    <string name="description_hint">Description</string>
+    <string name="qty_hint">Quantity</string>
 
 </resources>
