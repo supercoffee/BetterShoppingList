@@ -62,7 +62,7 @@ public class ShoppingListFragment extends ListFragment {
 				
 				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 				LayoutInflater inflater = getActivity().getLayoutInflater();
-				builder.setView(inflater.inflate(R.layout.new_item_dialog, null))
+				builder.setView(inflater.inflate(R.layout.dialog_edit_item, null))
 					.setPositiveButton(R.string.add_item, new DialogInterface.OnClickListener() {
 						
 						@Override
