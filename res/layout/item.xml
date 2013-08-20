@@ -9,7 +9,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:focusable="false" />
 
     <TextView
         android:id="@+id/item_text"
@@ -19,7 +20,7 @@
         android:layout_marginLeft="16dp"
         android:layout_toRightOf="@id/item_checkBox"
         android:text="@string/lorem_ipsum"
-        android:textSize="16sp" />
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/item_qty"
@@ -27,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/item_text"
         android:layout_below="@id/item_checkBox"
-        android:text="Small Text"
+        android:text="@string/lorem_ipsum"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>

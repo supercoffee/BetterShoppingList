@@ -13,10 +13,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ListView;
 import android.widget.TextView;
 
 
@@ -25,6 +27,7 @@ public class ShoppingListFragment extends ListFragment {
 	public static String TAG = "ShoppingListFragment";
 	private ArrayList<Item> mItemList;
 	private static final int NEW_ITEM = 0;
+	private static final int EDIT_ITEM = 1;
 	
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
@@ -91,6 +94,13 @@ public class ShoppingListFragment extends ListFragment {
 			mItemList.add( (Item) data.getSerializableExtra(EditItemDialog.EXTRA_ITEM) );
 			((ShoppingListAdapter)getListAdapter()).notifyDataSetChanged();
 		}
+		//TODO edit item feature
+		if(requestCode == EDIT_ITEM){
+			Item item = (Item) data.getSerializableExtra(EditItemDialog.EXTRA_ITEM);
+			int position = data.getIntExtra(EditItemDialog.EXTRA_POSITION, 0);
+			mItemList.remove(position);
+			mItemList.add(position, item);
+		}
 
 	}
 	
@@ -101,6 +111,27 @@ public class ShoppingListFragment extends ListFragment {
 		super.onResume();
 		((ShoppingListAdapter)getListAdapter()).notifyDataSetChanged();
 		Log.d(TAG, "onResume()");
+	}
+
+	
+
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		Log.d(TAG, "list item "+ position + " clicked.");
+		super.onListItemClick(l, v, position, id);
+		Item item = (Item) l.getItemAtPosition(position);
+		editListItem(item, position);
+		
+	}
+
+
+
+	private void editListItem(Item item, int position) {
+		FragmentManager fm = getActivity().getSupportFragmentManager();
+		EditItemDialog editItem = EditItemDialog.editInstance(item, position);
+		editItem.setTargetFragment(this, EDIT_ITEM);
+		editItem.show(fm, TAG);
+		
 	}
 
 
@@ -123,7 +154,7 @@ public class ShoppingListFragment extends ListFragment {
 			checkbox.setChecked(i.getStatus() == 1);
 			itemText.setText(i.getDescription());
 			itemQty.setText(String.valueOf(i.getQty()));
-			
+
 			return convertView;
 		}
 		

@@ -18,23 +18,37 @@ public class EditItemDialog extends DialogFragment {
 	
 	public static final String TAG = "EditItemDialog";
 	public static final String EXTRA_ITEM = "com.coffeestrike.bettershoppinglist.EditItemDialog";
+	public static final String EXTRA_POSITION = "com.coffeestrike.bettershoppinglist.EditItemDialog.position";
+	
 	private Item mItem;
+	private int mPosition;
 
 	private void sendResult(int resultCode){
 		Fragment target = getTargetFragment();
 		if(target == null){
 			return;
 		}
+
 		Intent i = new Intent();
 		i.putExtra(EXTRA_ITEM, mItem);
+		i.putExtra(EXTRA_POSITION, mPosition);
 		target.onActivityResult(getTargetRequestCode(), resultCode, i);
+
 			
 	}
 	
 	public static EditItemDialog newInstance(Item item){
 		Bundle args = new Bundle();
 		args.putSerializable(EXTRA_ITEM, item);
-		
+		EditItemDialog dialog = new EditItemDialog();
+		dialog.setArguments(args);
+		return dialog;
+	}
+	
+	public static EditItemDialog editInstance(Item item, int position){
+		Bundle args = new Bundle();
+		args.putSerializable(EXTRA_ITEM, item);
+		args.putInt(EXTRA_POSITION, position);
 		EditItemDialog dialog = new EditItemDialog();
 		dialog.setArguments(args);
 		return dialog;
@@ -68,7 +82,9 @@ public class EditItemDialog extends DialogFragment {
 			}
 			
 		});
-//		description.setText(mItem.getDescription());
+		if(mItem.getDescription() != null){
+			description.setText(mItem.getDescription());
+		}
 		EditText quantity = (EditText)v.findViewById(R.id.qty_editText);
 		quantity.addTextChangedListener(new TextWatcher() {
 			
@@ -95,8 +111,10 @@ public class EditItemDialog extends DialogFragment {
 				
 			}
 		});
-//		quantity.setText(mItem.getQty());
 		
+		if (mItem.getQty() != 0) {
+			quantity.setText(String.valueOf(mItem.getQty()));
+		}
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		
 		return builder.setView(v).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
