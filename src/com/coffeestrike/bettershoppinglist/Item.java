@@ -1,4 +1,4 @@
-package com.example.bettershoppinglist;
+package com.coffeestrike.bettershoppinglist;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -10,7 +10,7 @@ public class Item implements Serializable{
 	 */
 	private static final long serialVersionUID = -8439535938970924273L;
 	private int mStatus; //0 = default, 1 = found, 2 = find later
-	private String mDescription;
+	private CharSequence mDescription;
 	private int mQty;
 	private UUID mId;
 	
@@ -32,10 +32,10 @@ public class Item implements Serializable{
 	public void setStatus(int status) {
 		mStatus = status;
 	}
-	public String getDescription() {
+	public CharSequence getDescription() {
 		return mDescription;
 	}
-	public void setDescription(String description) {
+	public void setDescription(CharSequence description) {
 		mDescription = description;
 	}
 	public int getQty() {

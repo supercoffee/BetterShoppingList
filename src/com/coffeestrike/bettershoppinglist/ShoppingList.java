@@ -1,4 +1,4 @@
-package com.example.bettershoppinglist;
+package com.coffeestrike.bettershoppinglist;
 
 import java.util.ArrayList;
 import java.util.UUID;
