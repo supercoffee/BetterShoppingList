@@ -74,7 +74,11 @@ public class EditItemDialog extends DialogFragment {
 			
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				mItem.setQty(Integer.parseInt(s.toString()));
+				try {
+					mItem.setQty(Integer.parseInt(s.toString()));
+				} catch (NumberFormatException n) {
+					mItem.setQty(1);
+				}
 				
 			}
 			
