@@ -13,11 +13,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -94,7 +95,6 @@ public class ShoppingListFragment extends ListFragment {
 			mItemList.add( (Item) data.getSerializableExtra(EditItemDialog.EXTRA_ITEM) );
 			((ShoppingListAdapter)getListAdapter()).notifyDataSetChanged();
 		}
-		//TODO edit item feature
 		if(requestCode == EDIT_ITEM){
 			Item item = (Item) data.getSerializableExtra(EditItemDialog.EXTRA_ITEM);
 			int position = data.getIntExtra(EditItemDialog.EXTRA_POSITION, 0);
@@ -143,12 +143,25 @@ public class ShoppingListFragment extends ListFragment {
 		}
 		
 		@Override
-		public View getView (int position, View convertView, ViewGroup parent){
+		public View getView (final int position, View convertView, ViewGroup parent){
 			if(convertView == null){
 				convertView = getActivity().getLayoutInflater().inflate(R.layout.item, null);
 			}
 			Item i = getItem(position);
 			CheckBox checkbox = (CheckBox) convertView.findViewById(R.id.item_checkBox);
+			checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					if(isChecked){
+						getItem(position).setStatus(1);
+					}
+					else{
+						getItem(position).setStatus(0);
+					}
+					
+				}
+			});
 			TextView itemText = (TextView) convertView.findViewById(R.id.item_text);
 			TextView itemQty = (TextView) convertView.findViewById(R.id.item_qty);
 			checkbox.setChecked(i.getStatus() == 1);

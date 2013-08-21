@@ -28,13 +28,16 @@ public class EditItemDialog extends DialogFragment {
 		if(target == null){
 			return;
 		}
-
+		if(mItem.getDescription() == null){
+			return;
+		}
 		Intent i = new Intent();
 		i.putExtra(EXTRA_ITEM, mItem);
+		if(mItem.getQty() < 1){
+			mItem.setQty(1);
+		}
 		i.putExtra(EXTRA_POSITION, mPosition);
 		target.onActivityResult(getTargetRequestCode(), resultCode, i);
-
-			
 	}
 	
 	public static EditItemDialog newInstance(Item item){
@@ -62,17 +65,11 @@ public class EditItemDialog extends DialogFragment {
 		description.addTextChangedListener(new TextWatcher(){
 
 			@Override
-			public void afterTextChanged(Editable s) {
-				// TODO Auto-generated method stub
-				
-			}
+			public void afterTextChanged(Editable s) {}
 
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				// TODO Auto-generated method stub
-				
-			}
+					int after) {}
 
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
@@ -100,16 +97,10 @@ public class EditItemDialog extends DialogFragment {
 			
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				// TODO Auto-generated method stub
-				
-			}
+					int after) {}
 			
 			@Override
-			public void afterTextChanged(Editable s) {
-				// TODO Auto-generated method stub
-				
-			}
+			public void afterTextChanged(Editable s) {}
 		});
 		
 		if (mItem.getQty() != 0) {
