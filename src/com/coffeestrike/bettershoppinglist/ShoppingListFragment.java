@@ -8,12 +8,14 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -30,6 +32,7 @@ public class ShoppingListFragment extends ListFragment {
 	private static final int NEW_ITEM = 0;
 	private static final int EDIT_ITEM = 1;
 	
+
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
 		super.onCreateOptionsMenu(menu, inflater);
@@ -56,6 +59,8 @@ public class ShoppingListFragment extends ListFragment {
 
 		View v = inflater.inflate(R.layout.shopping_list, null);
 		
+		ListView listView = (ListView)v.findViewById(android.R.id.list);
+
 		Button b = (Button)v.findViewById(R.id.addItem_button);
 		b.setOnClickListener(new View.OnClickListener() {
 			
@@ -95,24 +100,13 @@ public class ShoppingListFragment extends ListFragment {
 			mItemList.add( (Item) data.getSerializableExtra(EditItemDialog.EXTRA_ITEM) );
 			((ShoppingListAdapter)getListAdapter()).notifyDataSetChanged();
 		}
-		if(requestCode == EDIT_ITEM){
-			Item item = (Item) data.getSerializableExtra(EditItemDialog.EXTRA_ITEM);
-			int position = data.getIntExtra(EditItemDialog.EXTRA_POSITION, 0);
-			mItemList.remove(position);
-			mItemList.add(position, item);
-		}
+//		else if(requestCode == EDIT_ITEM){
+//			Item item = (Item) data.getSerializableExtra(EditItemDialog.EXTRA_ITEM);
+//			int position = data.getIntExtra(EditItemDialog.EXTRA_POSITION, 0);
+//			mItemList.set(position, item);
+//		}
 
 	}
-	
-	
-	
-	@Override
-	public void onResume() {
-		super.onResume();
-		((ShoppingListAdapter)getListAdapter()).notifyDataSetChanged();
-		Log.d(TAG, "onResume()");
-	}
-
 	
 
 	@Override
@@ -123,8 +117,7 @@ public class ShoppingListFragment extends ListFragment {
 		editListItem(item, position);
 		
 	}
-
-
+	
 
 	private void editListItem(Item item, int position) {
 		FragmentManager fm = getActivity().getSupportFragmentManager();
@@ -173,6 +166,8 @@ public class ShoppingListFragment extends ListFragment {
 		
 		
 	}
+	
+
 	
 
 }
