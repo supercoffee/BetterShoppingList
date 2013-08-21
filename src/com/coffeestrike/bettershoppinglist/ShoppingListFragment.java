@@ -60,7 +60,55 @@ public class ShoppingListFragment extends ListFragment {
 		View v = inflater.inflate(R.layout.shopping_list, null);
 		
 		ListView listView = (ListView)v.findViewById(android.R.id.list);
+		listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+		listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+			
+			@Override
+			public boolean onPrepareActionMode(ActionMode arg0, Menu arg1) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			@Override
+			public void onDestroyActionMode(ActionMode arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+				MenuInflater inflater = mode.getMenuInflater();
+				inflater.inflate(R.menu.context_action_bar, menu);
+				return true;
+			}
+			
+			@Override
+			public boolean onActionItemClicked(ActionMode mode, MenuItem menuItem) {
+				switch(menuItem.getItemId()){
+					case R.id.menu_item_delete:
+						ShoppingListAdapter adapter = (ShoppingListAdapter)getListAdapter();
+						for(int position = adapter.getCount(); position >= 0; position--){
+							if(getListView().isItemChecked(position)){
+								mItemList.remove(position);
+							}
+						}
+						mode.finish();
+						adapter.notifyDataSetChanged();
+						return true;
+					default:
+						return false;
+				}
 
+			}
+			
+			@Override
+			public void onItemCheckedStateChanged(ActionMode arg0, int arg1, long arg2,
+					boolean arg3) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
 		Button b = (Button)v.findViewById(R.id.addItem_button);
 		b.setOnClickListener(new View.OnClickListener() {
 			

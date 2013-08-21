@@ -12,5 +12,6 @@
     <string name="new_item">New Item</string>
     <string name="description_hint">Description</string>
     <string name="qty_hint">Quantity</string>
+    <string name="delete">Delete</string>
 
 </resources>
