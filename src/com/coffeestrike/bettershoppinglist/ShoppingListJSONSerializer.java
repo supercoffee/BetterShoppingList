@@ -28,7 +28,7 @@ public class ShoppingListJSONSerializer {
 		this.mContext = mContext;
 	}
 	
-	public void saveList(ArrayList<Item> shoppingList) throws JSONException, IOException{
+	public void saveList(ShoppingList shoppingList) throws JSONException, IOException{
 		
 		//Build new JSON array
 		JSONArray jArray = new JSONArray();
@@ -49,9 +49,14 @@ public class ShoppingListJSONSerializer {
 		
 	}
 	
-	public ArrayList<Item> loadItems() throws IOException, JSONException{
-		ArrayList<Item> items = new ArrayList<Item>();
-		
+
+	/**
+	 * @param shoppingList
+	 * Populates the incoming ShoppingList with items loaded from storage
+	 * @throws JSONException 
+	 * @throws IOException 
+	 */
+	public void loadItems(ShoppingList shoppingList) throws JSONException, IOException {
 		BufferedReader reader = null;
 		try{
 			InputStream in = mContext.openFileInput(mFilename);
@@ -64,7 +69,7 @@ public class ShoppingListJSONSerializer {
 			// parse the JSON array using JSONTokener
 			JSONArray array = (JSONArray) new JSONTokener(jsonString.toString()).nextValue();
 			for(int i = 0; i < array.length(); i++){
-				items.add(new Item(array.getJSONObject(i)));
+				shoppingList.add(new Item(array.getJSONObject(i)));
 			}
 		}//end try
 		catch(FileNotFoundException f){
@@ -76,7 +81,6 @@ public class ShoppingListJSONSerializer {
 			}
 		}
 		
-		return items;
 	}
 	
 

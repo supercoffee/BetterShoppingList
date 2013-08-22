@@ -31,7 +31,7 @@ import android.widget.TextView;
 public class ShoppingListFragment extends ListFragment {
 	
 	public static String TAG = "ShoppingListFragment";
-	private ArrayList<Item> mItemList;
+	private ShoppingList mItemList;
 	private static final int NEW_ITEM = 0;
 	private static final int EDIT_ITEM = 1;
 	
@@ -49,7 +49,7 @@ public class ShoppingListFragment extends ListFragment {
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
 		getActivity().setTitle(R.string.app_name);
-		mItemList =  ShoppingList.get(getActivity()).getList();
+		mItemList = ShoppingList.get(getActivity());
 		setListAdapter(new ShoppingListAdapter(mItemList));
 		setRetainInstance(true);
 	}

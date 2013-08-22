@@ -1,62 +1,52 @@
 package com.coffeestrike.bettershoppinglist;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.UUID;
+
+import org.json.JSONException;
 
 import android.content.Context;
 import android.util.Log;
 
-public class ShoppingList {
+public class ShoppingList extends ArrayList<Item>{
 	
 	private static final String TAG = "ShoppingList";
 	private static final String FILENAME = "shoppinglist.json";
 	private ShoppingListJSONSerializer mSerializer;
-	
-	private static ShoppingList sShoppingList;
-	private ArrayList<Item> mItemList;
 	private Context mAppContext;
+	private static ShoppingList sShoppingList;
+	
 
 	protected ShoppingList(Context appContext){
 		mAppContext = appContext;
-//		mItemList = new ArrayList<Item>();
 		mSerializer = new ShoppingListJSONSerializer(FILENAME, mAppContext);
-		try{
-			mItemList = mSerializer.loadItems();
-		}
-		catch(Exception e){
-			mItemList = new ArrayList<Item>();
-			Log.e(TAG, "Error loading items from file", e);
-		}
-		
 	}
 	
 	public static ShoppingList get(Context appContext){
 		if (sShoppingList != null){
 			return sShoppingList;
 		}
-		return new ShoppingList(appContext.getApplicationContext());
+		ShoppingList s = new ShoppingList(appContext.getApplicationContext());
+		s.loadList();
+		return s;
 	}
 	
-	public ArrayList<Item> getList(){
-		return mItemList;
-	}
-	
-	public Item getItem(UUID id){
-		for (Item i : mItemList){
-			if (i.getId() == id){
-				return i;
-			}
+	public boolean loadList(){
+		try {
+			mSerializer.loadItems(ShoppingList.this);
+		} catch (JSONException e) {
+			Log.e(TAG, "Unable to load from JSON", e);
+			
+		} catch (IOException e) {
+			Log.e(TAG, "Unable to load list from storage", e);
+			e.printStackTrace();
 		}
-		return null;
-	}
-	
-	public void add(Item i){
-		mItemList.add(i);
+		return false;
 	}
 	
 	public boolean saveList(){
 		try{
-			mSerializer.saveList(mItemList);
+			mSerializer.saveList(ShoppingList.this);
 			Log.d(TAG, "list saved to file");
 			return true;
 		}
