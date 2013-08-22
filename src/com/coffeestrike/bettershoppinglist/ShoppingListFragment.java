@@ -1,6 +1,9 @@
 package com.coffeestrike.bettershoppinglist;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import org.json.JSONException;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -46,9 +49,7 @@ public class ShoppingListFragment extends ListFragment {
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
 		getActivity().setTitle(R.string.app_name);
-		
 		mItemList =  ShoppingList.get(getActivity()).getList();
-		
 		setListAdapter(new ShoppingListAdapter(mItemList));
 		setRetainInstance(true);
 	}
@@ -65,15 +66,11 @@ public class ShoppingListFragment extends ListFragment {
 			
 			@Override
 			public boolean onPrepareActionMode(ActionMode arg0, Menu arg1) {
-				// TODO Auto-generated method stub
 				return false;
 			}
 			
 			@Override
-			public void onDestroyActionMode(ActionMode arg0) {
-				// TODO Auto-generated method stub
-				
-			}
+			public void onDestroyActionMode(ActionMode arg0) {}
 			
 			@Override
 			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -104,8 +101,6 @@ public class ShoppingListFragment extends ListFragment {
 			@Override
 			public void onItemCheckedStateChanged(ActionMode arg0, int arg1, long arg2,
 					boolean arg3) {
-				// TODO Auto-generated method stub
-				
 			}
 		});
 		
@@ -122,6 +117,23 @@ public class ShoppingListFragment extends ListFragment {
 	
 	}
 	
+	
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		try {
+			new ShoppingListJSONSerializer("shoppinglist.json", getActivity()).saveList(mItemList);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch(item.getItemId()){

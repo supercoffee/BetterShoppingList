@@ -3,6 +3,9 @@ package com.coffeestrike.bettershoppinglist;
 import java.io.Serializable;
 import java.util.UUID;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.util.Log;
 
 public class Item implements Serializable{
@@ -16,6 +19,12 @@ public class Item implements Serializable{
 	private CharSequence mDescription;
 	private int mQty;
 	private UUID mId;
+	
+	private static final String JSON_ID = "id";
+	private static final String JSON_QTY = "qty";
+	private static final String JSON_DESCRIPTION = "description";
+	private static final String JSON_STATUS = "status";
+	
 	
 	public Item(){
 		mId = UUID.randomUUID();
@@ -47,6 +56,15 @@ public class Item implements Serializable{
 	}
 	public void setQty(int qty) {
 		mQty = qty;
+	}
+
+	public JSONObject toJSON() throws JSONException {
+		JSONObject json = new JSONObject();
+		json.put(JSON_ID, mId);
+		json.put(JSON_QTY, mQty);
+		json.put(JSON_DESCRIPTION, mDescription);
+		json.put(JSON_STATUS, mStatus);
+		return json;
 	}
 	
 	
