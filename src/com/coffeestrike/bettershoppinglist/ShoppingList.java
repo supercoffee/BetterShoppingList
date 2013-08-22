@@ -18,9 +18,16 @@ public class ShoppingList {
 
 	protected ShoppingList(Context appContext){
 		mAppContext = appContext;
-		mItemList = new ArrayList<Item>();
+//		mItemList = new ArrayList<Item>();
 		mSerializer = new ShoppingListJSONSerializer(FILENAME, mAppContext);
-
+		try{
+			mItemList = mSerializer.loadItems();
+		}
+		catch(Exception e){
+			mItemList = new ArrayList<Item>();
+			Log.e(TAG, "Error loading items from file", e);
+		}
+		
 	}
 	
 	public static ShoppingList get(Context appContext){

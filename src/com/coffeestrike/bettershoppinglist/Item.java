@@ -30,32 +30,39 @@ public class Item implements Serializable{
 		mId = UUID.randomUUID();
 	}
 	
+	public Item(JSONObject json) throws JSONException{
+		mId = UUID.fromString(json.getString(JSON_ID));
+		mDescription = json.getString(JSON_DESCRIPTION);
+		mQty = json.getInt(JSON_QTY);
+		mStatus = json.getInt(JSON_STATUS);
+	}
+	
 	public Item(String description){
 		mDescription = description;
 		mId = UUID.randomUUID();
 	}
 	
-	public UUID getId() {
-		return mId;
-	}
-	public int getStatus() {
-		return mStatus;
-	}
-	public void setStatus(int status) {
-		Log.d(TAG, String.format("Status of item %s set to %d", getId().toString(), status));
-		mStatus = status;
-	}
 	public CharSequence getDescription() {
 		return mDescription;
 	}
-	public void setDescription(CharSequence description) {
-		mDescription = description;
+	public UUID getId() {
+		return mId;
 	}
 	public int getQty() {
 		return mQty;
 	}
+	public int getStatus() {
+		return mStatus;
+	}
+	public void setDescription(CharSequence description) {
+		mDescription = description;
+	}
 	public void setQty(int qty) {
 		mQty = qty;
+	}
+	public void setStatus(int status) {
+		Log.d(TAG, String.format("Status of item %s set to %d", getId().toString(), status));
+		mStatus = status;
 	}
 
 	public JSONObject toJSON() throws JSONException {
