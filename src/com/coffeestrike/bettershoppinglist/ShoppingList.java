@@ -8,6 +8,11 @@ import org.json.JSONException;
 import android.content.Context;
 import android.util.Log;
 
+/**
+ * @author Benjamin Daschel
+ * Extension of ArrayList with ability to save and load from file
+ *
+ */
 public class ShoppingList extends ArrayList<Item>{
 	
 	private static final String TAG = "ShoppingList";
@@ -30,6 +35,7 @@ public class ShoppingList extends ArrayList<Item>{
 		s.loadList();
 		return s;
 	}
+	
 	
 	public boolean loadList(){
 		try {

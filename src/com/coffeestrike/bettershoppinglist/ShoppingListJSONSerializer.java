@@ -28,6 +28,13 @@ public class ShoppingListJSONSerializer {
 		this.mContext = mContext;
 	}
 	
+	
+	/**
+	 * @param shoppingList
+	 * @throws JSONException
+	 * @throws IOException
+	 * Saves the incoming list to JSON file
+	 */
 	public void saveList(ShoppingList shoppingList) throws JSONException, IOException{
 		
 		//Build new JSON array
