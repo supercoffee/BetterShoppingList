@@ -8,7 +8,7 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
-public class Item implements Serializable{
+public class Item implements Serializable, Comparable<Item>{
 	
 	/**
 	 * 
@@ -72,6 +72,11 @@ public class Item implements Serializable{
 		json.put(JSON_DESCRIPTION, mDescription);
 		json.put(JSON_STATUS, mStatus);
 		return json;
+	}
+
+	@Override
+	public int compareTo(Item arg0) {
+		return this.mDescription.toString().compareTo(arg0.mDescription.toString());
 	}
 	
 	

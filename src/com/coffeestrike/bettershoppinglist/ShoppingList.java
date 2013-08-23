@@ -2,6 +2,7 @@ package com.coffeestrike.bettershoppinglist;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.json.JSONException;
 
@@ -61,5 +62,10 @@ public class ShoppingList extends ArrayList<Item>{
 			return false;
 		}
 	}
+
+	public void sortAlpha() {
+		Collections.sort(ShoppingList.this);
+	}
+
 
 }

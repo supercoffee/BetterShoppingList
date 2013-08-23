@@ -13,5 +13,6 @@
     <string name="description_hint">Description</string>
     <string name="qty_hint">Quantity</string>
     <string name="delete">Delete</string>
+    <string name="sort_alpha">Sort (A-Z)</string>
 
 </resources>

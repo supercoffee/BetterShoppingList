@@ -138,8 +138,14 @@ public class ShoppingListFragment extends ListFragment {
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch(item.getItemId()){
 			case R.id.add_button:
-				newListItem();	
+				newListItem();
+				return true;
+			case R.id.sort_alpha:
+				mItemList.sortAlpha();
+				((ShoppingListAdapter)getListAdapter()).notifyDataSetChanged();
+				return true;
 		}
+		
 		return false;
 	}
 	
@@ -160,11 +166,10 @@ public class ShoppingListFragment extends ListFragment {
 			mItemList.add( (Item) data.getSerializableExtra(EditItemDialog.EXTRA_ITEM) );
 			((ShoppingListAdapter)getListAdapter()).notifyDataSetChanged();
 		}
-//		else if(requestCode == EDIT_ITEM){
-//			Item item = (Item) data.getSerializableExtra(EditItemDialog.EXTRA_ITEM);
-//			int position = data.getIntExtra(EditItemDialog.EXTRA_POSITION, 0);
-//			mItemList.set(position, item);
-//		}
+		else if(requestCode == EDIT_ITEM){
+			// Nothing needs to be done here.
+			// The dialog fragment handles editing
+		}
 
 	}
 	
@@ -208,6 +213,7 @@ public class ShoppingListFragment extends ListFragment {
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					if(isChecked){
 						getItem(position).setStatus(1);
+					
 					}
 					else{
 						getItem(position).setStatus(0);
