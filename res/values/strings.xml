@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Better Shopping List</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="item_hint">New Item</string>
+    <string name="empty_text">No items yet</string>
+    <string name="add_item">Add Item</string>
+    <string name="shopping_cart_empty">Empty shopping cart</string>
+    <string name="lorem_ipsum">Lorem ipsum</string>
+    <string name="new_item">New Item</string>
+    <string name="description_hint">Description</string>
+    <string name="qty_hint">Quantity</string>
+    <string name="delete">Delete</string>
+
+</resources>
