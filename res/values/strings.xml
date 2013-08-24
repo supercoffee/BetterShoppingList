@@ -14,5 +14,6 @@
     <string name="qty_hint">Quantity</string>
     <string name="delete">Delete</string>
     <string name="sort_alpha">Sort (A-Z)</string>
+    <string name="clear_all">Clear list</string>
 
 </resources>

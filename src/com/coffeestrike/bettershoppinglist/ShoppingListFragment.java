@@ -144,6 +144,10 @@ public class ShoppingListFragment extends ListFragment {
 				mItemList.sortAlpha();
 				((ShoppingListAdapter)getListAdapter()).notifyDataSetChanged();
 				return true;
+			case R.id.clear_all:
+				mItemList.clear();
+				((ShoppingListAdapter)getListAdapter()).notifyDataSetChanged();
+				return true;
 		}
 		
 		return false;
