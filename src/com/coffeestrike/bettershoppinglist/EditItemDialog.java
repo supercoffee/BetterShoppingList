@@ -23,6 +23,8 @@ public class EditItemDialog extends DialogFragment {
 	
 	private Item mItem;
 	private int mPosition;
+	protected CharSequence mPreviousDescription;
+	protected int mPreviousQty;
 
 	private void sendResult(int resultCode){
 		Fragment target = getTargetFragment();
@@ -60,10 +62,10 @@ public class EditItemDialog extends DialogFragment {
 	
 	public Dialog onCreateDialog(Bundle savedInstanceState){
 		mItem = (Item)getArguments().getSerializable(EXTRA_ITEM);
+		mPreviousDescription = mItem.getDescription();
+		mPreviousQty = mItem.getQty();
 		View v = getActivity().getLayoutInflater().inflate(R.layout.dialog_edit_item, null);
-		
-		
-		
+
 		EditText description = (EditText)v.findViewById(R.id.description_editText);
 		description.addTextChangedListener(new TextWatcher(){
 
@@ -104,7 +106,6 @@ public class EditItemDialog extends DialogFragment {
 				} catch (NumberFormatException n) {
 					mItem.setQty(1);
 				}
-				
 			}
 			
 			@Override
@@ -129,10 +130,13 @@ public class EditItemDialog extends DialogFragment {
 			}
 		})
 		.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-
+			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-							
+				if(getTargetRequestCode() == ShoppingListFragment.EDIT_ITEM){
+					mItem.setDescription(mPreviousDescription);
+					mItem.setQty(mPreviousQty);
+				}
 			}
 		}).create();
 

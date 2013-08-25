@@ -32,8 +32,8 @@ public class ShoppingListFragment extends ListFragment {
 	
 	public static String TAG = "ShoppingListFragment";
 	private ShoppingList mItemList;
-	private static final int NEW_ITEM = 0;
-	private static final int EDIT_ITEM = 1;
+	public static final int NEW_ITEM = 0;
+	public static final int EDIT_ITEM = 1;
 	
 
 	@Override
