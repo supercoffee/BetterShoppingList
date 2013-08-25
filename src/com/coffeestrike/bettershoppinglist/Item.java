@@ -16,7 +16,7 @@ public class Item implements Serializable, Comparable<Item>{
 	private static final long serialVersionUID = -8439535938970924273L;
 	private static final String TAG = "com.coffeestrike.bettershoppinglist.Item";
 	private int mStatus; //0 = default, 1 = found, 2 = find later
-	private CharSequence mDescription;
+	private String mDescription;
 	private int mQty;
 	private UUID mId;
 	
@@ -55,7 +55,7 @@ public class Item implements Serializable, Comparable<Item>{
 		return mStatus;
 	}
 	public void setDescription(CharSequence description) {
-		mDescription = description;
+		mDescription = description.toString();
 	}
 	public void setQty(int qty) {
 		mQty = qty;
