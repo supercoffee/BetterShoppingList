@@ -32,4 +32,14 @@
         android:text="@string/lorem_ipsum"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
+    <TextView
+        android:id="@+id/item_uom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/item_qty"
+        android:layout_alignBottom="@+id/item_qty"
+        android:layout_toRightOf="@+id/item_text"
+        android:text="Small Text"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
 </RelativeLayout>

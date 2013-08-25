@@ -19,11 +19,13 @@ public class Item implements Serializable, Comparable<Item>{
 	private String mDescription;
 	private int mQty;
 	private UUID mId;
+	private String mUnitOfMeasure;
 	
 	private static final String JSON_ID = "id";
 	private static final String JSON_QTY = "qty";
 	private static final String JSON_DESCRIPTION = "description";
 	private static final String JSON_STATUS = "status";
+	private static final String JSON_UOM = "uom";
 	
 	
 	public Item(){
@@ -33,6 +35,7 @@ public class Item implements Serializable, Comparable<Item>{
 	public Item(JSONObject json) throws JSONException{
 		mId = UUID.fromString(json.getString(JSON_ID));
 		mDescription = json.getString(JSON_DESCRIPTION);
+		mUnitOfMeasure = json.getString(JSON_UOM);
 		mQty = json.getInt(JSON_QTY);
 		mStatus = json.getInt(JSON_STATUS);
 	}
@@ -42,6 +45,10 @@ public class Item implements Serializable, Comparable<Item>{
 		mId = UUID.randomUUID();
 	}
 	
+	@Override
+	public int compareTo(Item arg0) {
+		return this.mDescription.toString().compareTo(arg0.mDescription.toString());
+	}
 	public CharSequence getDescription() {
 		return mDescription;
 	}
@@ -54,15 +61,24 @@ public class Item implements Serializable, Comparable<Item>{
 	public int getStatus() {
 		return mStatus;
 	}
+	public String getUnitOfMeasure() {
+		return mUnitOfMeasure;
+	}
 	public void setDescription(CharSequence description) {
 		mDescription = description.toString();
 	}
+
 	public void setQty(int qty) {
 		mQty = qty;
 	}
+
 	public void setStatus(int status) {
 		Log.d(TAG, String.format("Status of item %s set to %d", getId().toString(), status));
 		mStatus = status;
+	}
+
+	public void setUnitOfMeasure(String s) {
+		mUnitOfMeasure = s;
 	}
 
 	public JSONObject toJSON() throws JSONException {
@@ -70,14 +86,12 @@ public class Item implements Serializable, Comparable<Item>{
 		json.put(JSON_ID, mId);
 		json.put(JSON_QTY, mQty);
 		json.put(JSON_DESCRIPTION, mDescription);
+		json.put(JSON_UOM, mUnitOfMeasure);
 		json.put(JSON_STATUS, mStatus);
 		return json;
 	}
-
-	@Override
-	public int compareTo(Item arg0) {
-		return this.mDescription.toString().compareTo(arg0.mDescription.toString());
-	}
+	
+	
 	
 	
 	

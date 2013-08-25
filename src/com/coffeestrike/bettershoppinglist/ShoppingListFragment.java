@@ -227,9 +227,13 @@ public class ShoppingListFragment extends ListFragment {
 			});
 			TextView itemText = (TextView) convertView.findViewById(R.id.item_text);
 			TextView itemQty = (TextView) convertView.findViewById(R.id.item_qty);
+			TextView itemUom = (TextView) convertView.findViewById(R.id.item_uom);
 			checkbox.setChecked(i.getStatus() == 1);
 			itemText.setText(i.getDescription());
 			itemQty.setText(String.valueOf(i.getQty()));
+			itemUom.setText(i.getUnitOfMeasure());
+			
+			
 
 			return convertView;
 		}
