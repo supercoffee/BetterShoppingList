@@ -17,7 +17,8 @@
         android:text="@string/new_item"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <EditText
+    <view
+        class="com.coffeestrike.bettershoppinglist.KeyboardEditText"
         android:id="@+id/description_editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,10 +27,7 @@
         android:layout_marginTop="4dp"
         android:ems="10"
         android:hint="@string/description_hint"
-        android:padding="4dp" >
-
-        <requestFocus />
-    </EditText>
+        android:padding="4dp" />
 
     <EditText
         android:id="@+id/qty_editText"

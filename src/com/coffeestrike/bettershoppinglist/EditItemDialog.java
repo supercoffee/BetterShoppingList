@@ -12,6 +12,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.widget.EditText;
 
 public class EditItemDialog extends DialogFragment {
@@ -61,6 +62,8 @@ public class EditItemDialog extends DialogFragment {
 		mItem = (Item)getArguments().getSerializable(EXTRA_ITEM);
 		View v = getActivity().getLayoutInflater().inflate(R.layout.dialog_edit_item, null);
 		
+		
+		
 		EditText description = (EditText)v.findViewById(R.id.description_editText);
 		description.addTextChangedListener(new TextWatcher(){
 
@@ -79,9 +82,18 @@ public class EditItemDialog extends DialogFragment {
 			}
 			
 		});
+		
 		if(mItem.getDescription() != null){
 			description.setText(mItem.getDescription());
 		}
+		
+		description.setOnFocusChangeListener(new OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View view, boolean hasFocus) {
+					((KeyboardEditText) view).setImeVisibility(hasFocus);
+				}
+		});
+		
 		EditText quantity = (EditText)v.findViewById(R.id.qty_editText);
 		quantity.addTextChangedListener(new TextWatcher() {
 			
@@ -125,5 +137,5 @@ public class EditItemDialog extends DialogFragment {
 		}).create();
 
 	}
-	
+
 }
