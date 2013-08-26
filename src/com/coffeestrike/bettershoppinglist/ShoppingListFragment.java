@@ -167,7 +167,8 @@ public class ShoppingListFragment extends ListFragment {
 			return;
 		}
 		if(requestCode == NEW_ITEM){
-			mItemList.add( (Item) data.getSerializableExtra(EditItemDialog.EXTRA_ITEM) );
+			//items are now inserted at the top of the list
+			mItemList.add(0, (Item) data.getSerializableExtra(EditItemDialog.EXTRA_ITEM));
 			((ShoppingListAdapter)getListAdapter()).notifyDataSetChanged();
 		}
 		else if(requestCode == EDIT_ITEM){
@@ -217,7 +218,6 @@ public class ShoppingListFragment extends ListFragment {
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					if(isChecked){
 						getItem(position).setStatus(1);
-					
 					}
 					else{
 						getItem(position).setStatus(0);

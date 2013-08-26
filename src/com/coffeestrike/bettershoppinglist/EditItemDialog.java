@@ -18,6 +18,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 public class EditItemDialog extends DialogFragment {
 	
@@ -29,6 +30,7 @@ public class EditItemDialog extends DialogFragment {
 	private int mPosition;
 	protected CharSequence mPreviousDescription;
 	protected int mPreviousQty;
+	protected String mPreviousUom;
 
 	private void sendResult(int resultCode){
 		Fragment target = getTargetFragment();
@@ -68,7 +70,13 @@ public class EditItemDialog extends DialogFragment {
 		mItem = (Item)getArguments().getSerializable(EXTRA_ITEM);
 		mPreviousDescription = mItem.getDescription();
 		mPreviousQty = mItem.getQty();
+		mPreviousUom = mItem.getUnitOfMeasure();
 		View v = getActivity().getLayoutInflater().inflate(R.layout.dialog_edit_item, null);
+		
+		if(getTargetRequestCode() == ShoppingListFragment.EDIT_ITEM){
+			TextView t = (TextView) v.findViewById(R.id.item_uom);
+			t.setText(R.string.edit_item);
+		}
 
 		EditText description = (EditText)v.findViewById(R.id.description_editText);
 		description.addTextChangedListener(new TextWatcher(){
@@ -165,6 +173,7 @@ public class EditItemDialog extends DialogFragment {
 				if(getTargetRequestCode() == ShoppingListFragment.EDIT_ITEM){
 					mItem.setDescription(mPreviousDescription);
 					mItem.setQty(mPreviousQty);
+					mItem.setUnitOfMeasure(mPreviousUom);
 				}
 			}
 		}).create();

@@ -20,17 +20,18 @@ public class Item implements Serializable, Comparable<Item>{
 	private int mQty;
 	private UUID mId;
 	private String mUnitOfMeasure;
+	private boolean mDislayQty;
 	
 	private static final String JSON_ID = "id";
+
 	private static final String JSON_QTY = "qty";
 	private static final String JSON_DESCRIPTION = "description";
 	private static final String JSON_STATUS = "status";
 	private static final String JSON_UOM = "uom";
-	
-	
 	public Item(){
 		mId = UUID.randomUUID();
 	}
+	
 	
 	public Item(JSONObject json) throws JSONException{
 		mId = UUID.fromString(json.getString(JSON_ID));
@@ -45,10 +46,21 @@ public class Item implements Serializable, Comparable<Item>{
 		mId = UUID.randomUUID();
 	}
 	
+	public boolean isDislayQty() {
+		return mDislayQty;
+	}
+
+
+	public void setDislayQty(boolean dislayQty) {
+		mDislayQty = dislayQty;
+	}
+
+
 	@Override
 	public int compareTo(Item arg0) {
 		return this.mDescription.toString().compareTo(arg0.mDescription.toString());
 	}
+	
 	public CharSequence getDescription() {
 		return mDescription;
 	}
@@ -64,6 +76,7 @@ public class Item implements Serializable, Comparable<Item>{
 	public String getUnitOfMeasure() {
 		return mUnitOfMeasure;
 	}
+
 	public void setDescription(CharSequence description) {
 		mDescription = description.toString();
 	}

@@ -16,5 +16,6 @@
     <string name="sort_alpha">Sort (A-Z)</string>
     <string name="clear_all">Clear list</string>
     <string name="developer_string">development</string>
+    <string name="edit_item">Edit Item</string>
 
 </resources>

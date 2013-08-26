@@ -22,7 +22,7 @@
         android:id="@+id/view1"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@android:color/black" />
+        android:background="@android:color/holo_blue_light" />
 
     <view
         android:id="@+id/description_editText"
