@@ -32,8 +32,8 @@ public class ShoppingListFragment extends ListFragment {
 	
 	public static String TAG = "ShoppingListFragment";
 	private ShoppingList mItemList;
-	private static final int NEW_ITEM = 0;
-	private static final int EDIT_ITEM = 1;
+	public static final int NEW_ITEM = 0;
+	public static final int EDIT_ITEM = 1;
 	
 
 	@Override
@@ -137,9 +137,19 @@ public class ShoppingListFragment extends ListFragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch(item.getItemId()){
-			case R.id.add_button:
-				newListItem();	
+			case R.id.button_add_item:
+				newListItem();
+				return true;
+			case R.id.sort_alpha:
+				mItemList.sortAlpha();
+				((ShoppingListAdapter)getListAdapter()).notifyDataSetChanged();
+				return true;
+			case R.id.clear_all:
+				mItemList.clear();
+				((ShoppingListAdapter)getListAdapter()).notifyDataSetChanged();
+				return true;
 		}
+		
 		return false;
 	}
 	
@@ -157,14 +167,14 @@ public class ShoppingListFragment extends ListFragment {
 			return;
 		}
 		if(requestCode == NEW_ITEM){
-			mItemList.add( (Item) data.getSerializableExtra(EditItemDialog.EXTRA_ITEM) );
+			//items are now inserted at the top of the list
+			mItemList.add(0, (Item) data.getSerializableExtra(EditItemDialog.EXTRA_ITEM));
 			((ShoppingListAdapter)getListAdapter()).notifyDataSetChanged();
 		}
-//		else if(requestCode == EDIT_ITEM){
-//			Item item = (Item) data.getSerializableExtra(EditItemDialog.EXTRA_ITEM);
-//			int position = data.getIntExtra(EditItemDialog.EXTRA_POSITION, 0);
-//			mItemList.set(position, item);
-//		}
+		else if(requestCode == EDIT_ITEM){
+			// Nothing needs to be done here.
+			// The dialog fragment handles editing
+		}
 
 	}
 	
@@ -189,6 +199,11 @@ public class ShoppingListFragment extends ListFragment {
 
 
 
+	/**
+	 * @author Benjamin Daschel
+	 *Simple bridge class between ShoppingList model data and list layout views.
+	 *
+	 */
 	private class ShoppingListAdapter extends ArrayAdapter<Item> {
 
 		public ShoppingListAdapter(ArrayList<Item> list){
@@ -217,14 +232,14 @@ public class ShoppingListFragment extends ListFragment {
 			});
 			TextView itemText = (TextView) convertView.findViewById(R.id.item_text);
 			TextView itemQty = (TextView) convertView.findViewById(R.id.item_qty);
+			TextView itemUom = (TextView) convertView.findViewById(R.id.item_uom);
 			checkbox.setChecked(i.getStatus() == 1);
 			itemText.setText(i.getDescription());
 			itemQty.setText(String.valueOf(i.getQty()));
-
+			itemUom.setText(i.getUnitOfMeasure());
+			
 			return convertView;
 		}
-		
-		
 	}
 	
 

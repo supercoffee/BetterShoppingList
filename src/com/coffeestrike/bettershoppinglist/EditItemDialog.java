@@ -12,7 +12,13 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 public class EditItemDialog extends DialogFragment {
 	
@@ -22,6 +28,9 @@ public class EditItemDialog extends DialogFragment {
 	
 	private Item mItem;
 	private int mPosition;
+	protected CharSequence mPreviousDescription;
+	protected int mPreviousQty;
+	protected String mPreviousUom;
 
 	private void sendResult(int resultCode){
 		Fragment target = getTargetFragment();
@@ -59,8 +68,16 @@ public class EditItemDialog extends DialogFragment {
 	
 	public Dialog onCreateDialog(Bundle savedInstanceState){
 		mItem = (Item)getArguments().getSerializable(EXTRA_ITEM);
+		mPreviousDescription = mItem.getDescription();
+		mPreviousQty = mItem.getQty();
+		mPreviousUom = mItem.getUnitOfMeasure();
 		View v = getActivity().getLayoutInflater().inflate(R.layout.dialog_edit_item, null);
 		
+		if(getTargetRequestCode() == ShoppingListFragment.EDIT_ITEM){
+			TextView t = (TextView) v.findViewById(R.id.item_uom);
+			t.setText(R.string.edit_item);
+		}
+
 		EditText description = (EditText)v.findViewById(R.id.description_editText);
 		description.addTextChangedListener(new TextWatcher(){
 
@@ -79,9 +96,18 @@ public class EditItemDialog extends DialogFragment {
 			}
 			
 		});
+		
 		if(mItem.getDescription() != null){
 			description.setText(mItem.getDescription());
 		}
+		
+		description.setOnFocusChangeListener(new OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View view, boolean hasFocus) {
+					((KeyboardEditText) view).setImeVisibility(hasFocus);
+				}
+		});
+		
 		EditText quantity = (EditText)v.findViewById(R.id.qty_editText);
 		quantity.addTextChangedListener(new TextWatcher() {
 			
@@ -92,7 +118,6 @@ public class EditItemDialog extends DialogFragment {
 				} catch (NumberFormatException n) {
 					mItem.setQty(1);
 				}
-				
 			}
 			
 			@Override
@@ -106,6 +131,31 @@ public class EditItemDialog extends DialogFragment {
 		if (mItem.getQty() != 0) {
 			quantity.setText(String.valueOf(mItem.getQty()));
 		}
+		
+		final Spinner spinner = (Spinner)v.findViewById(R.id.unit_spinner);
+		ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter
+				.createFromResource(getActivity(), R.array.units_of_measure, 
+						android.R.layout.simple_spinner_dropdown_item);
+		spinner.setAdapter(spinAdapter);
+		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int pos, long arg3) {
+				if(spinner.getItemAtPosition(pos).getClass().equals(new String().getClass())){
+					String s = (String) spinner.getItemAtPosition(pos);
+					mItem.setUnitOfMeasure(s);
+				}
+				
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		
 		return builder.setView(v).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -117,13 +167,17 @@ public class EditItemDialog extends DialogFragment {
 			}
 		})
 		.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-
+			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-							
+				if(getTargetRequestCode() == ShoppingListFragment.EDIT_ITEM){
+					mItem.setDescription(mPreviousDescription);
+					mItem.setQty(mPreviousQty);
+					mItem.setUnitOfMeasure(mPreviousUom);
+				}
 			}
 		}).create();
 
 	}
-	
+
 }

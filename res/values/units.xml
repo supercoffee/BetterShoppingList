@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="units_of_measure">
+        <item >Each</item>
+        <item >Dozen</item>
+        <item >Ounce</item>
+        <item >Gallon</item>
+    </string-array>
+    
+</resources>

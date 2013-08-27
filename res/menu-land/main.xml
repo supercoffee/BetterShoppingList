@@ -2,8 +2,10 @@
 
     <item android:id="@+id/button_add_item" android:icon="@drawable/content_new" android:title="@string/add_item" android:showAsAction="ifRoom"></item>
     
-    <item android:id="@+id/sort_alpha" android:title="@string/sort_alpha" android:showAsAction="never"></item>
-    
+    <item android:id="@+id/sort_alpha" 
+        android:title="@string/sort_alpha" 
+        android:showAsAction="ifRoom" 
+        android:icon="@drawable/sort_icon"></item>
    <!--  <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
