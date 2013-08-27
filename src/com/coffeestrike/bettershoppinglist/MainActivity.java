@@ -12,15 +12,23 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.fragment_container);
+		setContentView(R.layout.two_fragment_container);
 		
 		FragmentManager fm = getSupportFragmentManager();
-		Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
-		if (fragment == null) {
+		
+		Fragment lowerFragment = fm.findFragmentById(R.id.bottom_frame);
+		if (lowerFragment == null) {
 			fm.beginTransaction()
-					.add(R.id.fragmentContainer, new ShoppingListFragment())
+					.add(R.id.bottom_frame, new ShoppingListFragment())
 					.commit();
 		}
+		
+//		Fragment upperFragment = fm.findFragmentById(R.id.top_frame);
+//		if(upperFragment == null){
+//			fm.beginTransaction()
+//				.add(R.id.top_frame, new AddItemFragment())
+//				.commit();
+//		}
 
 	}
 

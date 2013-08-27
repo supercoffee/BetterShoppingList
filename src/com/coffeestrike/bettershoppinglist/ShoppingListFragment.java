@@ -137,7 +137,7 @@ public class ShoppingListFragment extends ListFragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch(item.getItemId()){
-			case R.id.add_button:
+			case R.id.button_add_item:
 				newListItem();
 				return true;
 			case R.id.sort_alpha:
@@ -199,6 +199,11 @@ public class ShoppingListFragment extends ListFragment {
 
 
 
+	/**
+	 * @author Benjamin Daschel
+	 *Simple bridge class between ShoppingList model data and list layout views.
+	 *
+	 */
 	private class ShoppingListAdapter extends ArrayAdapter<Item> {
 
 		public ShoppingListAdapter(ArrayList<Item> list){
@@ -233,12 +238,8 @@ public class ShoppingListFragment extends ListFragment {
 			itemQty.setText(String.valueOf(i.getQty()));
 			itemUom.setText(i.getUnitOfMeasure());
 			
-			
-
 			return convertView;
 		}
-		
-		
 	}
 	
 
