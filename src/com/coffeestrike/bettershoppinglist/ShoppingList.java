@@ -18,8 +18,8 @@ public class ShoppingList extends ArrayList<Item>{
 	
 	private static final String TAG = "ShoppingList";
 	private static final String FILENAME = "shoppinglist.json";
-	private ShoppingListJSONSerializer mSerializer;
-	private Context mAppContext;
+	private transient ShoppingListJSONSerializer mSerializer;
+	private transient Context mAppContext;
 	private static ShoppingList sShoppingList;
 	
 
@@ -65,6 +65,18 @@ public class ShoppingList extends ArrayList<Item>{
 
 	public void sortAlpha() {
 		Collections.sort(ShoppingList.this);
+	}
+
+	public void merge(ShoppingList incomingList, Context activity) {
+		if(sShoppingList == null){
+			sShoppingList = new ShoppingList(activity.getApplicationContext());
+		}
+		for(Item item : incomingList){
+			if(! sShoppingList.contains(item)){
+				sShoppingList.add(item);
+			}
+		}
+		
 	}
 
 

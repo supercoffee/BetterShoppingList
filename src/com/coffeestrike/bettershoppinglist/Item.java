@@ -103,6 +103,18 @@ public class Item implements Serializable, Comparable<Item>{
 		json.put(JSON_STATUS, mStatus);
 		return json;
 	}
+
+
+	@Override
+	public boolean equals(Object o) {
+		if(this.getClass().getSimpleName().equals(o.getClass().getSimpleName())){
+			Item i = (Item) o;
+			if(i.getId().equals(this.getId())){
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	
 	

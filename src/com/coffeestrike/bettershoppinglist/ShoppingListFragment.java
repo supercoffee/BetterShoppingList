@@ -135,6 +135,15 @@ public class ShoppingListFragment extends ListFragment {
 
 
 	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		
+		((ShoppingListAdapter) getListAdapter()).notifyDataSetChanged();
+	}
+
+
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch(item.getItemId()){
 			case R.id.button_add_item:
