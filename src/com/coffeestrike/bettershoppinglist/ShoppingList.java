@@ -20,22 +20,22 @@ public class ShoppingList extends ArrayList<Item>{
 	private static final String FILENAME = "shoppinglist.json";
 	private transient ShoppingListJSONSerializer mSerializer;
 	private transient Context mAppContext;
-	private static ShoppingList sShoppingList;
+//	private static ShoppingList sShoppingList;
 	
 
-	protected ShoppingList(Context appContext){
-		mAppContext = appContext;
+	public ShoppingList(Context appContext){
+//		mAppContext = appContext;
 		mSerializer = new ShoppingListJSONSerializer(FILENAME, mAppContext);
 	}
 	
-	public static ShoppingList get(Context appContext){
-		if (sShoppingList != null){
-			return sShoppingList;
-		}
-		ShoppingList s = new ShoppingList(appContext.getApplicationContext());
-		s.loadList();
-		return s;
-	}
+//	public static ShoppingList get(Context appContext){
+//		if (sShoppingList != null){
+//			return sShoppingList;
+//		}
+//		ShoppingList s = new ShoppingList(appContext.getApplicationContext());
+//		s.loadList();
+//		return s;
+//	}
 	
 	
 	public boolean loadList(){
@@ -67,13 +67,13 @@ public class ShoppingList extends ArrayList<Item>{
 		Collections.sort(ShoppingList.this);
 	}
 
-	public void merge(ShoppingList incomingList, Context activity) {
-		if(sShoppingList == null){
-			sShoppingList = new ShoppingList(activity.getApplicationContext());
-		}
+	public void merge(ShoppingList incomingList) {
+//		if(sShoppingList == null){
+//			sShoppingList = new ShoppingList(activity.getApplicationContext());
+//		}
 		for(Item item : incomingList){
-			if(! sShoppingList.contains(item)){
-				sShoppingList.add(item);
+			if(! this.contains(item)){
+				add(item);
 			}
 		}
 		

@@ -49,7 +49,7 @@ public class ShoppingListFragment extends ListFragment {
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
 		getActivity().setTitle(R.string.app_name);
-		mItemList = ShoppingList.get(getActivity());
+		mItemList = ((MainActivity)getActivity()).getShoppingList();
 		setListAdapter(new ShoppingListAdapter(mItemList));
 		setRetainInstance(true);
 	}
@@ -133,16 +133,6 @@ public class ShoppingListFragment extends ListFragment {
 		}
 	}
 
-
-	@Override
-	public void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		
-		((ShoppingListAdapter) getListAdapter()).notifyDataSetChanged();
-	}
-
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch(item.getItemId()){
@@ -187,7 +177,6 @@ public class ShoppingListFragment extends ListFragment {
 
 	}
 	
-
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		Log.d(TAG, "list item "+ position + " clicked.");
@@ -249,6 +238,10 @@ public class ShoppingListFragment extends ListFragment {
 			
 			return convertView;
 		}
+	}
+
+	public void refresh() {
+		((ShoppingListAdapter)getListAdapter()).notifyDataSetChanged();
 	}
 	
 

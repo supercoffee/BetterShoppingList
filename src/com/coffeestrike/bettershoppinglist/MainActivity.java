@@ -31,15 +31,68 @@ import android.widget.Toast;
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class MainActivity extends FragmentActivity implements CreateNdefMessageCallback, OnNdefPushCompleteCallback {
 	
-	private static final String MIME = "application/com.coffeestrike.bettershoppinglist";
-	protected NfcAdapter mNfcAdapter;
 	private static final int MESSAGE_SENT = 1;
+	private static final String MIME = "application/com.coffeestrike.bettershoppinglist";
 	private static final String TAG = "MainActivity";
+	/** This handler receives a message from onNdefPushComplete */
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+            case MESSAGE_SENT:
+                Toast.makeText(getApplicationContext(), "List sent!", Toast.LENGTH_LONG).show();
+                break;
+            }
+        }
+    };
 	
+	protected NfcAdapter mNfcAdapter;
+
+    private ShoppingList mShoppingList;
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	@Override
+	public NdefMessage createNdefMessage(NfcEvent event) {
+//		ShoppingList shoppingList = ShoppingList.get(this);
+		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+		ObjectOutput out = null;
+		byte[] shoppingListBytes = null;
+			try {
+				out = new ObjectOutputStream(byteStream);
+				out.writeObject(mShoppingList);
+				shoppingListBytes = byteStream.toByteArray();
+				
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			finally{
+				try {
+					out.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+					Log.e(TAG, "", e);
+				}
+				try {
+					byteStream.close();
+				} catch (IOException e) {
+					Log.e(TAG, "", e);
+				}
+			}
+		NdefMessage msg = new NdefMessage(NdefRecord.createMime(MIME, shoppingListBytes));
+		
+		return msg;
+	}
+	public ShoppingList getShoppingList() {
+		return mShoppingList;
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.two_fragment_container);
+		
+		mShoppingList = new ShoppingList(this);
 		
 		FragmentManager fm = getSupportFragmentManager();
 		
@@ -66,58 +119,12 @@ public class MainActivity extends FragmentActivity implements CreateNdefMessageC
 
 	}
 
-    @Override
+	@Override
     public void onNdefPushComplete(NfcEvent arg0) {
         // A handler is needed to send messages to the activity when this
         // callback occurs, because it happens from a binder thread
         mHandler.obtainMessage(MESSAGE_SENT).sendToTarget();
     }
-
-    /** This handler receives a message from onNdefPushComplete */
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-            case MESSAGE_SENT:
-                Toast.makeText(getApplicationContext(), "Message sent!", Toast.LENGTH_LONG).show();
-                break;
-            }
-        }
-    };
-
-	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-	@Override
-	public NdefMessage createNdefMessage(NfcEvent event) {
-		ShoppingList shoppingList = ShoppingList.get(this);
-		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-		ObjectOutput out = null;
-		byte[] shoppingListBytes = null;
-			try {
-				out = new ObjectOutputStream(byteStream);
-				out.writeObject(shoppingList);
-				shoppingListBytes = byteStream.toByteArray();
-				
-				
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			finally{
-				try {
-					out.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-					Log.e(TAG, "", e);
-				}
-				try {
-					byteStream.close();
-				} catch (IOException e) {
-					Log.e(TAG, "", e);
-				}
-			}
-		NdefMessage msg = new NdefMessage(NdefRecord.createMime(MIME, shoppingListBytes));
-		
-		return msg;
-	}
 
 	@Override
 	protected void onNewIntent(Intent intent) {
@@ -134,7 +141,6 @@ public class MainActivity extends FragmentActivity implements CreateNdefMessageC
 	}
 
 	private void processIntent(Intent intent) {
-		ShoppingList shoppingList = ShoppingList.get(this);
 		Parcelable[] rawMsgs = intent.getParcelableArrayExtra(
                 NfcAdapter.EXTRA_NDEF_MESSAGES);
 		if(rawMsgs != null){
@@ -148,7 +154,12 @@ public class MainActivity extends FragmentActivity implements CreateNdefMessageC
 		try{
 			iStream = new ObjectInputStream(byteStream);
 			Object o = iStream.readObject();
-			shoppingList.merge((ShoppingList) o , this);
+			mShoppingList.merge((ShoppingList) o);
+			FragmentManager fm = getSupportFragmentManager();
+			ShoppingListFragment fragment = (ShoppingListFragment) fm.findFragmentById(R.id.bottom_frame);
+			if(fragment != null){
+				fragment.refresh();
+			}
 			
 		} catch (StreamCorruptedException e) {
 			// TODO Auto-generated catch block
