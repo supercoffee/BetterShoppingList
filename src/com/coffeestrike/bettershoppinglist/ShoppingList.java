@@ -24,7 +24,7 @@ public class ShoppingList extends ArrayList<Item>{
 	
 
 	public ShoppingList(Context appContext){
-//		mAppContext = appContext;
+		mAppContext = appContext;
 		mSerializer = new ShoppingListJSONSerializer(FILENAME, mAppContext);
 	}
 	

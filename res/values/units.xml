@@ -5,6 +5,8 @@
         <item >Dozen</item>
         <item >Ounce</item>
         <item >Gallon</item>
+        <item >Case</item>
+        <item >Pound</item>
     </string-array>
     
 </resources>

@@ -151,8 +151,7 @@ public class EditItemDialog extends DialogFragment {
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
-				// TODO Auto-generated method stub
-				
+				// Do nothing here
 			}
 		});
 		

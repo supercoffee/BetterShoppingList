@@ -28,12 +28,20 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 
+/**
+ * @author Benjamin Daschel
+ * Primary interface for the application.
+ * Responsible for displaying the current list of items,
+ * and controlling the flow of items in and out of the list.
+ *
+ */
 public class ShoppingListFragment extends ListFragment {
 	
 	public static String TAG = "ShoppingListFragment";
 	private ShoppingList mItemList;
 	public static final int NEW_ITEM = 0;
 	public static final int EDIT_ITEM = 1;
+	
 	
 
 	@Override
@@ -50,6 +58,7 @@ public class ShoppingListFragment extends ListFragment {
 		setHasOptionsMenu(true);
 		getActivity().setTitle(R.string.app_name);
 		mItemList = ((MainActivity)getActivity()).getShoppingList();
+		mItemList.loadList();
 		setListAdapter(new ShoppingListAdapter(mItemList));
 		setRetainInstance(true);
 	}
@@ -159,6 +168,11 @@ public class ShoppingListFragment extends ListFragment {
 		newItem.show(fm, TAG);
 	}
 	
+	/**
+	 * @param requestCode indicates the purpose of the original request
+	 * @param resultCode indicates if the requested action completed successfully
+	 * @param data intent containing data to be processed based on requestCode
+	 */
 	@Override
 	public void onActivityResult (int requestCode, int resultCode, Intent data){
 		Log.d(TAG, "onActivityResult");
@@ -168,11 +182,11 @@ public class ShoppingListFragment extends ListFragment {
 		if(requestCode == NEW_ITEM){
 			//items are now inserted at the top of the list
 			mItemList.add(0, (Item) data.getSerializableExtra(EditItemDialog.EXTRA_ITEM));
-			((ShoppingListAdapter)getListAdapter()).notifyDataSetChanged();
+			refresh();
 		}
 		else if(requestCode == EDIT_ITEM){
-			// Nothing needs to be done here.
-			// The dialog fragment handles editing
+			//Need to tell the ArrayAdapter to reload because data has changed
+			refresh();
 		}
 
 	}
@@ -244,7 +258,4 @@ public class ShoppingListFragment extends ListFragment {
 		((ShoppingListAdapter)getListAdapter()).notifyDataSetChanged();
 	}
 	
-
-	
-
 }

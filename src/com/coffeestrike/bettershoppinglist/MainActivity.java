@@ -10,6 +10,8 @@ import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -29,7 +31,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-public class MainActivity extends FragmentActivity implements CreateNdefMessageCallback, OnNdefPushCompleteCallback {
+public class MainActivity extends FragmentActivity implements CreateNdefMessageCallback, OnNdefPushCompleteCallback, 
+	AddItemFragment.OnNewItemListener {
 	
 	private static final int MESSAGE_SENT = 1;
 	private static final String MIME = "application/com.coffeestrike.bettershoppinglist";
@@ -49,11 +52,12 @@ public class MainActivity extends FragmentActivity implements CreateNdefMessageC
 	protected NfcAdapter mNfcAdapter;
 
     private ShoppingList mShoppingList;
+    
+    
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	@Override
 	public NdefMessage createNdefMessage(NfcEvent event) {
-//		ShoppingList shoppingList = ShoppingList.get(this);
 		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 		ObjectOutput out = null;
 		byte[] shoppingListBytes = null;
@@ -103,12 +107,14 @@ public class MainActivity extends FragmentActivity implements CreateNdefMessageC
 					.commit();
 		}
 		
-//		Fragment upperFragment = fm.findFragmentById(R.id.top_frame);
-//		if(upperFragment == null){
-//			fm.beginTransaction()
-//				.add(R.id.top_frame, new AddItemFragment())
-//				.commit();
-//		}
+		Fragment upperFragment = fm.findFragmentById(R.id.top_frame);
+		if(upperFragment == null){
+			fm.beginTransaction()
+				.add(R.id.top_frame, new AddItemFragment())
+				.commit();
+		}
+		
+		
 		
 		mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 		if(mNfcAdapter != null){
@@ -116,6 +122,8 @@ public class MainActivity extends FragmentActivity implements CreateNdefMessageC
 			mNfcAdapter.setOnNdefPushCompleteCallback(this, this);
 			
 		}
+		
+		Item.sDefaultUomList = getResources().getStringArray(R.array.units_of_measure);
 
 	}
 
@@ -173,9 +181,14 @@ public class MainActivity extends FragmentActivity implements CreateNdefMessageC
 		}
 		
 	}
-
-	
-	
-	
+	@Override
+	public void onNewItem(Item i) {
+		FragmentManager fm = getSupportFragmentManager();
+		ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fm.findFragmentById(R.id.bottom_frame);
+		Intent intent = new Intent();
+		intent.putExtra(EditItemDialog.EXTRA_ITEM, i);
+		shoppingListFragment.onActivityResult(ShoppingListFragment.NEW_ITEM, 
+				Activity.RESULT_OK, intent);
+	}
 
 }

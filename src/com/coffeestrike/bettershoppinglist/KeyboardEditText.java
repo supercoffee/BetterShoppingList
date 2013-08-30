@@ -45,9 +45,5 @@ public class KeyboardEditText extends EditText {
 	        }
 	    }
 	}
-	
-	
-	
-	
 
 }
