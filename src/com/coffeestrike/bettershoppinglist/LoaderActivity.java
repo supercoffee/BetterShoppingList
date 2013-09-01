@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 public class LoaderActivity extends Activity {
+
+	private static final String TAG = "com.coffeestrike.bettershoppinglist.LoaderActivity";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +27,7 @@ public class LoaderActivity extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
+		Log.d(TAG, "Shutting down. I don't blame you.");
 		finish();
 	}
 
