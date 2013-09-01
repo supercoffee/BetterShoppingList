@@ -2,11 +2,11 @@ package com.coffeestrike.bettershoppinglist;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
 import org.json.JSONException;
-
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
@@ -64,6 +64,7 @@ public class ShoppingListFragment extends ListFragment {
 		setRetainInstance(true);
 	}
 	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	        Bundle savedInstanceState){
@@ -71,49 +72,53 @@ public class ShoppingListFragment extends ListFragment {
 		View v = inflater.inflate(R.layout.shopping_list, null);
 		
 		ListView listView = (ListView)v.findViewById(android.R.id.list);
-		listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-		listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
-			
-			@Override
-			public boolean onPrepareActionMode(ActionMode arg0, Menu arg1) {
-				return false;
-			}
-			
-			@Override
-			public void onDestroyActionMode(ActionMode arg0) {}
-			
-			@Override
-			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-				MenuInflater inflater = mode.getMenuInflater();
-				inflater.inflate(R.menu.context_action_bar, menu);
-				return true;
-			}
-			
-			@Override
-			public boolean onActionItemClicked(ActionMode mode, MenuItem menuItem) {
-				switch(menuItem.getItemId()){
-					case R.id.menu_item_delete:
-						ShoppingListAdapter adapter = (ShoppingListAdapter)getListAdapter();
-						for(int position = adapter.getCount(); position >= 0; position--){
-							if(getListView().isItemChecked(position)){
-								mItemList.remove(position);
-							}
-						}
-						mode.finish();
-						adapter.notifyDataSetChanged();
-						return true;
-					default:
-						return false;
+		
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+			listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+
+				@Override
+				public boolean onPrepareActionMode(ActionMode arg0, Menu arg1) {
+					return false;
 				}
 
-			}
-			
-			@Override
-			public void onItemCheckedStateChanged(ActionMode arg0, int arg1, long arg2,
-					boolean arg3) {
-			}
-		});
-		
+				@Override
+				public void onDestroyActionMode(ActionMode arg0) {
+				}
+
+				@Override
+				public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+					MenuInflater inflater = mode.getMenuInflater();
+					inflater.inflate(R.menu.context_action_bar, menu);
+					return true;
+				}
+
+				@Override
+				public boolean onActionItemClicked(ActionMode mode,
+						MenuItem menuItem) {
+					switch (menuItem.getItemId()) {
+						case R.id.menu_item_delete:
+							ShoppingListAdapter adapter = (ShoppingListAdapter) getListAdapter();
+							for (int position = adapter.getCount(); position >= 0; position--) {
+								if (getListView().isItemChecked(position)) {
+									mItemList.remove(position);
+								}
+							}
+							mode.finish();
+							adapter.notifyDataSetChanged();
+							return true;
+						default:
+							return false;
+					}
+
+				}
+
+				@Override
+				public void onItemCheckedStateChanged(ActionMode arg0,
+						int arg1, long arg2, boolean arg3) {
+				}
+			});
+		}
 		Button b = (Button)v.findViewById(R.id.addItem_button);
 		b.setOnClickListener(new View.OnClickListener() {
 			
