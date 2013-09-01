@@ -186,7 +186,7 @@ public class MainActivity extends FragmentActivity implements CreateNdefMessageC
 		FragmentManager fm = getSupportFragmentManager();
 		ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fm.findFragmentById(R.id.bottom_frame);
 		Intent intent = new Intent();
-		intent.putExtra(EditItemDialog.EXTRA_ITEM, i);
+		intent.putExtra(Item.EXTRA_ITEM, i);
 		shoppingListFragment.onActivityResult(ShoppingListFragment.NEW_ITEM, 
 				Activity.RESULT_OK, intent);
 	}

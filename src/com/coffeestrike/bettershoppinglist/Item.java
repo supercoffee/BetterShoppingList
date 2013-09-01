@@ -36,6 +36,7 @@ public class Item implements Serializable, Comparable<Item>{
 	private static final String JSON_DESCRIPTION = "description";
 	private static final String JSON_STATUS = "status";
 	private static final String JSON_UOM = "uom";
+	public static final String EXTRA_ITEM = "com.coffeestrike.bettershoppinglist.Item";
 	
 	public Item(){
 		mId = UUID.randomUUID();

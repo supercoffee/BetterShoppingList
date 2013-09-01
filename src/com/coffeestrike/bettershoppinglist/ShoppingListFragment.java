@@ -41,6 +41,7 @@ public class ShoppingListFragment extends ListFragment {
 	private ShoppingList mItemList;
 	public static final int NEW_ITEM = 0;
 	public static final int EDIT_ITEM = 1;
+	private static final String EXTRA_ITEM = "com.coffeestrike.bettershoppinglist.ShoppingListFragment";
 	
 	
 
@@ -181,7 +182,7 @@ public class ShoppingListFragment extends ListFragment {
 		}
 		if(requestCode == NEW_ITEM){
 			//items are now inserted at the top of the list
-			mItemList.add(0, (Item) data.getSerializableExtra(EditItemDialog.EXTRA_ITEM));
+			mItemList.add(0, (Item) data.getSerializableExtra(Item.EXTRA_ITEM));
 			refresh();
 		}
 		else if(requestCode == EDIT_ITEM){

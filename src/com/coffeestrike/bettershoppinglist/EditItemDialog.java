@@ -23,7 +23,6 @@ import android.widget.TextView;
 public class EditItemDialog extends DialogFragment {
 	
 	public static final String TAG = "EditItemDialog";
-	public static final String EXTRA_ITEM = "com.coffeestrike.bettershoppinglist.EditItemDialog";
 	public static final String EXTRA_POSITION = "com.coffeestrike.bettershoppinglist.EditItemDialog.position";
 	
 	private Item mItem;
@@ -41,7 +40,7 @@ public class EditItemDialog extends DialogFragment {
 			return;
 		}
 		Intent i = new Intent();
-		i.putExtra(EXTRA_ITEM, mItem);
+		i.putExtra(Item.EXTRA_ITEM, mItem);
 		if(mItem.getQty() < 1){
 			mItem.setQty(1);
 		}
@@ -51,7 +50,7 @@ public class EditItemDialog extends DialogFragment {
 	
 	public static EditItemDialog newInstance(Item item){
 		Bundle args = new Bundle();
-		args.putSerializable(EXTRA_ITEM, item);
+		args.putSerializable(Item.EXTRA_ITEM, item);
 		EditItemDialog dialog = new EditItemDialog();
 		dialog.setArguments(args);
 		return dialog;
@@ -59,7 +58,7 @@ public class EditItemDialog extends DialogFragment {
 	
 	public static EditItemDialog editInstance(Item item, int position){
 		Bundle args = new Bundle();
-		args.putSerializable(EXTRA_ITEM, item);
+		args.putSerializable(Item.EXTRA_ITEM, item);
 		args.putInt(EXTRA_POSITION, position);
 		EditItemDialog dialog = new EditItemDialog();
 		dialog.setArguments(args);
@@ -67,7 +66,7 @@ public class EditItemDialog extends DialogFragment {
 	}
 	
 	public Dialog onCreateDialog(Bundle savedInstanceState){
-		mItem = (Item)getArguments().getSerializable(EXTRA_ITEM);
+		mItem = (Item)getArguments().getSerializable(Item.EXTRA_ITEM);
 		mPreviousDescription = mItem.getDescription();
 		mPreviousQty = mItem.getQty();
 		mPreviousUom = mItem.getUnitOfMeasure();
