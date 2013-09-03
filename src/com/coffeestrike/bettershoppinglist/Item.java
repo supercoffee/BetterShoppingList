@@ -37,10 +37,7 @@ public class Item implements Serializable, Comparable<Item>{
 	private static final String JSON_STATUS = "status";
 	private static final String JSON_UOM = "uom";
 	public static final String EXTRA_ITEM = "com.coffeestrike.bettershoppinglist.Item";
-	
-	public Item(){
-		mId = UUID.randomUUID();
-	}
+
 	
 	
 	public Item(JSONObject json) throws JSONException{
@@ -61,6 +58,7 @@ public class Item implements Serializable, Comparable<Item>{
 	public Item(String description, int quantity){
 		mDescription = description;
 		mQuantity = quantity;
+		mUnitOfMeasure = sDefaultUomList[0];
 		mId = UUID.randomUUID();
 	}
 	

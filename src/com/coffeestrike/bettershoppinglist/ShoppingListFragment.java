@@ -135,10 +135,8 @@ public class ShoppingListFragment extends ListFragment {
 		try {
 			new ShoppingListJSONSerializer("shoppinglist.json", getActivity()).saveList(mItemList);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -164,7 +162,7 @@ public class ShoppingListFragment extends ListFragment {
 	
 	private void newListItem(){
 		FragmentManager fm = getActivity().getSupportFragmentManager();
-		EditItemDialog newItem = EditItemDialog.newInstance(new Item());
+		EditItemDialog newItem = EditItemDialog.newInstance(new Item(""));
 		newItem.setTargetFragment(this, NEW_ITEM);
 		newItem.show(fm, TAG);
 	}
@@ -183,13 +181,11 @@ public class ShoppingListFragment extends ListFragment {
 		if(requestCode == NEW_ITEM){
 			//items are now inserted at the top of the list
 			mItemList.add(0, (Item) data.getSerializableExtra(Item.EXTRA_ITEM));
-			refresh();
 		}
 		else if(requestCode == EDIT_ITEM){
 			//Need to tell the ArrayAdapter to reload because data has changed
-			refresh();
 		}
-
+		refresh();
 	}
 	
 	@Override
@@ -198,16 +194,14 @@ public class ShoppingListFragment extends ListFragment {
 		super.onListItemClick(l, v, position, id);
 		Item item = (Item) l.getItemAtPosition(position);
 		editListItem(item, position);
-		
 	}
 	
 
 	private void editListItem(Item item, int position) {
 		FragmentManager fm = getActivity().getSupportFragmentManager();
-		EditItemDialog editItem = EditItemDialog.editInstance(item, position);
+		EditItemDialog editItem = EditItemDialog.newInstance(item, position);
 		editItem.setTargetFragment(this, EDIT_ITEM);
 		editItem.show(fm, TAG);
-		
 	}
 
 

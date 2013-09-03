@@ -56,7 +56,7 @@ public class EditItemDialog extends DialogFragment {
 		return dialog;
 	}
 	
-	public static EditItemDialog editInstance(Item item, int position){
+	public static EditItemDialog newInstance(Item item, int position){
 		Bundle args = new Bundle();
 		args.putSerializable(Item.EXTRA_ITEM, item);
 		args.putInt(EXTRA_POSITION, position);
@@ -67,6 +67,7 @@ public class EditItemDialog extends DialogFragment {
 	
 	public Dialog onCreateDialog(Bundle savedInstanceState){
 		mItem = (Item)getArguments().getSerializable(Item.EXTRA_ITEM);
+
 		mPreviousDescription = mItem.getDescription();
 		mPreviousQty = mItem.getQty();
 		mPreviousUom = mItem.getUnitOfMeasure();
@@ -131,20 +132,25 @@ public class EditItemDialog extends DialogFragment {
 			quantity.setText(String.valueOf(mItem.getQty()));
 		}
 		
-		final Spinner spinner = (Spinner)v.findViewById(R.id.unit_spinner);
+		Spinner spinner = (Spinner)v.findViewById(R.id.unit_spinner);
 		ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter
 				.createFromResource(getActivity(), R.array.units_of_measure, 
 						android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(spinAdapter);
+		String [] uomList = getActivity().getResources().getStringArray(R.array.units_of_measure);
+		for(int i = 0; i < uomList.length; i++){
+			if(uomList[i].compareTo(mItem.getUnitOfMeasure()) == 0){
+				spinner.setSelection(i);
+				break;
+			}
+		}
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1,
+			public void onItemSelected(AdapterView<?> adapter, View arg1,
 					int pos, long arg3) {
-				if(spinner.getItemAtPosition(pos).getClass().equals(new String().getClass())){
-					String s = (String) spinner.getItemAtPosition(pos);
-					mItem.setUnitOfMeasure(s);
-				}
+				String s = (String) adapter.getItemAtPosition(pos);
+				mItem.setUnitOfMeasure(s);
 				
 			}
 

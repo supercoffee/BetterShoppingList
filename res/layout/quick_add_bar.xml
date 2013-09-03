@@ -16,10 +16,19 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/button_add_item"
-        android:layout_toLeftOf="@id/button_add_item"
+        android:layout_toLeftOf="@+id/button_scan"
         android:ems="10"
         android:hint="@string/description_hint"
         android:imeOptions="actionDone"
         android:inputType="text" />
+
+    <Button
+        android:id="@+id/button_scan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/button_add_item"
+        android:text="@string/scan"
+        android:textSize="14sp" />
 
 </RelativeLayout>

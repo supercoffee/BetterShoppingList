@@ -3,6 +3,7 @@ package com.coffeestrike.bettershoppinglist;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.UUID;
 
 import org.json.JSONException;
 
@@ -20,6 +21,8 @@ public class ShoppingList extends ArrayList<Item>{
 	private static final String FILENAME = "shoppinglist.json";
 	private transient ShoppingListJSONSerializer mSerializer;
 	private transient Context mAppContext;
+	private String mListTitle;
+	private UUID mListId;
 //	private static ShoppingList sShoppingList;
 	
 
@@ -78,6 +81,19 @@ public class ShoppingList extends ArrayList<Item>{
 		}
 		
 	}
+
+	public String getListTitle() {
+		return mListTitle;
+	}
+
+	public void setListTitle(String listTitle) {
+		mListTitle = listTitle;
+	}
+
+	public UUID getListId() {
+		return mListId;
+	}
+
 
 
 }
