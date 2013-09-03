@@ -1,9 +1,9 @@
 package com.coffeestrike.bettershoppinglist;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +14,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentIntegratorSupportV4;
+import com.google.zxing.integration.android.IntentResult;
 
 public class AddItemFragment extends Fragment {
 
@@ -67,9 +71,23 @@ public class AddItemFragment extends Fragment {
 		addButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
-			public void onClick(View arg0) {
+			public void onClick(View v) {
 				newItem();
 			}
+		});
+		
+		Button scanButton = (Button)v.findViewById(R.id.button_scan);
+		scanButton.setOnClickListener(new OnClickListener(){
+			/*
+			 *Eventually, this will fire up an intent to start
+			 * a barcode scanner.
+			 */
+			@Override
+			public void onClick(View v) {
+				IntentIntegratorSupportV4 integrator = new IntentIntegratorSupportV4(AddItemFragment.this);
+				integrator.initiateScan();
+			}
+			
 		});
 		
 		return v;
@@ -88,6 +106,16 @@ public class AddItemFragment extends Fragment {
 			mActivityCallback.onNewItem(i);
 		}
 	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+		  if (scanResult != null) {
+		    // handle scan result
+		  }
+	}
+	
+	
 
 	
 	
