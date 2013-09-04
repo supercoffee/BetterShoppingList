@@ -43,6 +43,7 @@ public class ShoppingListJSONSerializer {
 			jArray.put(i.toJSON());
 		}
 		Log.d(TAG, String.format("Wrote %d items to storage", shoppingList.size()));
+		Log.d(TAG, String.format("Filename: %s", mFilename));
 		Writer writer = null;
 		try{
 			OutputStream out = mContext.openFileOutput(mFilename, Context.MODE_PRIVATE);
@@ -73,6 +74,7 @@ public class ShoppingListJSONSerializer {
 			while((line = reader.readLine()) != null){
 				jsonString.append(line);
 			}
+			
 			// parse the JSON array using JSONTokener
 			JSONArray array = (JSONArray) new JSONTokener(jsonString.toString()).nextValue();
 			for(int i = 0; i < array.length(); i++){

@@ -51,7 +51,8 @@ public class MainActivity extends FragmentActivity implements CreateNdefMessageC
 	
 	protected NfcAdapter mNfcAdapter;
 
-    private ShoppingList mShoppingList;
+	//TODO replace references with calls to {@link ListManager}
+	private ShoppingList mShoppingList;
     
     
 
@@ -96,7 +97,10 @@ public class MainActivity extends FragmentActivity implements CreateNdefMessageC
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.two_fragment_container);
 		
-		mShoppingList = new ShoppingList(this);
+//		mShoppingList = new ShoppingList(this);
+		ListManager.getInstance(this).load();
+		mShoppingList = ListManager.getInstance(this).getList(0);
+
 		
 		FragmentManager fm = getSupportFragmentManager();
 		
@@ -190,5 +194,12 @@ public class MainActivity extends FragmentActivity implements CreateNdefMessageC
 		shoppingListFragment.onActivityResult(ShoppingListFragment.NEW_ITEM, 
 				Activity.RESULT_OK, intent);
 	}
+	@Override
+	protected void onPause() {
+		super.onPause();
+		ListManager.getInstance(this).save();
+	}
+	
+	
 
 }

@@ -2,10 +2,13 @@ package com.coffeestrike.bettershoppinglist;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import android.content.Context;
 import android.util.Log;
@@ -38,6 +41,7 @@ public class ListManager {
 	public static ListManager getInstance(Context context){
 		if (sListManager == null){
 			sListManager = new ListManager(context);
+			sListManager.mAllLists = new ArrayList<ShoppingList>();
 		}
 		return sListManager;
 	}
@@ -45,41 +49,82 @@ public class ListManager {
 	/**
 	 * Loads the list from storage in preparation for usage.
 	 */
-	public void prepare(){
-		//Load the lists now
-	}
-	
-	/**
-	 * @return True if all lists were able to save successfully.
-	 */
-	public boolean save(){
-		JSONArray jArray = new JSONArray();
-		for(ShoppingList list : mAllLists){
-			jArray.put(list.getListId().toString());
-		}
+	public void load(){
+		ObjectInputStream ois = null;
 		
-		/*
-		 * Now that the JSON object has been created, we need to write it to storage.
-		 */
-		
-		try {
-			ObjectOutputStream oos = new ObjectOutputStream(mAppContext.
-					openFileOutput(FILENAME, Context.MODE_PRIVATE));
+		try{
+			ois = new ObjectInputStream(mAppContext.openFileInput(FILENAME));
+			mAllLists = (ArrayList<ShoppingList>) ois.readObject();
+		} catch (StreamCorruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (FileNotFoundException e) {
-			// Shouldn't happen because the file will be created, but WTH.
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			Log.e(TAG, "Couldn't write list names to file", e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		finally{
+			if(ois != null){
+				try {
+					ois.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	
+	}
+	
+
+	public void save(){
+		ObjectOutputStream oos = null;
 		
-		
-		return false;
+		try{
+			oos = new ObjectOutputStream(mAppContext.openFileOutput(FILENAME, Context.MODE_PRIVATE));
+			oos.writeObject(mAllLists);
+			Log.d(TAG, String.format("Wrote %d lists to storage.", mAllLists.size()));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally{
+			if(oos != null){
+				try {
+					oos.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+
+	}
+	
+	public String[] getAllUuidStrings(){
+		if(mAllLists == null){
+			return null;
+		}
+		String[] uuids = new String[mAllLists.size()];
+		for(int i = 0; i < uuids.length; i++){
+			uuids[i] = mAllLists.get(i).getListId().toString();
+		}
+		return uuids;
 	}
 	
 	/**
 	 * @return {@link String} array containing the titles of lists currently loaded.
 	 */
-	public String[] getListTitles(){
+	public String[] getAllTitles(){
 		if(mAllLists == null){
 			return null;
 		}
@@ -91,5 +136,17 @@ public class ListManager {
 		}
 		return titles;
 	}
+	
+	public void newList(){
+		mAllLists.add(new ShoppingList(mAppContext));
+	}
+	
+	public ShoppingList getList(int position){
+		if(mAllLists.size() == 0){
+			newList();
+		}
+		return mAllLists.get(position);
+	}
+		
 
 }

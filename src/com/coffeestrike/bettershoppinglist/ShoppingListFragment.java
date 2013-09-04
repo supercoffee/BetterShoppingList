@@ -59,7 +59,7 @@ public class ShoppingListFragment extends ListFragment {
 		setHasOptionsMenu(true);
 		getActivity().setTitle(R.string.app_name);
 		mItemList = ((MainActivity)getActivity()).getShoppingList();
-		mItemList.loadList();
+//		mItemList.loadList();
 		setListAdapter(new ShoppingListAdapter(mItemList));
 		setRetainInstance(true);
 	}
@@ -132,13 +132,13 @@ public class ShoppingListFragment extends ListFragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-		try {
-			new ShoppingListJSONSerializer("shoppinglist.json", getActivity()).saveList(mItemList);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			new ShoppingListJSONSerializer("shoppinglist.json", getActivity()).saveList(mItemList);
+//		} catch (JSONException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	@Override
