@@ -149,11 +149,11 @@ public class ShoppingListFragment extends ListFragment {
 				return true;
 			case R.id.sort_alpha:
 				mItemList.sortAlpha();
-				((ShoppingListAdapter)getListAdapter()).notifyDataSetChanged();
+				refresh();
 				return true;
 			case R.id.clear_all:
 				mItemList.clear();
-				((ShoppingListAdapter)getListAdapter()).notifyDataSetChanged();
+				refresh();
 				return true;
 		}
 		
@@ -170,7 +170,7 @@ public class ShoppingListFragment extends ListFragment {
 	/**
 	 * @param requestCode indicates the purpose of the original request
 	 * @param resultCode indicates if the requested action completed successfully
-	 * @param data intent containing data to be processed based on requestCode
+	 * @param data {@link Intent} containing data to be processed based on requestCode
 	 */
 	@Override
 	public void onActivityResult (int requestCode, int resultCode, Intent data){
