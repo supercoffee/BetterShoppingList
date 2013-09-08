@@ -37,6 +37,7 @@ public class MainActivity extends FragmentActivity implements CreateNdefMessageC
 	private static final int MESSAGE_SENT = 1;
 	private static final String MIME = "application/com.coffeestrike.bettershoppinglist";
 	private static final String TAG = "MainActivity";
+	
 	/** This handler receives a message from onNdefPushComplete */
     private final Handler mHandler = new Handler() {
         @Override
@@ -111,12 +112,12 @@ public class MainActivity extends FragmentActivity implements CreateNdefMessageC
 					.commit();
 		}
 		
-		Fragment upperFragment = fm.findFragmentById(R.id.top_frame);
-		if(upperFragment == null){
-			fm.beginTransaction()
-				.add(R.id.top_frame, new AddItemFragment())
-				.commit();
-		}
+//		Fragment upperFragment = fm.findFragmentById(R.id.top_frame);
+//		if(upperFragment == null){
+//			fm.beginTransaction()
+//				.add(R.id.top_frame, new AddItemFragment())
+//				.commit();
+//		}
 		
 		
 		

@@ -11,7 +11,7 @@ import android.content.Context;
  * Extension of ArrayList with ability to save and load from file
  *
  */
-public class ShoppingList extends ArrayList<Item>{
+public class ShoppingList extends ArrayList<Item> implements Item.OnStatusChangedListener{
 	
 	/**
 	 * 
@@ -29,6 +29,8 @@ public class ShoppingList extends ArrayList<Item>{
 	private String mListTitle;
 	private UUID mListId;
 //	private static ShoppingList sShoppingList;
+
+	private Item mListDivider;
 	
 
 	public ShoppingList(Context appContext){
@@ -85,8 +87,16 @@ public class ShoppingList extends ArrayList<Item>{
 //		}
 //	}
 
-	public void sortAlpha() {
-		Collections.sort(ShoppingList.this);
+	public int findListDivider(){
+		return indexOf(mListDivider);
+	}
+
+	public UUID getListId() {
+		return mListId;
+	}
+
+	public String getListTitle() {
+		return mListTitle;
 	}
 
 	public void merge(ShoppingList incomingList) {
@@ -101,18 +111,31 @@ public class ShoppingList extends ArrayList<Item>{
 		
 	}
 
-	public String getListTitle() {
-		return mListTitle;
-	}
-
 	public void setListTitle(String listTitle) {
 		mListTitle = listTitle;
 	}
 
-	public UUID getListId() {
-		return mListId;
+	public void sortAlpha() {
+		Collections.sort(ShoppingList.this);
 	}
 
+	@Override
+	public void onStatusChanged(Item i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void add(int index, Item object) {
+		// TODO Auto-generated method stub
+		super.add(index, object);
+	}
+
+	@Override
+	public boolean add(Item object) {
+		// TODO Auto-generated method stub
+		return super.add(object);
+	}
 
 
 }

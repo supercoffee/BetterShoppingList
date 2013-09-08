@@ -18,5 +18,6 @@
     <string name="developer_string">development</string>
     <string name="edit_item">Edit Item</string>
     <string name="scan">Scan</string>
+    <string name="in_shopping_cart">In your cart</string>
 
 </resources>

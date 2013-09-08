@@ -11,6 +11,10 @@ import android.util.Log;
 
 public class Item implements Serializable, Comparable<Item>{
 	
+	public interface OnStatusChangedListener{
+		public void onStatusChanged(Item i);
+	}
+	
 	private static final long serialVersionUID = -8439535938970924273L;
 	private static final String TAG = "com.coffeestrike.bettershoppinglist.Item";
 	private int mStatus; //0 = default, 1 = found, 2 = find later
@@ -18,7 +22,6 @@ public class Item implements Serializable, Comparable<Item>{
 	private int mQuantity;
 	private UUID mId;
 	private String mUnitOfMeasure;
-	private boolean mDislayQty;
 
 	/*
 	 * This array should be replaced with a list 
@@ -30,23 +33,23 @@ public class Item implements Serializable, Comparable<Item>{
 		"Gallon",
 	};
 	
-	private static final String JSON_ID = "id";
-
-	private static final String JSON_QUANTITY = "quantity";
-	private static final String JSON_DESCRIPTION = "description";
-	private static final String JSON_STATUS = "status";
-	private static final String JSON_UOM = "uom";
+//	private static final String JSON_ID = "id";
+//
+//	private static final String JSON_QUANTITY = "quantity";
+//	private static final String JSON_DESCRIPTION = "description";
+//	private static final String JSON_STATUS = "status";
+//	private static final String JSON_UOM = "uom";
 	public static final String EXTRA_ITEM = "com.coffeestrike.bettershoppinglist.Item";
-
-	
-	
-	public Item(JSONObject json) throws JSONException{
-		mId = UUID.fromString(json.getString(JSON_ID));
-		mDescription = json.getString(JSON_DESCRIPTION);
-		mUnitOfMeasure = json.getString(JSON_UOM);
-		mQuantity = json.getInt(JSON_QUANTITY);
-		mStatus = json.getInt(JSON_STATUS);
-	}
+//
+//	
+//	
+//	public Item(JSONObject json) throws JSONException{
+//		mId = UUID.fromString(json.getString(JSON_ID));
+//		mDescription = json.getString(JSON_DESCRIPTION);
+//		mUnitOfMeasure = json.getString(JSON_UOM);
+//		mQuantity = json.getInt(JSON_QUANTITY);
+//		mStatus = json.getInt(JSON_STATUS);
+//	}
 	
 	public Item(String description){
 		mDescription = description;
@@ -62,15 +65,6 @@ public class Item implements Serializable, Comparable<Item>{
 		mId = UUID.randomUUID();
 	}
 	
-	public boolean isDislayQty() {
-		return mDislayQty;
-	}
-
-
-	public void setDislayQty(boolean dislayQty) {
-		mDislayQty = dislayQty;
-	}
-
 
 	@Override
 	public int compareTo(Item arg0) {
@@ -110,18 +104,18 @@ public class Item implements Serializable, Comparable<Item>{
 		mUnitOfMeasure = s;
 	}
 
-	public JSONObject toJSON() throws JSONException {
-		JSONObject json = new JSONObject();
-		json.put(JSON_ID, mId);
-		json.put(JSON_QUANTITY, mQuantity);
-		json.put(JSON_DESCRIPTION, mDescription);
-		if (mUnitOfMeasure == null) {
-			mUnitOfMeasure = sDefaultUomList[0];
-		}
-		json.put(JSON_UOM, mUnitOfMeasure);
-		json.put(JSON_STATUS, mStatus);
-		return json;
-	}
+//	public JSONObject toJSON() throws JSONException {
+//		JSONObject json = new JSONObject();
+//		json.put(JSON_ID, mId);
+//		json.put(JSON_QUANTITY, mQuantity);
+//		json.put(JSON_DESCRIPTION, mDescription);
+//		if (mUnitOfMeasure == null) {
+//			mUnitOfMeasure = sDefaultUomList[0];
+//		}
+//		json.put(JSON_UOM, mUnitOfMeasure);
+//		json.put(JSON_STATUS, mStatus);
+//		return json;
+//	}
 
 
 	@Override
@@ -140,6 +134,10 @@ public class Item implements Serializable, Comparable<Item>{
 		if(mDescription.equals("")){
 			return true;
 		}
+		return false;
+	}
+
+	public boolean isDivider() {
 		return false;
 	}
 

@@ -219,31 +219,44 @@ public class ShoppingListFragment extends ListFragment {
 		
 		@Override
 		public View getView (final int position, View convertView, ViewGroup parent){
-			if(convertView == null){
-				convertView = getActivity().getLayoutInflater().inflate(R.layout.item, null);
-			}
 			Item i = getItem(position);
-			CheckBox checkbox = (CheckBox) convertView.findViewById(R.id.item_checkBox);
-			checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-				
-				@Override
-				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-					if(isChecked){
-						getItem(position).setStatus(1);
-					}
-					else{
-						getItem(position).setStatus(0);
-					}
+			if(i.isDivider()){
+				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_divider, null);
+				convertView.setOnClickListener(null);
+				convertView.setOnLongClickListener(null);
+				convertView.setClickable(false);
+			}
+			else{
+				if(convertView == null){
+					convertView = getActivity().getLayoutInflater().inflate(R.layout.item, null);
 					
 				}
-			});
-			TextView itemText = (TextView) convertView.findViewById(R.id.item_text);
-			TextView itemQty = (TextView) convertView.findViewById(R.id.item_qty);
-			TextView itemUom = (TextView) convertView.findViewById(R.id.item_uom);
-			checkbox.setChecked(i.getStatus() == 1);
-			itemText.setText(i.getDescription());
-			itemQty.setText(String.valueOf(i.getQty()));
-			itemUom.setText(i.getUnitOfMeasure());
+				CheckBox checkbox = (CheckBox) convertView
+						.findViewById(R.id.item_checkBox);
+				checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView,
+							boolean isChecked) {
+						if (isChecked) {
+							getItem(position).setStatus(1);
+						} else {
+							getItem(position).setStatus(0);
+						}
+
+					}
+				});
+				TextView itemText = (TextView) convertView
+						.findViewById(R.id.item_text);
+				TextView itemQty = (TextView) convertView
+						.findViewById(R.id.item_qty);
+				TextView itemUom = (TextView) convertView
+						.findViewById(R.id.item_uom);
+				checkbox.setChecked(i.getStatus() == 1);
+				itemText.setText(i.getDescription());
+				itemQty.setText(String.valueOf(i.getQty()));
+				itemUom.setText(i.getUnitOfMeasure());
+			}
 			
 			return convertView;
 		}
