@@ -1,9 +1,6 @@
 package com.coffeestrike.bettershoppinglist;
 
-import java.io.IOException;
 import java.util.ArrayList;
-
-import org.json.JSONException;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -227,10 +224,10 @@ public class ShoppingListFragment extends ListFragment {
 				convertView.setClickable(false);
 			}
 			else{
-				if(convertView == null){
-					convertView = getActivity().getLayoutInflater().inflate(R.layout.item, null);
-					
+				if(convertView == null || convertView.getId() != R.layout.item){
+					convertView = getActivity().getLayoutInflater().inflate(R.layout.item, null);	
 				}
+				
 				CheckBox checkbox = (CheckBox) convertView
 						.findViewById(R.id.item_checkBox);
 				checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -243,6 +240,7 @@ public class ShoppingListFragment extends ListFragment {
 						} else {
 							getItem(position).setStatus(0);
 						}
+						notifyDataSetChanged();
 
 					}
 				});

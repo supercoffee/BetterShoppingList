@@ -3,10 +3,6 @@ package com.coffeestrike.bettershoppinglist;
 import java.io.Serializable;
 import java.util.UUID;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.content.Context;
 import android.util.Log;
 
 public class Item implements Serializable, Comparable<Item>{
@@ -22,6 +18,7 @@ public class Item implements Serializable, Comparable<Item>{
 	private int mQuantity;
 	private UUID mId;
 	private String mUnitOfMeasure;
+	private transient OnStatusChangedListener mStatusListener;
 
 	/*
 	 * This array should be replaced with a list 
@@ -32,8 +29,8 @@ public class Item implements Serializable, Comparable<Item>{
 		"Dozen",
 		"Gallon",
 	};
-	
-//	private static final String JSON_ID = "id";
+
+	//	private static final String JSON_ID = "id";
 //
 //	private static final String JSON_QUANTITY = "quantity";
 //	private static final String JSON_DESCRIPTION = "description";
@@ -50,7 +47,7 @@ public class Item implements Serializable, Comparable<Item>{
 //		mQuantity = json.getInt(JSON_QUANTITY);
 //		mStatus = json.getInt(JSON_STATUS);
 //	}
-	
+
 	public Item(String description){
 		mDescription = description;
 		mQuantity = 1;
@@ -58,22 +55,34 @@ public class Item implements Serializable, Comparable<Item>{
 		mId = UUID.randomUUID();
 	}
 	
-	public Item(String description, int quantity){
+public Item(String description, int quantity){
 		mDescription = description;
 		mQuantity = quantity;
 		mUnitOfMeasure = sDefaultUomList[0];
 		mId = UUID.randomUUID();
 	}
 	
-
 	@Override
 	public int compareTo(Item arg0) {
 		return this.mDescription.toString().compareTo(arg0.mDescription.toString());
 	}
 	
+	@Override
+	public boolean equals(Object o) {
+		if(this.getClass().getSimpleName().equals(o.getClass().getSimpleName())){
+			Item i = (Item) o;
+			if(i.getId().equals(this.getId())){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+
 	public CharSequence getDescription() {
 		return mDescription;
 	}
+	
 	public UUID getId() {
 		return mId;
 	}
@@ -83,8 +92,22 @@ public class Item implements Serializable, Comparable<Item>{
 	public int getStatus() {
 		return mStatus;
 	}
+	public OnStatusChangedListener getStatusListener() {
+		return mStatusListener;
+	}
 	public String getUnitOfMeasure() {
 		return mUnitOfMeasure;
+	}
+
+	public boolean isDivider() {
+		return false;
+	}
+
+	public boolean isEmpty(){
+		if(mDescription.equals("")){
+			return true;
+		}
+		return false;
 	}
 
 	public void setDescription(CharSequence description) {
@@ -93,15 +116,6 @@ public class Item implements Serializable, Comparable<Item>{
 
 	public void setQty(int qty) {
 		mQuantity = qty;
-	}
-
-	public void setStatus(int status) {
-		Log.d(TAG, String.format("Status of item %s set to %d", getId().toString(), status));
-		mStatus = status;
-	}
-
-	public void setUnitOfMeasure(String s) {
-		mUnitOfMeasure = s;
 	}
 
 //	public JSONObject toJSON() throws JSONException {
@@ -118,27 +132,20 @@ public class Item implements Serializable, Comparable<Item>{
 //	}
 
 
-	@Override
-	public boolean equals(Object o) {
-		if(this.getClass().getSimpleName().equals(o.getClass().getSimpleName())){
-			Item i = (Item) o;
-			if(i.getId().equals(this.getId())){
-				return true;
-			}
-		}
-		return false;
+	public void setStatus(int status) {
+		mStatus = status;
+		mStatusListener.onStatusChanged(this);
+		Log.d(TAG, String.format("Status of item %s set to %d", getId().toString(), status));
+		
 	}
 	
 	
-	public boolean isEmpty(){
-		if(mDescription.equals("")){
-			return true;
-		}
-		return false;
+	public void setStatusListener(OnStatusChangedListener statusListener) {
+		this.mStatusListener = statusListener;
 	}
 
-	public boolean isDivider() {
-		return false;
+	public void setUnitOfMeasure(String s) {
+		mUnitOfMeasure = s;
 	}
 
 

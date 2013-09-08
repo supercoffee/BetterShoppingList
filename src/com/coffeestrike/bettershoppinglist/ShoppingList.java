@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.UUID;
 
+import com.coffeestrike.bettershoppinglist.Item.OnStatusChangedListener;
+
 import android.content.Context;
 
 /**
@@ -120,21 +122,46 @@ public class ShoppingList extends ArrayList<Item> implements Item.OnStatusChange
 	}
 
 	@Override
-	public void onStatusChanged(Item i) {
-		// TODO Auto-generated method stub
+	public void onStatusChanged(Item item) {
+//		int position = indexOf(i);
+//		int listDividerPosition = findListDivider();
+		/*
+		 * If the list divider isn't found,
+		 * we need to create one and place it at the bottom
+		 * of the list.
+		 */
+		if(findListDivider() == -1){
+			mListDivider = new Divider();
+			add(mListDivider);
+		}
+		
+		/*The check box has been cleared
+		 * restore the item to the upper part of the list
+		 */
+		if(item.getStatus() == 0){
+			remove(item);
+			add(findListDivider(), item);
+		}
+		/*the check box has been checked
+		 * move the item to the lower part of the list
+		 */
+		else{
+			remove(item);
+			add(item);
+		}
 		
 	}
 
 	@Override
-	public void add(int index, Item object) {
-		// TODO Auto-generated method stub
-		super.add(index, object);
+	public void add(int index, Item item) {
+		item.setStatusListener(this);
+		super.add(index, item);
 	}
 
 	@Override
-	public boolean add(Item object) {
-		// TODO Auto-generated method stub
-		return super.add(object);
+	public boolean add(Item item) {
+		item.setStatusListener(this);
+		return super.add(item);
 	}
 
 

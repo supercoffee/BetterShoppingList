@@ -2,8 +2,8 @@ package com.coffeestrike.bettershoppinglist;
 
 public class Divider extends Item {
 
-	public Divider(String description) {
-		super(description);
+	public Divider() {
+		super(null);
 	}
 	
 	@Override
