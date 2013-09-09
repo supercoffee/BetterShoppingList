@@ -30,23 +30,7 @@ public class Item implements Serializable, Comparable<Item>{
 		"Gallon",
 	};
 
-	//	private static final String JSON_ID = "id";
-//
-//	private static final String JSON_QUANTITY = "quantity";
-//	private static final String JSON_DESCRIPTION = "description";
-//	private static final String JSON_STATUS = "status";
-//	private static final String JSON_UOM = "uom";
 	public static final String EXTRA_ITEM = "Item";
-//
-//	
-//	
-//	public Item(JSONObject json) throws JSONException{
-//		mId = UUID.fromString(json.getString(JSON_ID));
-//		mDescription = json.getString(JSON_DESCRIPTION);
-//		mUnitOfMeasure = json.getString(JSON_UOM);
-//		mQuantity = json.getInt(JSON_QUANTITY);
-//		mStatus = json.getInt(JSON_STATUS);
-//	}
 
 	public Item(String description){
 		mDescription = description;
@@ -111,26 +95,14 @@ public class Item implements Serializable, Comparable<Item>{
 	}
 
 	public void setDescription(CharSequence description) {
-		mDescription = description.toString();
+		if (description != null) {
+			mDescription = description.toString();
+		}
 	}
 
 	public void setQty(int qty) {
 		mQuantity = qty;
 	}
-
-//	public JSONObject toJSON() throws JSONException {
-//		JSONObject json = new JSONObject();
-//		json.put(JSON_ID, mId);
-//		json.put(JSON_QUANTITY, mQuantity);
-//		json.put(JSON_DESCRIPTION, mDescription);
-//		if (mUnitOfMeasure == null) {
-//			mUnitOfMeasure = sDefaultUomList[0];
-//		}
-//		json.put(JSON_UOM, mUnitOfMeasure);
-//		json.put(JSON_STATUS, mStatus);
-//		return json;
-//	}
-
 
 	public void setStatus(int status) {
 		mStatus = status;
