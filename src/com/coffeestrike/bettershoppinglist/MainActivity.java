@@ -104,10 +104,10 @@ public class MainActivity extends FragmentActivity implements CreateNdefMessageC
 		
 		FragmentManager fm = getSupportFragmentManager();
 		
-		Fragment lowerFragment = fm.findFragmentById(R.id.bottom_frame);
+		Fragment lowerFragment = fm.findFragmentById(R.id.top_frame);
 		if (lowerFragment == null) {
 			fm.beginTransaction()
-					.add(R.id.bottom_frame, new ShoppingListFragment())
+					.add(R.id.top_frame, new ShoppingListFragment())
 					.commit();
 		}
 		

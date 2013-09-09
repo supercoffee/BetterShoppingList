@@ -56,7 +56,6 @@ public class ShoppingListFragment extends ListFragment {
 		setHasOptionsMenu(true);
 		getActivity().setTitle(R.string.app_name);
 		mItemList = ((MainActivity)getActivity()).getShoppingList();
-//		mItemList.loadList();
 		setListAdapter(new ShoppingListAdapter(mItemList));
 		setRetainInstance(true);
 	}
@@ -123,19 +122,10 @@ public class ShoppingListFragment extends ListFragment {
 		return v;
 	
 	}
-	
-	
-	
+
 	@Override
 	public void onPause() {
 		super.onPause();
-//		try {
-//			new ShoppingListJSONSerializer("shoppinglist.json", getActivity()).saveList(mItemList);
-//		} catch (JSONException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
 	}
 
 	@Override
@@ -157,12 +147,6 @@ public class ShoppingListFragment extends ListFragment {
 		return false;
 	}
 	
-//	private void newListItem(){
-//		FragmentManager fm = getActivity().getSupportFragmentManager();
-//		EditItemDialog newItem = EditItemDialog.newInstance(new Item(""));
-//		newItem.setTargetFragment(this, NEW_ITEM);
-//		newItem.show(fm, TAG);
-//	}
 	
 	/**
 	 * @param requestCode indicates the purpose of the original request
@@ -176,13 +160,7 @@ public class ShoppingListFragment extends ListFragment {
 			return;
 		}
 		Item item = (Item)data.getSerializableExtra(Item.EXTRA_ITEM);
-//		if(requestCode == NEW_ITEM){
-//			//items are now inserted at the top of the list
-//			mItemList.add(0, (Item) data.getSerializableExtra(Item.EXTRA_ITEM));
-//		}
-//		else if(requestCode == EDIT_ITEM){
-//			//Need to tell the ArrayAdapter to reload because data has changed
-//		}
+
 		if(!mItemList.contains(item)){
 			mItemList.add(0, item);
 		}
@@ -203,16 +181,6 @@ public class ShoppingListFragment extends ListFragment {
 		editItem.setTargetFragment(this, EDIT_ITEM);
 		editItem.show(fm, TAG);
 	}
-	
-
-//	private void editListItem(Item item, int position) {
-//		FragmentManager fm = getActivity().getSupportFragmentManager();
-//		EditItemDialog editItem = EditItemDialog.newInstance(item, position);
-//		editItem.setTargetFragment(this, EDIT_ITEM);
-//		editItem.show(fm, TAG);
-//	}
-
-
 
 	/**
 	 * @author Benjamin Daschel
@@ -235,12 +203,13 @@ public class ShoppingListFragment extends ListFragment {
 				convertView.setClickable(false);
 			}
 			else{
-//				if(convertView == null || convertView.getId() != R.layout.item){
+				if(convertView == null || convertView.getId() != R.layout.item){
 					convertView = getActivity().getLayoutInflater().inflate(R.layout.item, null);	
-//				}
+				}
 				
 				CheckBox checkbox = (CheckBox) convertView
 						.findViewById(R.id.item_checkBox);
+				checkbox.setChecked(item.getStatus() == 1);
 				checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 					@Override
@@ -262,7 +231,7 @@ public class ShoppingListFragment extends ListFragment {
 						.findViewById(R.id.item_qty);
 				TextView itemUom = (TextView) convertView
 						.findViewById(R.id.item_uom);
-				checkbox.setChecked(item.getStatus() == 1);
+				
 				itemText.setText(item.getDescription());
 				itemQty.setText(String.valueOf(item.getQty()));
 				itemUom.setText(item.getUnitOfMeasure());
