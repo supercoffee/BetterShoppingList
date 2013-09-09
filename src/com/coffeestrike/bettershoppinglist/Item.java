@@ -18,7 +18,7 @@ public class Item implements Serializable, Comparable<Item>{
 	private int mQuantity;
 	private UUID mId;
 	private String mUnitOfMeasure;
-	private transient OnStatusChangedListener mStatusListener;
+	private OnStatusChangedListener mStatusListener;
 
 	/*
 	 * This array should be replaced with a list 
@@ -36,7 +36,7 @@ public class Item implements Serializable, Comparable<Item>{
 //	private static final String JSON_DESCRIPTION = "description";
 //	private static final String JSON_STATUS = "status";
 //	private static final String JSON_UOM = "uom";
-	public static final String EXTRA_ITEM = "com.coffeestrike.bettershoppinglist.Item";
+	public static final String EXTRA_ITEM = "Item";
 //
 //	
 //	
@@ -55,7 +55,7 @@ public class Item implements Serializable, Comparable<Item>{
 		mId = UUID.randomUUID();
 	}
 	
-public Item(String description, int quantity){
+	public Item(String description, int quantity){
 		mDescription = description;
 		mQuantity = quantity;
 		mUnitOfMeasure = sDefaultUomList[0];

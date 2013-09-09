@@ -116,7 +116,7 @@ public class ShoppingListFragment extends ListFragment {
 			
 			@Override
 			public void onClick(View v) {
-				newListItem();
+				showEditItemDialog(new Item(null));
 			}
 		});
 
@@ -142,7 +142,7 @@ public class ShoppingListFragment extends ListFragment {
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch(item.getItemId()){
 			case R.id.button_add_item:
-				newListItem();
+				showEditItemDialog(new Item(null));
 				return true;
 			case R.id.sort_alpha:
 				mItemList.sortAlpha();
@@ -157,12 +157,12 @@ public class ShoppingListFragment extends ListFragment {
 		return false;
 	}
 	
-	private void newListItem(){
-		FragmentManager fm = getActivity().getSupportFragmentManager();
-		EditItemDialog newItem = EditItemDialog.newInstance(new Item(""));
-		newItem.setTargetFragment(this, NEW_ITEM);
-		newItem.show(fm, TAG);
-	}
+//	private void newListItem(){
+//		FragmentManager fm = getActivity().getSupportFragmentManager();
+//		EditItemDialog newItem = EditItemDialog.newInstance(new Item(""));
+//		newItem.setTargetFragment(this, NEW_ITEM);
+//		newItem.show(fm, TAG);
+//	}
 	
 	/**
 	 * @param requestCode indicates the purpose of the original request
@@ -175,12 +175,16 @@ public class ShoppingListFragment extends ListFragment {
 		if(resultCode != Activity.RESULT_OK){	
 			return;
 		}
-		if(requestCode == NEW_ITEM){
-			//items are now inserted at the top of the list
-			mItemList.add(0, (Item) data.getSerializableExtra(Item.EXTRA_ITEM));
-		}
-		else if(requestCode == EDIT_ITEM){
-			//Need to tell the ArrayAdapter to reload because data has changed
+		Item item = (Item)data.getSerializableExtra(Item.EXTRA_ITEM);
+//		if(requestCode == NEW_ITEM){
+//			//items are now inserted at the top of the list
+//			mItemList.add(0, (Item) data.getSerializableExtra(Item.EXTRA_ITEM));
+//		}
+//		else if(requestCode == EDIT_ITEM){
+//			//Need to tell the ArrayAdapter to reload because data has changed
+//		}
+		if(!mItemList.contains(item)){
+			mItemList.add(0, item);
 		}
 		refresh();
 	}
@@ -190,16 +194,23 @@ public class ShoppingListFragment extends ListFragment {
 		Log.d(TAG, "list item "+ position + " clicked.");
 		super.onListItemClick(l, v, position, id);
 		Item item = (Item) l.getItemAtPosition(position);
-		editListItem(item, position);
+		showEditItemDialog(item);
 	}
 	
-
-	private void editListItem(Item item, int position) {
+	private void showEditItemDialog(Item item){
 		FragmentManager fm = getActivity().getSupportFragmentManager();
-		EditItemDialog editItem = EditItemDialog.newInstance(item, position);
+		EditItemDialog editItem = EditItemDialog.newInstance(item);
 		editItem.setTargetFragment(this, EDIT_ITEM);
 		editItem.show(fm, TAG);
 	}
+	
+
+//	private void editListItem(Item item, int position) {
+//		FragmentManager fm = getActivity().getSupportFragmentManager();
+//		EditItemDialog editItem = EditItemDialog.newInstance(item, position);
+//		editItem.setTargetFragment(this, EDIT_ITEM);
+//		editItem.show(fm, TAG);
+//	}
 
 
 
@@ -215,18 +226,18 @@ public class ShoppingListFragment extends ListFragment {
 		}
 		
 		@Override
-		public View getView (final int position, View convertView, ViewGroup parent){
-			Item i = getItem(position);
-			if(i.isDivider()){
+		public View getView (int position, View convertView, ViewGroup parent){
+			final Item item = getItem(position);
+			if(item.isDivider()){
 				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_divider, null);
 				convertView.setOnClickListener(null);
 				convertView.setOnLongClickListener(null);
 				convertView.setClickable(false);
 			}
 			else{
-				if(convertView == null || convertView.getId() != R.layout.item){
+//				if(convertView == null || convertView.getId() != R.layout.item){
 					convertView = getActivity().getLayoutInflater().inflate(R.layout.item, null);	
-				}
+//				}
 				
 				CheckBox checkbox = (CheckBox) convertView
 						.findViewById(R.id.item_checkBox);
@@ -236,9 +247,10 @@ public class ShoppingListFragment extends ListFragment {
 					public void onCheckedChanged(CompoundButton buttonView,
 							boolean isChecked) {
 						if (isChecked) {
-							getItem(position).setStatus(1);
-						} else {
-							getItem(position).setStatus(0);
+							item.setStatus(1);
+						} 
+						else {
+							item.setStatus(0);
 						}
 						notifyDataSetChanged();
 
@@ -250,10 +262,10 @@ public class ShoppingListFragment extends ListFragment {
 						.findViewById(R.id.item_qty);
 				TextView itemUom = (TextView) convertView
 						.findViewById(R.id.item_uom);
-				checkbox.setChecked(i.getStatus() == 1);
-				itemText.setText(i.getDescription());
-				itemQty.setText(String.valueOf(i.getQty()));
-				itemUom.setText(i.getUnitOfMeasure());
+				checkbox.setChecked(item.getStatus() == 1);
+				itemText.setText(item.getDescription());
+				itemQty.setText(String.valueOf(item.getQty()));
+				itemUom.setText(item.getUnitOfMeasure());
 			}
 			
 			return convertView;

@@ -123,8 +123,6 @@ public class ShoppingList extends ArrayList<Item> implements Item.OnStatusChange
 
 	@Override
 	public void onStatusChanged(Item item) {
-//		int position = indexOf(i);
-//		int listDividerPosition = findListDivider();
 		/*
 		 * If the list divider isn't found,
 		 * we need to create one and place it at the bottom

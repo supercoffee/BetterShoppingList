@@ -44,7 +44,7 @@ public class EditItemDialog extends DialogFragment {
 		if(mItem.getQty() < 1){
 			mItem.setQty(1);
 		}
-		i.putExtra(EXTRA_POSITION, mPosition);
+//		i.putExtra(EXTRA_POSITION, mPosition);
 		target.onActivityResult(getTargetRequestCode(), resultCode, i);
 	}
 	
@@ -56,14 +56,14 @@ public class EditItemDialog extends DialogFragment {
 		return dialog;
 	}
 	
-	public static EditItemDialog newInstance(Item item, int position){
-		Bundle args = new Bundle();
-		args.putSerializable(Item.EXTRA_ITEM, item);
-		args.putInt(EXTRA_POSITION, position);
-		EditItemDialog dialog = new EditItemDialog();
-		dialog.setArguments(args);
-		return dialog;
-	}
+//	public static EditItemDialog newInstance(Item item, int position){
+//		Bundle args = new Bundle();
+//		args.putSerializable(Item.EXTRA_ITEM, item);
+//		args.putInt(EXTRA_POSITION, position);
+//		EditItemDialog dialog = new EditItemDialog();
+//		dialog.setArguments(args);
+//		return dialog;
+//	}
 	
 	public Dialog onCreateDialog(Bundle savedInstanceState){
 		mItem = (Item)getArguments().getSerializable(Item.EXTRA_ITEM);
