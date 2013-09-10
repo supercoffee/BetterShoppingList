@@ -16,7 +16,7 @@ public class Item implements Serializable, Comparable<Item>{
 	private int mStatus; //0 = default, 1 = found, 2 = find later
 	private String mDescription;
 	private int mQuantity;
-	private UUID mId;
+	protected UUID mId;
 	private String mUnitOfMeasure;
 	private OnStatusChangedListener mStatusListener;
 

@@ -87,17 +87,26 @@ public class ShoppingListFragment extends ListFragment {
 			
 			@Override
 			public boolean onActionItemClicked(ActionMode mode, MenuItem menuItem) {
+				ShoppingListAdapter adapter = (ShoppingListAdapter)getListAdapter();
 				switch(menuItem.getItemId()){
 					case R.id.menu_item_delete:
-						ShoppingListAdapter adapter = (ShoppingListAdapter)getListAdapter();
+						
 						for(int position = adapter.getCount(); position >= 0; position--){
 							if(getListView().isItemChecked(position)){
 								mItemList.remove(position);
 							}
 						}
 						mode.finish();
-						adapter.notifyDataSetChanged();
+						refresh();
 						return true;
+					case R.id.menu_item_move:
+						for(int position = adapter.getCount(); position >= 0; position--){
+							if(getListView().isItemChecked(position)){
+								adapter.getItem(position).setStatus(1);
+							}
+						}
+						mode.finish();
+						refresh();
 					default:
 						return false;
 				}
@@ -194,6 +203,16 @@ public class ShoppingListFragment extends ListFragment {
 		}
 		
 		@Override
+		public boolean areAllItemsEnabled() {
+			return false;
+		}
+
+		@Override
+		public boolean isEnabled(int position) {
+			return !(getItem(position).isDivider());
+		}
+
+		@Override
 		public View getView (int position, View convertView, ViewGroup parent){
 			final Item item = getItem(position);
 			if(item.isDivider()){
@@ -241,6 +260,9 @@ public class ShoppingListFragment extends ListFragment {
 		}
 	}
 
+	/**
+	 * Convenience method to refresh the ListView when the data set changes.
+	 */
 	public void refresh() {
 		((ShoppingListAdapter)getListAdapter()).notifyDataSetChanged();
 	}

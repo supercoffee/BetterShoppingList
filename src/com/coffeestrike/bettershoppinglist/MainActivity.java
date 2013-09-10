@@ -168,7 +168,7 @@ public class MainActivity extends FragmentActivity implements CreateNdefMessageC
 			Object o = iStream.readObject();
 			mShoppingList.merge((ShoppingList) o);
 			FragmentManager fm = getSupportFragmentManager();
-			ShoppingListFragment fragment = (ShoppingListFragment) fm.findFragmentById(R.id.bottom_frame);
+			ShoppingListFragment fragment = (ShoppingListFragment) fm.findFragmentById(R.id.top_frame);
 			if(fragment != null){
 				fragment.refresh();
 			}

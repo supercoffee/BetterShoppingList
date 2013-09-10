@@ -41,7 +41,7 @@ public class ShoppingList extends ArrayList<Item> implements Item.OnStatusChange
 	}
 
 	public int findListDivider(){
-		return indexOf(mListDivider);
+		return indexOf(new Divider());
 	}
 
 	public UUID getListId() {
@@ -77,8 +77,7 @@ public class ShoppingList extends ArrayList<Item> implements Item.OnStatusChange
 		 * of the list.
 		 */
 		if(findListDivider() == -1){
-			mListDivider = new Divider();
-			add(mListDivider);
+			add(new Divider());
 		}
 		
 		/*The check box has been cleared
@@ -94,6 +93,17 @@ public class ShoppingList extends ArrayList<Item> implements Item.OnStatusChange
 		else{
 			remove(item);
 			add(item);
+		}
+		
+		/*
+		 * Now we should check to see if the divider is the
+		 * very last element in the list.
+		 * If it is, we should remove it because there is nothing in
+		 * the cart
+		 */
+		int p = findListDivider();
+		if(p == (this.size() - 1)){
+			remove(p);
 		}
 		
 	}
