@@ -22,7 +22,7 @@ public class ShoppingList extends ArrayList<Item> implements Item.OnStatusChange
 
 	private String mFilename;
 	private transient Context mAppContext;
-	private String mListTitle;
+	private String mListTitle = "My List";
 	private UUID mListId;
 
 	private Item mListDivider;

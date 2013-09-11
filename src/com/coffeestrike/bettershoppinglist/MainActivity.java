@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -126,8 +127,13 @@ public class MainActivity extends FragmentActivity implements CreateNdefMessageC
 			mNfcAdapter.setOnNdefPushCompleteCallback(this, this);
 			
 		}
+		int uomResId = R.array.units_of_measure_imperial;
+		if(PreferenceManager.getDefaultSharedPreferences(this)
+				.getBoolean("pref_metric", false)){
+			uomResId = R.array.units_of_measure_metric;
+		}
 		
-		Item.sDefaultUomList = getResources().getStringArray(R.array.units_of_measure);
+		Item.sDefaultUomList = getResources().getStringArray(uomResId);
 
 	}
 

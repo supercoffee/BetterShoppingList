@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="units_of_measure">
+    <string-array name="units_of_measure_imperial">
         <item >Each</item>
         <item >Dozen</item>
         <item >Ounce</item>
         <item >Gallon</item>
         <item >Case</item>
         <item >Pound</item>
+    </string-array>
+    <string-array name="units_of_measure_metric">
+        <item >Each</item>
+        <item >Dozen</item>
+        <item >Gram</item>
+        <item >Liter</item>
+        <item>Case</item><item >Kilogram</item>
+        
     </string-array>
     
 </resources>

@@ -20,6 +20,7 @@
     <string name="scan">Scan</string>
     <string name="in_shopping_cart">In your cart</string>
     <string name="item_move">Move to cart</string>
-    <string name="settings_metric">Metric units</string>
+    <string name="settings_metric">Use metric units</string>
+    <string name="title_settings">Settings</string>
 
 </resources>

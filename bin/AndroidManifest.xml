@@ -28,6 +28,12 @@
                 <data android:mimeType="application/com.coffeestrike.bettershoppinglist"/>
             </intent-filter>
         </activity>
+        <activity android:name="com.coffeestrike.bettershoppinglist.SettingsActivity" 
+            android:parentActivityName="com.coffeestrike.bettershoppinglist.MainActivity">
+            <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.coffeestrike.bettershoppinglist.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

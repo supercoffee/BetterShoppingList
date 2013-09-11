@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+        <CheckBoxPreference android:summaryOn="Metric units will be used" android:title="@string/settings_metric" android:summaryOff="Imperial units will be used" android:defaultValue="false" android:key="pref_metric"/>
+    </PreferenceScreen>

@@ -54,9 +54,10 @@ public class ShoppingListFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
-		getActivity().setTitle(R.string.app_name);
+		
 		mItemList = ((MainActivity)getActivity()).getShoppingList();
 		setListAdapter(new ShoppingListAdapter(mItemList));
+		getActivity().setTitle(mItemList.getListTitle());
 		setRetainInstance(true);
 	}
 	
@@ -151,6 +152,10 @@ public class ShoppingListFragment extends ListFragment {
 				mItemList.clear();
 				refresh();
 				return true;
+			case R.id.action_settings:
+				Intent intent = new Intent(getActivity(), SettingsActivity.class);
+				startActivity(intent);
+				
 		}
 		
 		return false;

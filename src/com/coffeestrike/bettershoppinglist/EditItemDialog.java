@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -132,12 +133,17 @@ public class EditItemDialog extends DialogFragment {
 			quantity.setText(String.valueOf(mItem.getQty()));
 		}
 		
+		int uomResId = R.array.units_of_measure_imperial;
+		if(PreferenceManager.getDefaultSharedPreferences(getActivity())
+				.getBoolean("pref_metric", false)){
+			uomResId = R.array.units_of_measure_metric;
+		}
 		Spinner spinner = (Spinner)v.findViewById(R.id.unit_spinner);
 		ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter
-				.createFromResource(getActivity(), R.array.units_of_measure, 
+				.createFromResource(getActivity(), uomResId, 
 						android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(spinAdapter);
-		String [] uomList = getActivity().getResources().getStringArray(R.array.units_of_measure);
+		String [] uomList = getActivity().getResources().getStringArray(uomResId);
 		for(int i = 0; i < uomList.length; i++){
 			if(uomList[i].compareTo(mItem.getUnitOfMeasure()) == 0){
 				spinner.setSelection(i);
