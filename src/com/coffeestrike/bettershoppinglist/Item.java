@@ -3,6 +3,7 @@ package com.coffeestrike.bettershoppinglist;
 import java.io.Serializable;
 import java.util.UUID;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 
 public class Item implements Serializable, Comparable<Item>{
@@ -19,6 +20,15 @@ public class Item implements Serializable, Comparable<Item>{
 	protected UUID mId;
 	private String mUnitOfMeasure;
 	private OnStatusChangedListener mStatusListener;
+	private Bitmap mItemImage; //for future use
+
+	public Bitmap getItemImage() {
+		return mItemImage;
+	}
+
+	public void setItemImage(Bitmap itemImage) {
+		mItemImage = itemImage;
+	}
 
 	/*
 	 * This array should be replaced with a list 

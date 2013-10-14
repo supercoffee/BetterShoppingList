@@ -1,10 +1,14 @@
 package com.coffeestrike.bettershoppinglist;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -14,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
@@ -21,6 +26,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -39,6 +45,7 @@ public class ShoppingListFragment extends ListFragment {
 	public static final int NEW_ITEM = 0;
 	public static final int EDIT_ITEM = 1;
 	private static final String EXTRA_ITEM = "com.coffeestrike.bettershoppinglist.ShoppingListFragment";
+	protected static final int ACTION_CAPTURE_PICTURE = 2;
 	
 	
 
@@ -177,11 +184,17 @@ public class ShoppingListFragment extends ListFragment {
 		if(resultCode != Activity.RESULT_OK){	
 			return;
 		}
-		Item item = (Item)data.getSerializableExtra(Item.EXTRA_ITEM);
-
-		if(!mItemList.contains(item)){
-			mItemList.add(0, item);
+		if (requestCode == NEW_ITEM) {
+			Item item = (Item) data.getSerializableExtra(Item.EXTRA_ITEM);
+			if (!mItemList.contains(item)) {
+				mItemList.add(0, item);
+			}
 		}
+//		else if(requestCode == ACTION_CAPTURE_PICTURE){
+//			Item item = (Item) getListAdapter().getItem(data.getIntExtra(EXTRA_ITEM, 0));
+////				item.setItemImage(MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), data.getData()));
+//				item.setItemImage((Bitmap) data.get);
+//		}
 		refresh();
 	}
 	
@@ -207,6 +220,7 @@ public class ShoppingListFragment extends ListFragment {
 	 */
 	private class ShoppingListAdapter extends ArrayAdapter<Item> {
 
+
 		public ShoppingListAdapter(ArrayList<Item> list){
 			super(getActivity(), 0, list);
 		}
@@ -222,7 +236,7 @@ public class ShoppingListFragment extends ListFragment {
 		}
 
 		@Override
-		public View getView (int position, View convertView, ViewGroup parent){
+		public View getView (final int position, View convertView, ViewGroup parent){
 			final Item item = getItem(position);
 			if(item.isDivider()){
 				convertView = getActivity().getLayoutInflater().inflate(R.layout.list_divider, null);
@@ -263,6 +277,24 @@ public class ShoppingListFragment extends ListFragment {
 				itemText.setText(item.getDescription());
 				itemQty.setText(String.valueOf(item.getQty()));
 				itemUom.setText(item.getUnitOfMeasure());
+				
+//				ImageView itemImage = (ImageView)convertView
+//						.findViewById(R.id.item_imageView);
+//				if(item.getItemImage() != null){
+//					itemImage.setImageBitmap(item.getItemImage());
+//				}
+//				itemImage.setOnClickListener(new OnClickListener() {
+//					
+//					@Override
+//					public void onClick(View v) {
+////						Bundle extras = new Bundle();
+////						extras.putInt(EXTRA_ITEM, position);
+//						Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+////						cameraIntent.putExtras(extras);
+//						startActivityForResult(cameraIntent, ShoppingListFragment.ACTION_CAPTURE_PICTURE);
+//						
+//					}
+//				});
 			}
 			
 			return convertView;
