@@ -49,6 +49,24 @@ public class ShoppingListFragment extends ListFragment {
 		Log.d(TAG, "options menu inflated");
 	}
 	
+	
+	@Override
+	public void onPrepareOptionsMenu(Menu menu){
+		super.onPrepareOptionsMenu(menu);
+		/*
+		 * This is the fix to the list sorting crash.
+		 * When the divider exists in the list, sorting is disabled.
+		 * It doesn't make sense to be able to sort the list in that state anyways.
+		 */
+		MenuItem sortAlpha = menu.findItem(R.id.sort_alpha);
+		if(mItemList.findListDivider() != -1){
+			sortAlpha.setEnabled(false);
+		}
+		else{
+			sortAlpha.setEnabled(true);
+		}
+	}
+	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState){

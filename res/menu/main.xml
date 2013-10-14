@@ -6,8 +6,9 @@
         android:showAsAction="ifRoom"/>
     
     <item android:id="@+id/sort_alpha" 
-        android:title="@string/sort_alpha" 
-        android:showAsAction="never"/>
+     android:title="@string/sort_alpha" 
+     android:showAsAction="never"/>
+  
     
 	<item
         android:id="@+id/action_settings"
