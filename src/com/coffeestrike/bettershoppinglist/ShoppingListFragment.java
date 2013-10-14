@@ -144,10 +144,14 @@ public class ShoppingListFragment extends ListFragment {
 			case R.id.button_add_item:
 				showEditItemDialog(new Item(null));
 				return true;
-			case R.id.sort_alpha:
-				mItemList.sortAlpha();
-				refresh();
-				return true;
+				/*
+				 * This option crashes currently when a list divider
+				 * exists, as it cannot be compared to a normal Item.
+				 */
+//			case R.id.sort_alpha:
+//				mItemList.sortAlpha();
+//				refresh();
+//				return true;
 			case R.id.clear_all:
 				mItemList.clear();
 				refresh();
