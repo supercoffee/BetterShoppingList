@@ -1,4 +1,4 @@
-package com.coffeestrike.bettershoppinglist;
+package com.coffeestrike.bettershoppinglist.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;

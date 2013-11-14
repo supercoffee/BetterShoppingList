@@ -1,4 +1,11 @@
-package com.coffeestrike.bettershoppinglist;
+package com.coffeestrike.bettershoppinglist.ui;
+
+import com.coffeestrike.bettershoppinglist.R;
+import com.coffeestrike.bettershoppinglist.R.array;
+import com.coffeestrike.bettershoppinglist.R.id;
+import com.coffeestrike.bettershoppinglist.R.layout;
+import com.coffeestrike.bettershoppinglist.R.string;
+import com.coffeestrike.bettershoppinglist.models.Item;
 
 import android.app.Activity;
 import android.app.AlertDialog;

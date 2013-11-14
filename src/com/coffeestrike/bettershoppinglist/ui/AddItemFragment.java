@@ -1,4 +1,4 @@
-package com.coffeestrike.bettershoppinglist;
+package com.coffeestrike.bettershoppinglist.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,6 +15,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
+import com.coffeestrike.bettershoppinglist.R;
+import com.coffeestrike.bettershoppinglist.R.id;
+import com.coffeestrike.bettershoppinglist.R.layout;
+import com.coffeestrike.bettershoppinglist.models.Item;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentIntegratorSupportV4;
 import com.google.zxing.integration.android.IntentResult;

@@ -15,7 +15,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.coffeestrike.bettershoppinglist.MainActivity"
+            android:name="com.coffeestrike.bettershoppinglist.ui.MainActivity"
             android:label="@string/app_name" android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,8 +28,8 @@
                 <data android:mimeType="application/com.coffeestrike.bettershoppinglist"/>
             </intent-filter>
         </activity>
-        <activity android:name="com.coffeestrike.bettershoppinglist.SettingsActivity" 
-            android:parentActivityName="com.coffeestrike.bettershoppinglist.MainActivity">
+        <activity android:name="com.coffeestrike.bettershoppinglist.ui.SettingsActivity" 
+            android:parentActivityName="com.coffeestrike.bettershoppinglist.ui.MainActivity">
             <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value="com.coffeestrike.bettershoppinglist.MainActivity" />

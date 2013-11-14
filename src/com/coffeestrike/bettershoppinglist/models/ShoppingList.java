@@ -1,4 +1,4 @@
-package com.coffeestrike.bettershoppinglist;
+package com.coffeestrike.bettershoppinglist.models;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -122,11 +122,6 @@ public class ShoppingList extends ArrayList<Item> implements Item.OnStatusChange
 		return result;
 	}
 
-	@Override
-	public boolean remove(Object object) {
-		// TODO Auto-generated method stub
-		return super.remove(object);
-	}
 	
 	
 

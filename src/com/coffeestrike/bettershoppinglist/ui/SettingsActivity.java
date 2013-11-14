@@ -1,4 +1,7 @@
-package com.coffeestrike.bettershoppinglist;
+package com.coffeestrike.bettershoppinglist.ui;
+
+import com.coffeestrike.bettershoppinglist.R;
+import com.coffeestrike.bettershoppinglist.R.string;
 
 import android.content.Intent;
 import android.os.Bundle;

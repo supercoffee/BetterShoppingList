@@ -1,4 +1,4 @@
-package com.coffeestrike.bettershoppinglist;
+package com.coffeestrike.bettershoppinglist.ui;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -8,6 +8,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
+
+import com.coffeestrike.bettershoppinglist.R;
+import com.coffeestrike.bettershoppinglist.R.array;
+import com.coffeestrike.bettershoppinglist.R.id;
+import com.coffeestrike.bettershoppinglist.R.layout;
+import com.coffeestrike.bettershoppinglist.models.Item;
+import com.coffeestrike.bettershoppinglist.models.ListManager;
+import com.coffeestrike.bettershoppinglist.models.ShoppingList;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar.OnNavigationListener;

@@ -1,6 +1,13 @@
-package com.coffeestrike.bettershoppinglist;
+package com.coffeestrike.bettershoppinglist.ui;
 
 import java.util.ArrayList;
+
+import com.coffeestrike.bettershoppinglist.R;
+import com.coffeestrike.bettershoppinglist.R.id;
+import com.coffeestrike.bettershoppinglist.R.layout;
+import com.coffeestrike.bettershoppinglist.R.menu;
+import com.coffeestrike.bettershoppinglist.models.Item;
+import com.coffeestrike.bettershoppinglist.models.ShoppingList;
 
 import android.app.Activity;
 import android.content.Intent;

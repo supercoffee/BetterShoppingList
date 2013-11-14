@@ -1,3 +1,4 @@
+package com.coffeestrike.bettershoppinglist.models;
 //package com.coffeestrike.bettershoppinglist;
 //
 //import java.io.BufferedReader;

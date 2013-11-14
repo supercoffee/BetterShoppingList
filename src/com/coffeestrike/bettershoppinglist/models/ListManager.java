@@ -1,4 +1,4 @@
-package com.coffeestrike.bettershoppinglist;
+package com.coffeestrike.bettershoppinglist.models;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
