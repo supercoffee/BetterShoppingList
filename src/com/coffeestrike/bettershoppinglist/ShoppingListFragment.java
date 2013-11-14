@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
@@ -26,10 +27,12 @@ import android.widget.TextView;
 
 
 /**
- * @author Benjamin Daschel
- * Primary interface for the application.
+ * 
+ *  * Primary interface for the application.
  * Responsible for displaying the current list of items,
  * and controlling the flow of items in and out of the list.
+ * 
+ * @author Benjamin Daschel
  *
  */
 public class ShoppingListFragment extends ListFragment {
@@ -38,6 +41,7 @@ public class ShoppingListFragment extends ListFragment {
 	private ShoppingList mItemList;
 	public static final int NEW_ITEM = 0;
 	public static final int EDIT_ITEM = 1;
+	@SuppressWarnings("unused")
 	private static final String EXTRA_ITEM = "com.coffeestrike.bettershoppinglist.ShoppingListFragment";
 	
 	

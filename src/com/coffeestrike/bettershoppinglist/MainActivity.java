@@ -10,8 +10,11 @@ import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 
 import android.annotation.TargetApi;
+import android.app.ActionBar.OnNavigationListener;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -28,11 +31,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-public class MainActivity extends FragmentActivity implements CreateNdefMessageCallback, OnNdefPushCompleteCallback, 
-	AddItemFragment.OnNewItemListener {
+public class MainActivity extends FragmentActivity implements OnNavigationListener, CreateNdefMessageCallback, OnNdefPushCompleteCallback, 
+	AddItemFragment.OnNewItemListener{
 	
 	private static final int MESSAGE_SENT = 1;
 	private static final String MIME = "application/com.coffeestrike.bettershoppinglist";
@@ -54,8 +61,75 @@ public class MainActivity extends FragmentActivity implements CreateNdefMessageC
 
 	//TODO replace references with calls to {@link ListManager}
 	private ShoppingList mShoppingList;
-    
-    
+	
+	private SpinnerAdapter mNavAdapter = new SpinnerAdapter(){
+
+		@Override
+		public int getCount() {
+			return ListManager.getInstance(MainActivity.this).getAllTitles().length;
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return ListManager.getInstance(MainActivity.this).getAllTitles()[position];
+		}
+
+		@Override
+		public long getItemId(int position) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public int getItemViewType(int position) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public int getViewTypeCount() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public boolean hasStableIds() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isEmpty() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void registerDataSetObserver(DataSetObserver observer) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void unregisterDataSetObserver(DataSetObserver observer) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public View getDropDownView(int position, View convertView,
+				ViewGroup parent) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	
+	};
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	@Override
@@ -98,9 +172,16 @@ public class MainActivity extends FragmentActivity implements CreateNdefMessageC
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.two_fragment_container);
 		
+		final ActionBar actionBar = getActionBar();
+		actionBar.setDisplayShowTitleEnabled(false);
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		
+		
 //		mShoppingList = new ShoppingList(this);
 		ListManager.getInstance(this).load();
 		mShoppingList = ListManager.getInstance(this).getList(0);
+		
+		
 
 		
 		FragmentManager fm = getSupportFragmentManager();
@@ -204,6 +285,11 @@ public class MainActivity extends FragmentActivity implements CreateNdefMessageC
 	protected void onPause() {
 		super.onPause();
 		ListManager.getInstance(this).save();
+	}
+	@Override
+	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 	

@@ -18,24 +18,17 @@ public class ShoppingList extends ArrayList<Item> implements Item.OnStatusChange
 	 */
 	private static final long serialVersionUID = -62369575092508088L;
 
-	private static final String TAG = "ShoppingList";
-
+	@SuppressWarnings("unused")
 	private String mFilename;
-	private transient Context mAppContext;
 	private String mListTitle = "My List";
 	private UUID mListId;
 
-	private Item mListDivider;
-	
-
 	public ShoppingList(Context appContext){
-		mAppContext = appContext;
 		mListId = UUID.randomUUID();
 		mFilename = mListId.toString();
 	}
 	
 	protected ShoppingList(Context appContext, UUID id){
-		mAppContext = appContext;
 		mListId = id;
 		mFilename = mListId.toString();
 	}
@@ -119,6 +112,23 @@ public class ShoppingList extends ArrayList<Item> implements Item.OnStatusChange
 		item.setStatusListener(this);
 		return super.add(item);
 	}
+
+	@Override
+	public Item remove(int index) {
+		Item result =  super.remove(index);
+		if(size() == 1 && findListDivider() != -1){
+			clear();
+		}
+		return result;
+	}
+
+	@Override
+	public boolean remove(Object object) {
+		// TODO Auto-generated method stub
+		return super.remove(object);
+	}
+	
+	
 
 
 }
