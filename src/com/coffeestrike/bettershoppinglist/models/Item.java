@@ -31,6 +31,10 @@ public class Item implements Serializable, Comparable<Item>{
 	};
 
 	public static final String EXTRA_ITEM = "Item";
+	
+	public Item(){
+		this("");
+	}
 
 	public Item(String description){
 		mDescription = description;

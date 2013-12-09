@@ -16,12 +16,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 import com.coffeestrike.bettershoppinglist.R;
-import com.coffeestrike.bettershoppinglist.R.id;
-import com.coffeestrike.bettershoppinglist.R.layout;
 import com.coffeestrike.bettershoppinglist.models.Item;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentIntegratorSupportV4;
-import com.google.zxing.integration.android.IntentResult;
 
 public class AddItemFragment extends Fragment {
 
@@ -80,19 +75,19 @@ public class AddItemFragment extends Fragment {
 			}
 		});
 		
-		Button scanButton = (Button)v.findViewById(R.id.button_scan);
-		scanButton.setOnClickListener(new OnClickListener(){
-			/*
-			 *Eventually, this will fire up an intent to start
-			 * a barcode scanner.
-			 */
-			@Override
-			public void onClick(View v) {
-				IntentIntegratorSupportV4 integrator = new IntentIntegratorSupportV4(AddItemFragment.this);
-				integrator.initiateScan();
-			}
-			
-		});
+//		Button scanButton = (Button)v.findViewById(R.id.button_scan);
+//		scanButton.setOnClickListener(new OnClickListener(){
+//			/*
+//			 *Eventually, this will fire up an intent to start
+//			 * a barcode scanner.
+//			 */
+//			@Override
+//			public void onClick(View v) {
+//				IntentIntegratorSupportV4 integrator = new IntentIntegratorSupportV4(AddItemFragment.this);
+//				integrator.initiateScan();
+//			}
+//			
+//		});
 		
 		return v;
 	}
@@ -111,13 +106,13 @@ public class AddItemFragment extends Fragment {
 		}
 	}
 
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-		  if (scanResult != null) {
-		    // handle scan result
-		  }
-	}
+//	@Override
+//	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//		IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+//		  if (scanResult != null) {
+//		    // handle scan result
+//		  }
+//	}
 	
 	
 

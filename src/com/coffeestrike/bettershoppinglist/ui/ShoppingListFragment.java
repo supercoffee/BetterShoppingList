@@ -154,7 +154,7 @@ public class ShoppingListFragment extends ListFragment {
 			
 			@Override
 			public void onClick(View v) {
-				showEditItemDialog(new Item(null));
+				showEditItemDialog(new Item());
 			}
 		});
 
@@ -171,7 +171,7 @@ public class ShoppingListFragment extends ListFragment {
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch(item.getItemId()){
 			case R.id.button_add_item:
-				showEditItemDialog(new Item(null));
+				showEditItemDialog(new Item());
 				return true;
 			case R.id.sort_alpha:
 				mItemList.sortAlpha();
@@ -203,7 +203,8 @@ public class ShoppingListFragment extends ListFragment {
 			return;
 		}
 		Item item = (Item)data.getSerializableExtra(Item.EXTRA_ITEM);
-
+//		int position = (Integer) data.getSerializableExtra(EditItemDialog.EXTRA_POSITION);
+		
 		if(!mItemList.contains(item)){
 			mItemList.add(0, item);
 		}
