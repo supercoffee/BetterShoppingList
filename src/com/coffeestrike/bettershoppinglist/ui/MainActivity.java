@@ -182,7 +182,7 @@ public class MainActivity extends FragmentActivity implements OnNavigationListen
 		
 		final ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+//		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		
 		
 //		mShoppingList = new ShoppingList(this);
@@ -216,6 +216,11 @@ public class MainActivity extends FragmentActivity implements OnNavigationListen
 			mNfcAdapter.setOnNdefPushCompleteCallback(this, this);
 			
 		}
+		/*
+		 * Populate the list of available units of measure for the Item class
+		 * It's done here because it requires inflation from a resource file,
+		 * and passing this activity all the way to the Item class is bad OOP.
+		 */
 		int uomResId = R.array.units_of_measure_imperial;
 		if(PreferenceManager.getDefaultSharedPreferences(this)
 				.getBoolean("pref_metric", false)){
