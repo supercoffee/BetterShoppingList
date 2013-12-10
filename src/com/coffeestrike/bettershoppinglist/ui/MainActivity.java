@@ -9,18 +9,11 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 
-import com.coffeestrike.bettershoppinglist.R;
-import com.coffeestrike.bettershoppinglist.R.array;
-import com.coffeestrike.bettershoppinglist.R.id;
-import com.coffeestrike.bettershoppinglist.R.layout;
-import com.coffeestrike.bettershoppinglist.models.Item;
-import com.coffeestrike.bettershoppinglist.models.ListManager;
-import com.coffeestrike.bettershoppinglist.models.ShoppingList;
-
 import android.annotation.TargetApi;
-import android.app.ActionBar.OnNavigationListener;
 import android.app.ActionBar;
+import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
+import android.app.backup.BackupManager;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.nfc.NdefMessage;
@@ -41,9 +34,13 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
+
+import com.coffeestrike.bettershoppinglist.R;
+import com.coffeestrike.bettershoppinglist.extra.ListManager;
+import com.coffeestrike.bettershoppinglist.models.Item;
+import com.coffeestrike.bettershoppinglist.models.ShoppingList;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class MainActivity extends FragmentActivity implements OnNavigationListener, CreateNdefMessageCallback, OnNdefPushCompleteCallback, 
@@ -305,6 +302,10 @@ public class MainActivity extends FragmentActivity implements OnNavigationListen
 		return false;
 	}
 	
+	private void requestBackup(){
+		BackupManager bm = new BackupManager(this);
+		bm.dataChanged();
+	}
 	
 
 }

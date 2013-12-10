@@ -1,11 +1,15 @@
-package com.coffeestrike.bettershoppinglist.models;
+package com.coffeestrike.bettershoppinglist.extra;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import com.coffeestrike.bettershoppinglist.models.ShoppingList;
 
 import android.content.Context;
 import android.util.Log;
@@ -19,9 +23,8 @@ public class ListManager {
 	private static final String TAG = "ListManager";
 
 	//This file should contain the names of all the lists being managed.
-	private static String FILENAME = "listmanager.json";
-	
-	private static String FILE_JSON_KEY = "listfilename";
+	private static String FILENAME_OLD = "listmanager.json";
+	static String FILENAME = "listmanager";
 	
 	private static ListManager sListManager;
 	private ArrayList<ShoppingList> mAllLists;
@@ -48,10 +51,12 @@ public class ListManager {
 	 */
 	public void load(){
 		ObjectInputStream ois = null;
-		
+
 		try{
+			
 			ois = new ObjectInputStream(mAppContext.openFileInput(FILENAME));
 			mAllLists = (ArrayList<ShoppingList>) ois.readObject();
+			
 		} catch (StreamCorruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -74,6 +79,7 @@ public class ListManager {
 					e.printStackTrace();
 				}
 			}
+			
 		}
 	
 	}
