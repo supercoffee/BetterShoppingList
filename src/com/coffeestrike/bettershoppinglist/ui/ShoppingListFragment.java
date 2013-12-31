@@ -45,7 +45,7 @@ import android.widget.TextView;
 public class ShoppingListFragment extends ListFragment {
 	
 	public static String TAG = "ShoppingListFragment";
-	private ShoppingList mItemList;
+	private ShoppingList mShoppingList;
 	public static final int NEW_ITEM = 0;
 	public static final int EDIT_ITEM = 1;
 	@SuppressWarnings("unused")
@@ -70,7 +70,7 @@ public class ShoppingListFragment extends ListFragment {
 		 * It doesn't make sense to be able to sort the list in that state anyways.
 		 */
 		MenuItem sortAlpha = menu.findItem(R.id.sort_alpha);
-		if(mItemList.findListDivider() != -1){
+		if(mShoppingList.findListDivider() != -1){
 			sortAlpha.setEnabled(false);
 		}
 		else{
@@ -84,9 +84,9 @@ public class ShoppingListFragment extends ListFragment {
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
 		
-		mItemList = ((MainActivity)getActivity()).getShoppingList();
-		setListAdapter(new ShoppingListAdapter(mItemList));
-		getActivity().setTitle(mItemList.getListTitle());
+		mShoppingList = ((MainActivity)getActivity()).getShoppingList();
+		setListAdapter(new ShoppingListAdapter(mShoppingList.getBaseList()));
+		getActivity().setTitle(mShoppingList.getListTitle());
 		setRetainInstance(true);
 	}
 	
@@ -123,7 +123,7 @@ public class ShoppingListFragment extends ListFragment {
 						
 						for(int position = adapter.getCount(); position >= 0; position--){
 							if(getListView().isItemChecked(position)){
-								mItemList.remove(position);
+								mShoppingList.remove(position);
 							}
 						}
 						mode.finish();
@@ -174,11 +174,11 @@ public class ShoppingListFragment extends ListFragment {
 				showEditItemDialog(new Item());
 				return true;
 			case R.id.sort_alpha:
-				mItemList.sortAlpha();
+				mShoppingList.sortAlpha();
 				refresh();
 				return true;
 			case R.id.clear_all:
-				mItemList.clear();
+				mShoppingList.clear();
 				refresh();
 				return true;
 			case R.id.action_settings:
@@ -205,8 +205,8 @@ public class ShoppingListFragment extends ListFragment {
 		Item item = (Item)data.getSerializableExtra(Item.EXTRA_ITEM);
 //		int position = (Integer) data.getSerializableExtra(EditItemDialog.EXTRA_POSITION);
 		
-		if(!mItemList.contains(item)){
-			mItemList.add(0, item);
+		if(!mShoppingList.contains(item)){
+			mShoppingList.add(0, item);
 		}
 		refresh();
 	}

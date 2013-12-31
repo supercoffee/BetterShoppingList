@@ -1,40 +1,42 @@
 package com.coffeestrike.bettershoppinglist.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.UUID;
-
-import android.content.Context;
 
 /**
  * @author Benjamin Daschel
  * Extension of ArrayList with ability to save and load from file
  *
  */
-public class ShoppingList extends ArrayList<Item> implements Item.OnStatusChangedListener{
+public class ShoppingList implements Serializable, Item.OnStatusChangedListener{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -62369575092508088L;
 
-	@SuppressWarnings("unused")
-	private String mFilename;
+	//private String mFilename;
 	private String mListTitle = "My List";
 	private UUID mListId;
+	private ArrayList<Item> mItemList;
 
-	public ShoppingList(Context appContext){
+	
+	public ShoppingList(){
+		mItemList = new ArrayList<Item>();
 		mListId = UUID.randomUUID();
-		mFilename = mListId.toString();
+		//mFilename = mListId.toString();
 	}
 	
-	protected ShoppingList(Context appContext, UUID id){
+	protected ShoppingList(UUID id){
+		mItemList = new ArrayList<Item>();
 		mListId = id;
-		mFilename = mListId.toString();
+		//mFilename = mListId.toString();
 	}
 
 	public int findListDivider(){
-		return indexOf(new Divider());
+		return mItemList.indexOf(new Divider());
 	}
 
 	public UUID getListId() {
@@ -46,12 +48,11 @@ public class ShoppingList extends ArrayList<Item> implements Item.OnStatusChange
 	}
 
 	public void merge(ShoppingList incomingList) {
-		for(Item item : incomingList){
-			if(! this.contains(item)){
-				add(item);
+		for(Item item : incomingList.mItemList){
+			if(! mItemList.contains(item)){
+				mItemList.add(item);
 			}
 		}
-		
 	}
 
 	public void setListTitle(String listTitle) {
@@ -59,8 +60,9 @@ public class ShoppingList extends ArrayList<Item> implements Item.OnStatusChange
 	}
 
 	public void sortAlpha() {
-		Collections.sort(ShoppingList.this);
+		Collections.sort(mItemList);
 	}
+
 
 	@Override
 	public void onStatusChanged(Item item) {
@@ -70,22 +72,22 @@ public class ShoppingList extends ArrayList<Item> implements Item.OnStatusChange
 		 * of the list.
 		 */
 		if(findListDivider() == -1){
-			add(new Divider());
+			mItemList.add(new Divider());
 		}
 		
 		/*The check box has been cleared
 		 * restore the item to the upper part of the list
 		 */
 		if(item.getStatus() == 0){
-			remove(item);
-			add(findListDivider(), item);
+			mItemList.remove(item);
+			mItemList.add(findListDivider(), item);
 		}
 		/*the check box has been checked
 		 * move the item to the lower part of the list
 		 */
 		else{
-			remove(item);
-			add(item);
+			mItemList.remove(item);
+			mItemList.add(item);
 		}
 		
 		/*
@@ -95,35 +97,64 @@ public class ShoppingList extends ArrayList<Item> implements Item.OnStatusChange
 		 * the cart
 		 */
 		int p = findListDivider();
-		if(p == (this.size() - 1)){
-			remove(p);
+		if(p == (mItemList.size() - 1)){
+			mItemList.remove(p);
 		}
 		
 	}
+//
+//	@Override
+//	public void add(int index, Item item) {
+//		item.setStatusListener(this);
+//		super.add(index, item);
+//	}
+//
+//	@Override
+//	public boolean add(Item item) {
+//		item.setStatusListener(this);
+//		return super.add(item);
+//	}
+//
+//	@Override
+//	public Item remove(int index) {
+//		Item result =  super.remove(index);
+//		if(size() == 1 && findListDivider() != -1){
+//			clear();
+//		}
+//		return result;
+//	}
 
-	@Override
-	public void add(int index, Item item) {
-		item.setStatusListener(this);
-		super.add(index, item);
+	public ArrayList<Item> getBaseList() {
+		return mItemList;
 	}
-
-	@Override
-	public boolean add(Item item) {
+	
+	public void add(int index, Item item){
 		item.setStatusListener(this);
-		return super.add(item);
+		mItemList.add(index, item);
 	}
-
-	@Override
-	public Item remove(int index) {
-		Item result =  super.remove(index);
-		if(size() == 1 && findListDivider() != -1){
-			clear();
+	
+	public void add(Item item){
+		mItemList.add(item);
+	}
+	
+	public Item remove(int index){
+		Item result = mItemList.remove(index);
+		
+		int divIndex = findListDivider();
+		
+		if(divIndex == mItemList.size() -1 ){
+			 mItemList.remove(divIndex);
 		}
 		return result;
 	}
 
-	
-	
+	public boolean contains(Item item) {
+		return mItemList.contains(item);
+	}
+
+	public void clear() {
+		mItemList.clear();
+	}
 
 
 }

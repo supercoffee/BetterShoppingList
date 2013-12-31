@@ -42,15 +42,25 @@ import com.coffeestrike.bettershoppinglist.extra.ListManager;
 import com.coffeestrike.bettershoppinglist.models.Item;
 import com.coffeestrike.bettershoppinglist.models.ShoppingList;
 
+
+/**
+ * 
+ * Most of the NFC code is commented out for this version for
+ * the sake of sanity / compatibility.
+ * @author ben
+ *
+ */
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-public class MainActivity extends FragmentActivity implements OnNavigationListener, CreateNdefMessageCallback, OnNdefPushCompleteCallback, 
-	AddItemFragment.OnNewItemListener{
+public class MainActivity extends FragmentActivity{ //implements OnNavigationListener, CreateNdefMessageCallback, OnNdefPushCompleteCallback, 
+	//AddItemFragment.OnNewItemListener{
 	
 	private static final int MESSAGE_SENT = 1;
 	private static final String MIME = "application/com.coffeestrike.bettershoppinglist";
 	private static final String TAG = "MainActivity";
 	
-	/** This handler receives a message from onNdefPushComplete */
+	
+	/* This handler receives a message from onNdefPushComplete */
+	/*
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -61,12 +71,13 @@ public class MainActivity extends FragmentActivity implements OnNavigationListen
             }
         }
     };
+    */
 	
-	protected NfcAdapter mNfcAdapter;
+	//protected NfcAdapter mNfcAdapter;
 
-	//TODO replace references with calls to {@link ListManager}
 	private ShoppingList mShoppingList;
 	
+	/*
 	private SpinnerAdapter mNavAdapter = new SpinnerAdapter(){
 
 		@Override
@@ -135,7 +146,9 @@ public class MainActivity extends FragmentActivity implements OnNavigationListen
 		}
 	
 	};
+	*/
 
+	/*
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	@Override
 	public NdefMessage createNdefMessage(NfcEvent event) {
@@ -168,6 +181,8 @@ public class MainActivity extends FragmentActivity implements OnNavigationListen
 		
 		return msg;
 	}
+	
+	*/
 	public ShoppingList getShoppingList() {
 		return mShoppingList;
 	}
@@ -198,21 +213,16 @@ public class MainActivity extends FragmentActivity implements OnNavigationListen
 					.commit();
 		}
 		
-//		Fragment upperFragment = fm.findFragmentById(R.id.top_frame);
-//		if(upperFragment == null){
-//			fm.beginTransaction()
-//				.add(R.id.top_frame, new AddItemFragment())
-//				.commit();
-//		}
 		
-		
-		
+		/*
 		mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 		if(mNfcAdapter != null){
 			mNfcAdapter.setNdefPushMessageCallback(this, this);
 			mNfcAdapter.setOnNdefPushCompleteCallback(this, this);
 			
 		}
+		*/
+		
 		/*
 		 * Populate the list of available units of measure for the Item class
 		 * It's done here because it requires inflation from a resource file,
@@ -228,6 +238,8 @@ public class MainActivity extends FragmentActivity implements OnNavigationListen
 
 	}
 
+	
+	/*
 	@Override
     public void onNdefPushComplete(NfcEvent arg0) {
         // A handler is needed to send messages to the activity when this
@@ -248,7 +260,9 @@ public class MainActivity extends FragmentActivity implements OnNavigationListen
             processIntent(getIntent());
         }
 	}
-
+	*/
+	
+	/*
 	private void processIntent(Intent intent) {
 		Parcelable[] rawMsgs = intent.getParcelableArrayExtra(
                 NfcAdapter.EXTRA_NDEF_MESSAGES);
@@ -282,7 +296,8 @@ public class MainActivity extends FragmentActivity implements OnNavigationListen
 		}
 		
 	}
-	@Override
+	*/
+	
 	public void onNewItem(Item i) {
 		FragmentManager fm = getSupportFragmentManager();
 		ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fm.findFragmentById(R.id.bottom_frame);
@@ -296,11 +311,15 @@ public class MainActivity extends FragmentActivity implements OnNavigationListen
 		super.onPause();
 		ListManager.getInstance(this).save();
 	}
+	
+	/*
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	*/
 	
 	private void requestBackup(){
 		BackupManager bm = new BackupManager(this);

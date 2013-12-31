@@ -1,18 +1,16 @@
 package com.coffeestrike.bettershoppinglist.extra;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
-import java.util.Arrays;
-
-import com.coffeestrike.bettershoppinglist.models.ShoppingList;
 
 import android.content.Context;
 import android.util.Log;
+
+import com.coffeestrike.bettershoppinglist.models.ShoppingList;
 
 /*
  * This class is a singleton.  Only one will ever be allowed
@@ -141,7 +139,7 @@ public class ListManager {
 	}
 	
 	public void newList(){
-		mAllLists.add(new ShoppingList(mAppContext));
+		mAllLists.add(new ShoppingList());
 	}
 	
 	public ShoppingList getList(int position){
