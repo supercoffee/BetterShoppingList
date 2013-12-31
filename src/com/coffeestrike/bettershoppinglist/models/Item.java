@@ -13,9 +13,18 @@ public class Item implements Serializable, Comparable<Item>{
 	
 	private static final long serialVersionUID = -8439535938970924273L;
 	private static final String TAG = "com.coffeestrike.bettershoppinglist.Item";
+	/*
+	 * Only status 0 and 1 are used at this time. 
+	 * Essentially, this field is always converted to
+	 * boolean values when used.
+	 */
 	private int mStatus; //0 = default, 1 = found, 2 = find later
 	private String mDescription;
 	private int mQuantity;
+	/*
+	 * At this time, UUID is not used for regular items. Future version
+	 * may utilize this, but for now only the list divider uses it.
+	 */
 	protected UUID mId;
 	private String mUnitOfMeasure;
 	private OnStatusChangedListener mStatusListener;

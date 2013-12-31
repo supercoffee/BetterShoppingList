@@ -31,12 +31,11 @@ public class JSONItemParser {
 		jsonObj.accumulate(JSON_QUANTITY, item.getQty());
 		jsonObj.accumulate(JSON_UOM, item.getUnitOfMeasure());
 		jsonObj.accumulate(JSON_CHECKED, item.getStatus() == 1);
-		
+
 		/*
-		 * Needed when the object is modified so the server
-		 * knows which record to update or delete.
+		 * We dont need to include the ID field in the JSON object because the server
+		 * will handle the ID with a URL.
 		 */
-		jsonObj.accumulate(JSON_ID, item.getJSONId());
 		
 		Log.d(TAG, jsonObj.toString(4));
 	
@@ -58,6 +57,11 @@ public class JSONItemParser {
 		}
 		if (jsonObj.has(JSON_CHECKED)) {
 			item.setStatus(jsonObj.getBoolean(JSON_CHECKED) ? 0 : 1);
+			
+		/*
+		 * Needed when the object is modified so the server
+		 * knows which record to update or delete.
+		 */
 		}
 		if (jsonObj.has(JSON_ID)) {
 			item.setJSONId(jsonObj.getInt(JSON_ID));
