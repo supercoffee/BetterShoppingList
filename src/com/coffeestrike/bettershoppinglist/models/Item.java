@@ -19,6 +19,12 @@ public class Item implements Serializable, Comparable<Item>{
 	protected UUID mId;
 	private String mUnitOfMeasure;
 	private OnStatusChangedListener mStatusListener;
+	
+	/*
+	 * This may not be defined until the item is retrieved from a server.
+	 * In fact, this is completely normal.
+	 */
+	private int mJSONId;
 
 	/*
 	 * This array should be replaced with a list 
@@ -50,6 +56,15 @@ public class Item implements Serializable, Comparable<Item>{
 		mId = UUID.randomUUID();
 	}
 	
+
+	public int getJSONId() {
+		return mJSONId;
+	}
+
+	public void setJSONId(int jSONId) {
+		mJSONId = jSONId;
+	}
+
 	@Override
 	public int compareTo(Item arg0) {
 		return this.mDescription.toString().compareTo(arg0.mDescription.toString());
@@ -122,6 +137,21 @@ public class Item implements Serializable, Comparable<Item>{
 
 	public void setUnitOfMeasure(String s) {
 		mUnitOfMeasure = s;
+	}
+	
+	@Override
+	public String toString(){
+		StringBuilder builder = new StringBuilder();
+		builder.append(mDescription);
+		builder.append(" : ");
+		builder.append(mQuantity);
+		builder.append(" : ");
+		builder.append(mUnitOfMeasure);
+		builder.append(" : ");
+		builder.append("JSONID=");
+		builder.append(mJSONId);
+		
+		return builder.toString();
 	}
 
 
