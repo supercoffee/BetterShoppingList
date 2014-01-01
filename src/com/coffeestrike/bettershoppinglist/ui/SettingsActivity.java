@@ -11,9 +11,9 @@ import com.coffeestrike.bettershoppinglist.R;
 
 public class SettingsActivity extends FragmentActivity {
 	
-	public static final String KEY_SYNC_REMOTE = "prefs_sync_remote";
-	public static final String KEY_SERVER_URL_KEY = "prefs_server_url";
-	public static final String KEY_SERVER_LIST_PATH = "prefs_server_list_path";
+	public static final String KEY_SYNC_REMOTE = "pref_sync_remote";
+	public static final String KEY_SERVER_URL_KEY = "pref_server_url";
+	public static final String KEY_SERVER_LIST_PATH = "pref_server_list_path";
 
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);

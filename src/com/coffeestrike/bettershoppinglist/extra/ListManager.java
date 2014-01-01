@@ -8,13 +8,9 @@ import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.coffeestrike.bettershoppinglist.R;
 import com.coffeestrike.bettershoppinglist.models.ShoppingList;
-import com.coffeestrike.bettershoppinglist.ui.SettingsActivity;
 
 /*
  * This class is a singleton.  Only one will ever be allowed
@@ -30,9 +26,7 @@ public class ListManager {
 	private static ListManager sListManager;
 	private ArrayList<ShoppingList> mAllLists;
 	private Context mAppContext;
-	
-	private String mServerURL;
-	private String mRemoteListPath;
+
 	
 	protected ListManager(Context context){
 		mAppContext = context.getApplicationContext();
@@ -155,22 +149,6 @@ public class ListManager {
 		return mAllLists.get(position);
 	}
 		
-	
-	/**
-	 * Use this method to synchronize the list
-	 * in JSON format to a remote server.
-	 * 
-	 */
-	public void syncRemote(){
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mAppContext);
-		 
-		if(prefs.getBoolean(SettingsActivity.KEY_SYNC_REMOTE, false)){ //syncing is enabled
-			mServerURL = prefs.getString(SettingsActivity.KEY_SERVER_URL_KEY,
-					mAppContext.getResources().getString(R.string.default_server_url));
-			mRemoteListPath = prefs.getString(SettingsActivity.KEY_SERVER_LIST_PATH, 
-					mAppContext.getResources().getString(R.string.default_server_list_path));
-		}
-		
-	}
+
 
 }

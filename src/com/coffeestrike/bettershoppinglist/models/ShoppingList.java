@@ -1,8 +1,10 @@
 package com.coffeestrike.bettershoppinglist.models;
 
 import java.io.Serializable;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Observable;
 import java.util.UUID;
 
 /**
@@ -10,7 +12,7 @@ import java.util.UUID;
  * Extension of ArrayList with ability to save and load from file
  *
  */
-public class ShoppingList implements Serializable, Item.OnStatusChangedListener{
+public class ShoppingList extends Observable implements Serializable, Item.OnStatusChangedListener{
 	
 	/**
 	 * 
@@ -21,17 +23,21 @@ public class ShoppingList implements Serializable, Item.OnStatusChangedListener{
 	private String mListTitle = "My List";
 	private UUID mListId;
 	private ArrayList<Item> mItemList;
+	
+	private ArrayDeque<Item> mGarbageQ;
 
 	
 	public ShoppingList(){
 		mItemList = new ArrayList<Item>();
 		mListId = UUID.randomUUID();
+		mGarbageQ = new ArrayDeque<Item>();
 		//mFilename = mListId.toString();
 	}
 	
 	protected ShoppingList(UUID id){
 		mItemList = new ArrayList<Item>();
 		mListId = id;
+		mGarbageQ = new ArrayDeque<Item>();
 		//mFilename = mListId.toString();
 	}
 
@@ -131,10 +137,12 @@ public class ShoppingList implements Serializable, Item.OnStatusChangedListener{
 	public void add(int index, Item item){
 		item.setStatusListener(this);
 		mItemList.add(index, item);
+		notifyObservers();
 	}
 	
 	public void add(Item item){
 		mItemList.add(item);
+		notifyObservers();
 	}
 	
 	public Item remove(int index){
@@ -142,19 +150,42 @@ public class ShoppingList implements Serializable, Item.OnStatusChangedListener{
 		
 		int divIndex = findListDivider();
 		
-		if(divIndex == mItemList.size() -1 ){
+		if(divIndex == mItemList.size() -1 && divIndex != -1){
 			 mItemList.remove(divIndex);
 		}
+		notifyObservers();
+		
 		return result;
 	}
 
 	public boolean contains(Item item) {
 		return mItemList.contains(item);
 	}
-
+	
+	
+	/*
+	 * Place the Items in a deletion queue.
+	 * The observer needs to know the IDs of the
+	 * items so the server knows which IDs to remove.
+	 */
 	public void clear() {
+		for(Item item : mItemList){
+			mGarbageQ.add(item);
+		}
 		mItemList.clear();
+		notifyObservers();
 	}
 
+	public int size() {
+		return mItemList.size();
+	}
+
+	/**
+	 * Get "deleted" items back.
+	 * @return deleted items in FIFO order
+	 */
+	public Item pollGarbageQueue(){
+		return mGarbageQ.poll();
+	}
 
 }

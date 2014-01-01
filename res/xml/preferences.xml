@@ -16,7 +16,7 @@
                 android:key="pref_server_url" android:defaultValue="@string/default_server_url"/>
             
             <EditTextPreference android:dependency="pref_sync_remote"
-                android:title="@string/prefs_server_list_path"
+                android:title="@string/pref_server_list_path"
                 android:key="pref_server_list_path" android:defaultValue="@string/default_server_list_path"/>
             
         </PreferenceCategory>

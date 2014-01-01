@@ -1,11 +1,12 @@
 package com.coffeestrike.bettershoppinglist.models;
 
 import java.io.Serializable;
+import java.util.Observable;
 import java.util.UUID;
 
 import android.util.Log;
 
-public class Item implements Serializable, Comparable<Item>{
+public class Item extends Observable implements Serializable, Comparable<Item>{
 	
 	public interface OnStatusChangedListener{
 		public void onStatusChanged(Item i);
@@ -66,19 +67,11 @@ public class Item implements Serializable, Comparable<Item>{
 	}
 	
 
-	public int getJSONId() {
-		return mJSONId;
-	}
-
-	public void setJSONId(int jSONId) {
-		mJSONId = jSONId;
-	}
-
 	@Override
 	public int compareTo(Item arg0) {
 		return this.mDescription.toString().compareTo(arg0.mDescription.toString());
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if(this.getClass().getSimpleName().equals(o.getClass().getSimpleName())){
@@ -89,7 +82,6 @@ public class Item implements Serializable, Comparable<Item>{
 		}
 		return false;
 	}
-	
 
 	public CharSequence getDescription() {
 		return mDescription;
@@ -98,6 +90,12 @@ public class Item implements Serializable, Comparable<Item>{
 	public UUID getId() {
 		return mId;
 	}
+	
+
+	public int getJSONId() {
+		return mJSONId;
+	}
+	
 	public int getQty() {
 		return mQuantity;
 	}
@@ -110,7 +108,6 @@ public class Item implements Serializable, Comparable<Item>{
 	public String getUnitOfMeasure() {
 		return mUnitOfMeasure;
 	}
-
 	public boolean isDivider() {
 		return false;
 	}
@@ -125,20 +122,27 @@ public class Item implements Serializable, Comparable<Item>{
 	public void setDescription(CharSequence description) {
 		if (description != null) {
 			mDescription = description.toString();
+			notifyObservers();
 		}
+	}
+
+	public void setJSONId(int jSONId) {
+		mJSONId = jSONId;
+		notifyObservers();
 	}
 
 	public void setQty(int qty) {
 		mQuantity = qty;
+		notifyObservers();
 	}
 
 	public void setStatus(int status) {
 		mStatus = status;
+		notifyObservers();
 		mStatusListener.onStatusChanged(this);
 		Log.d(TAG, String.format("Status of item %s set to %d", getId().toString(), status));
 		
 	}
-	
 	
 	public void setStatusListener(OnStatusChangedListener statusListener) {
 		this.mStatusListener = statusListener;
@@ -146,6 +150,7 @@ public class Item implements Serializable, Comparable<Item>{
 
 	public void setUnitOfMeasure(String s) {
 		mUnitOfMeasure = s;
+		notifyObservers();
 	}
 	
 	@Override

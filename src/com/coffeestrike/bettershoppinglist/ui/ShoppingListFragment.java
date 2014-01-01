@@ -1,10 +1,23 @@
 package com.coffeestrike.bettershoppinglist.ui;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -25,6 +38,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.coffeestrike.bettershoppinglist.R;
+import com.coffeestrike.bettershoppinglist.extra.JSONItemParser;
+import com.coffeestrike.bettershoppinglist.extra.JSONResults;
 import com.coffeestrike.bettershoppinglist.models.Item;
 import com.coffeestrike.bettershoppinglist.models.ShoppingList;
 
@@ -42,6 +57,11 @@ public class ShoppingListFragment extends ListFragment {
 	
 	public static String TAG = "ShoppingListFragment";
 	private ShoppingList mShoppingList;
+	private String mServerURL;
+	private String mRemoteListPath;
+	private ShoppingList mRemoteList;
+	private Context mAppContext;
+	private ShoppingListAdapter mListAdapter;
 	public static final int NEW_ITEM = 0;
 	public static final int EDIT_ITEM = 1;
 	@SuppressWarnings("unused")
@@ -79,12 +99,24 @@ public class ShoppingListFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
-		
+		mAppContext = getActivity().getApplicationContext();
 		mShoppingList = ((MainActivity)getActivity()).getShoppingList();
-		setListAdapter(new ShoppingListAdapter(mShoppingList.getBaseList()));
+		mListAdapter = new ShoppingListAdapter(mShoppingList.getBaseList());
+		setListAdapter(mListAdapter);
 		getActivity().setTitle(mShoppingList.getListTitle());
 		setRetainInstance(true);
 	}
+	
+//	@Override
+//	public void onResume(){
+//		super.onResume();
+//		if(syncRemoteEnabled()){
+//			syncRemote();
+//		}
+//		else{
+//			Log.d(TAG, "Sync not enabled");
+//		}
+//	}
 	
 	@Override 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -296,6 +328,90 @@ public class ShoppingListFragment extends ListFragment {
 	 */
 	public void refresh() {
 		((ShoppingListAdapter)getListAdapter()).notifyDataSetChanged();
+	}
+	
+	
+	private boolean syncRemoteEnabled(){
+		return PreferenceManager.getDefaultSharedPreferences(mAppContext)
+				.getBoolean(SettingsActivity.KEY_SYNC_REMOTE, false);
+	}
+	
+	/**
+	 * Use this method to synchronize the list
+	 * in JSON format to a remote server.
+	 * 
+	 */
+	private void syncRemote(){
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mAppContext);
+		 
+		
+		mServerURL = prefs.getString(SettingsActivity.KEY_SERVER_URL_KEY,
+				mAppContext.getResources().getString(R.string.default_server_url));
+		mRemoteListPath = prefs.getString(SettingsActivity.KEY_SERVER_LIST_PATH, 
+				mAppContext.getResources().getString(R.string.default_server_list_path));
+		
+		try {
+	
+			new FetchJSONList().execute(new URL(mServerURL + mRemoteListPath));
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	private class FetchJSONList extends AsyncTask<URL, Void, ShoppingList>{
+		
+		@Override
+		protected ShoppingList doInBackground(URL... params) {
+			StringBuilder builder = new StringBuilder();
+			JSONObject [] jArray = null;
+			ShoppingList shoppingList = new ShoppingList();
+			try{
+				URL url = params[0];
+				HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+				InputStream iStream = connection.getInputStream();
+				
+				BufferedReader reader = new BufferedReader(new InputStreamReader(iStream));
+				String s;
+				while( (s = reader.readLine()) != null){
+					builder.append(s);
+				}
+				
+				reader.close();
+				connection.disconnect();
+				
+			} catch(Exception e){
+				e.printStackTrace();
+			}
+			
+			try{
+				JSONObject results = new JSONObject(builder.toString());
+				jArray = JSONResults.splitResults(results);
+				
+				if(jArray != null){
+					for(JSONObject j: jArray){
+						shoppingList.add(JSONItemParser.readJSONObject(j));
+					}
+				}
+				
+			}catch(JSONException e){
+				e.printStackTrace();
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+			return shoppingList;
+		}
+		
+		@Override
+		protected void onPostExecute(ShoppingList list){
+			mShoppingList.merge(list);
+			ShoppingListFragment.this.refresh();
+			Log.d(TAG, String.format("Fetched %d items", list.size()) );
+		}
+
+		
 	}
 	
 }
