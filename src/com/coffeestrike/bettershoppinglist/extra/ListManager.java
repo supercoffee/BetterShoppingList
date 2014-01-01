@@ -6,11 +6,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
+import java.util.Observer;
 
 import android.content.Context;
 import android.util.Log;
 
 import com.coffeestrike.bettershoppinglist.models.ShoppingList;
+import com.coffeestrike.bettershoppinglist.models.ShoppingListObserver;
+import com.coffeestrike.bettershoppinglist.models.ShoppingListSyncObserver;
 
 /*
  * This class is a singleton.  Only one will ever be allowed
@@ -27,6 +30,8 @@ public class ListManager {
 	private ArrayList<ShoppingList> mAllLists;
 	private Context mAppContext;
 
+	private ArrayList<Observer> mObservers;
+
 	
 	protected ListManager(Context context){
 		mAppContext = context.getApplicationContext();
@@ -41,6 +46,7 @@ public class ListManager {
 			sListManager = new ListManager(context);
 			sListManager.mAllLists = new ArrayList<ShoppingList>();
 		}
+		sListManager.createObservers();
 		return sListManager;
 	}
 	
@@ -51,30 +57,24 @@ public class ListManager {
 		ObjectInputStream ois = null;
 
 		try{
-			
 			ois = new ObjectInputStream(mAppContext.openFileInput(FILENAME));
 			mAllLists = (ArrayList<ShoppingList>) ois.readObject();
 			
 		} catch (StreamCorruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(TAG, "Load failed", e);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(TAG, "Load failed", e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(TAG, "Load failed", e);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(TAG, "Load failed", e);
 		}
 		finally{
 			if(ois != null){
 				try {
 					ois.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Log.e(TAG, "Failed to close file.", e);
 				}
 			}
 			
@@ -91,19 +91,16 @@ public class ListManager {
 			oos.writeObject(mAllLists);
 			Log.d(TAG, String.format("Wrote %d lists to storage.", mAllLists.size()));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(TAG, "Save failed", e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(TAG, "Save failed", e);
 		}
 		finally{
 			if(oos != null){
 				try {
 					oos.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Log.e(TAG, "Failed to close file.", e);
 				}
 			}
 		}
@@ -142,13 +139,40 @@ public class ListManager {
 		mAllLists.add(new ShoppingList());
 	}
 	
+	/**
+	 * Returns the requested ShoppingList.
+	 * Attaches an observer to the list before returning.  
+	 * @param position
+	 * @return
+	 */
 	public ShoppingList getList(int position){
 		if(mAllLists.size() == 0){
 			newList();
 		}
-		return mAllLists.get(position);
+		ShoppingList s = mAllLists.get(position);
+		attachObservers(s);
+		return s;
 	}
-		
+	
+	
+	/**
+	 * Modify this method later to allow
+	 * for additional observers.
+	 */
+	public void createObservers(){
+		if(mObservers == null){
+			mObservers = new ArrayList<Observer>();
+		}
+		mObservers.add(new ShoppingListSyncObserver(mAppContext));
+	}
+	
+	public void attachObservers(ShoppingList list){
+		for(Observer o : mObservers){
+			list.addObserver(o);
+		}
+	}
+	
+	
 
 
 }

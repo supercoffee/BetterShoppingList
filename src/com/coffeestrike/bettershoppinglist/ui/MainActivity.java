@@ -50,7 +50,7 @@ public class MainActivity extends FragmentActivity{ //implements OnNavigationLis
 	
 	//protected NfcAdapter mNfcAdapter;
 
-	private ShoppingList mShoppingList;
+//	private ShoppingList mShoppingList;
 	
 	/*
 	private SpinnerAdapter mNavAdapter = new SpinnerAdapter(){
@@ -158,9 +158,9 @@ public class MainActivity extends FragmentActivity{ //implements OnNavigationLis
 	}
 	
 	*/
-	public ShoppingList getShoppingList() {
-		return mShoppingList;
-	}
+//	public ShoppingList getShoppingList() {
+//		return mShoppingList;
+//	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -174,7 +174,7 @@ public class MainActivity extends FragmentActivity{ //implements OnNavigationLis
 		
 //		mShoppingList = new ShoppingList(this);
 		ListManager.getInstance(this).load();
-		mShoppingList = ListManager.getInstance(this).getList(0);
+//		mShoppingList = ListManager.getInstance(this).getList(0);
 		
 		
 
@@ -273,14 +273,14 @@ public class MainActivity extends FragmentActivity{ //implements OnNavigationLis
 	}
 	*/
 	
-	public void onNewItem(Item i) {
-		FragmentManager fm = getSupportFragmentManager();
-		ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fm.findFragmentById(R.id.bottom_frame);
-		Intent intent = new Intent();
-		intent.putExtra(Item.EXTRA_ITEM, i);
-		shoppingListFragment.onActivityResult(ShoppingListFragment.NEW_ITEM, 
-				Activity.RESULT_OK, intent);
-	}
+//	public void onNewItem(Item i) {
+//		FragmentManager fm = getSupportFragmentManager();
+//		ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fm.findFragmentById(R.id.bottom_frame);
+//		Intent intent = new Intent();
+//		intent.putExtra(Item.EXTRA_ITEM, i);
+//		shoppingListFragment.onActivityResult(ShoppingListFragment.NEW_ITEM, 
+//				Activity.RESULT_OK, intent);
+//	}
 	@Override
 	protected void onPause() {
 		super.onPause();

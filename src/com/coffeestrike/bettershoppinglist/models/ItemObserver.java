@@ -8,18 +8,18 @@ import android.content.Context;
 /**
  * When an Item is changed by the user,
  * we need to sync it against to the server if required.
- * @author ben
+ * @author Benjamin Daschel
  *
  */
-public class ItemObserver implements Observer {
+public abstract class ItemObserver implements Observer {
 	
-
-
-
-	@Override
-	public void update(Observable arg0, Object arg1) {
-		// TODO Auto-generated method stub
-
+	protected Context mAppContext;
+	
+	public ItemObserver(Context context) {
+		//Context required to interact with system resources
+		mAppContext = context.getApplicationContext();
 	}
 
+	@Override
+	public abstract void update(Observable item, Object obj);
 }

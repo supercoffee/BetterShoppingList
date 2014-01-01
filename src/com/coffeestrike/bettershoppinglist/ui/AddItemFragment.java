@@ -17,6 +17,11 @@ import android.widget.TextView.OnEditorActionListener;
 import com.coffeestrike.bettershoppinglist.R;
 import com.coffeestrike.bettershoppinglist.models.Item;
 
+/**
+ * Not used in current version
+ * @author ben
+ *
+ */
 public class AddItemFragment extends Fragment {
 
 	protected static final String TAG = "AddItemFragment";

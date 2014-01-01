@@ -17,7 +17,7 @@ public class Divider extends Item {
 	private static final long serialVersionUID = 5783563470482249183L;
 
 	public Divider() {
-		super(null);
+		super();
 		mId = UUID.fromString("bc8ef74a-944c-4a61-a3aa-3f9eb7654032");
 	}
 	

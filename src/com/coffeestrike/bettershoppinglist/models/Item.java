@@ -22,10 +22,7 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 	private int mStatus; //0 = default, 1 = found, 2 = find later
 	private String mDescription;
 	private int mQuantity;
-	/*
-	 * At this time, UUID is not used for regular items. Future version
-	 * may utilize this, but for now only the list divider uses it.
-	 */
+
 	protected UUID mId;
 	private String mUnitOfMeasure;
 	private OnStatusChangedListener mStatusListener;

@@ -5,6 +5,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Observable;
+import java.util.Observer;
 import java.util.UUID;
 
 /**
@@ -187,5 +188,6 @@ public class ShoppingList extends Observable implements Serializable, Item.OnSta
 	public Item pollGarbageQueue(){
 		return mGarbageQ.poll();
 	}
+
 
 }

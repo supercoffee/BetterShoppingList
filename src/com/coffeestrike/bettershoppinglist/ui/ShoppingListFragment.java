@@ -40,7 +40,9 @@ import android.widget.TextView;
 import com.coffeestrike.bettershoppinglist.R;
 import com.coffeestrike.bettershoppinglist.extra.JSONItemParser;
 import com.coffeestrike.bettershoppinglist.extra.JSONResults;
+import com.coffeestrike.bettershoppinglist.extra.ListManager;
 import com.coffeestrike.bettershoppinglist.models.Item;
+import com.coffeestrike.bettershoppinglist.models.ItemSyncObserver;
 import com.coffeestrike.bettershoppinglist.models.ShoppingList;
 
 
@@ -62,6 +64,7 @@ public class ShoppingListFragment extends ListFragment {
 	private ShoppingList mRemoteList;
 	private Context mAppContext;
 	private ShoppingListAdapter mListAdapter;
+	private ItemSyncObserver mItemSyncObserver;
 	public static final int NEW_ITEM = 0;
 	public static final int EDIT_ITEM = 1;
 	@SuppressWarnings("unused")
@@ -100,23 +103,14 @@ public class ShoppingListFragment extends ListFragment {
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
 		mAppContext = getActivity().getApplicationContext();
-		mShoppingList = ((MainActivity)getActivity()).getShoppingList();
+		mItemSyncObserver = new ItemSyncObserver(mAppContext);
+//		mShoppingList = ((MainActivity)getActivity()).getShoppingList();
+		mShoppingList = ListManager.getInstance(mAppContext).getList(0);
 		mListAdapter = new ShoppingListAdapter(mShoppingList.getBaseList());
 		setListAdapter(mListAdapter);
 		getActivity().setTitle(mShoppingList.getListTitle());
 		setRetainInstance(true);
 	}
-	
-//	@Override
-//	public void onResume(){
-//		super.onResume();
-//		if(syncRemoteEnabled()){
-//			syncRemote();
-//		}
-//		else{
-//			Log.d(TAG, "Sync not enabled");
-//		}
-//	}
 	
 	@Override 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -127,7 +121,11 @@ public class ShoppingListFragment extends ListFragment {
 		ListView listView = (ListView)v.findViewById(android.R.id.list);
 		listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 		listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
-			
+			/*
+			 * (non-Javadoc)
+			 * @see android.view.ActionMode.Callback#onPrepareActionMode(android.view.ActionMode, android.view.Menu)
+			 * Action Mode listener
+			 */
 			@Override
 			public boolean onPrepareActionMode(ActionMode arg0, Menu arg1) {
 				return false;
@@ -195,6 +193,11 @@ public class ShoppingListFragment extends ListFragment {
 		super.onPause();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see android.support.v4.app.Fragment#onOptionsItemSelected(android.view.MenuItem)
+	 * Selection from options menu
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch(item.getItemId()){
@@ -231,9 +234,13 @@ public class ShoppingListFragment extends ListFragment {
 			return;
 		}
 		Item item = (Item)data.getSerializableExtra(Item.EXTRA_ITEM);
-//		int position = (Integer) data.getSerializableExtra(EditItemDialog.EXTRA_POSITION);
 		
+		/*
+		 * Attaching the observer here handles all the cases where new 
+		 * Items are created from UI interaction.
+		 */
 		if(!mShoppingList.contains(item)){
+			item.addObserver(mItemSyncObserver);
 			mShoppingList.add(0, item);
 		}
 		refresh();
@@ -350,68 +357,61 @@ public class ShoppingListFragment extends ListFragment {
 		mRemoteListPath = prefs.getString(SettingsActivity.KEY_SERVER_LIST_PATH, 
 				mAppContext.getResources().getString(R.string.default_server_list_path));
 		
-		try {
-	
-			new FetchJSONList().execute(new URL(mServerURL + mRemoteListPath));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 	}
 	
-	private class FetchJSONList extends AsyncTask<URL, Void, ShoppingList>{
-		
-		@Override
-		protected ShoppingList doInBackground(URL... params) {
-			StringBuilder builder = new StringBuilder();
-			JSONObject [] jArray = null;
-			ShoppingList shoppingList = new ShoppingList();
-			try{
-				URL url = params[0];
-				HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-				InputStream iStream = connection.getInputStream();
-				
-				BufferedReader reader = new BufferedReader(new InputStreamReader(iStream));
-				String s;
-				while( (s = reader.readLine()) != null){
-					builder.append(s);
-				}
-				
-				reader.close();
-				connection.disconnect();
-				
-			} catch(Exception e){
-				e.printStackTrace();
-			}
-			
-			try{
-				JSONObject results = new JSONObject(builder.toString());
-				jArray = JSONResults.splitResults(results);
-				
-				if(jArray != null){
-					for(JSONObject j: jArray){
-						shoppingList.add(JSONItemParser.readJSONObject(j));
-					}
-				}
-				
-			}catch(JSONException e){
-				e.printStackTrace();
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
-			return shoppingList;
-		}
-		
-		@Override
-		protected void onPostExecute(ShoppingList list){
-			mShoppingList.merge(list);
-			ShoppingListFragment.this.refresh();
-			Log.d(TAG, String.format("Fetched %d items", list.size()) );
-		}
-
-		
-	}
+//	private class FetchJSONList extends AsyncTask<URL, Void, ShoppingList>{
+//		
+//		@Override
+//		protected ShoppingList doInBackground(URL... params) {
+//			StringBuilder builder = new StringBuilder();
+//			JSONObject [] jArray = null;
+//			ShoppingList shoppingList = new ShoppingList();
+//			try{
+//				URL url = params[0];
+//				HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+//				InputStream iStream = connection.getInputStream();
+//				
+//				BufferedReader reader = new BufferedReader(new InputStreamReader(iStream));
+//				String s;
+//				while( (s = reader.readLine()) != null){
+//					builder.append(s);
+//				}
+//				
+//				reader.close();
+//				connection.disconnect();
+//				
+//			} catch(Exception e){
+//				e.printStackTrace();
+//			}
+//			
+//			try{
+//				JSONObject results = new JSONObject(builder.toString());
+//				jArray = JSONResults.splitResults(results);
+//				
+//				if(jArray != null){
+//					for(JSONObject j: jArray){
+//						shoppingList.add(JSONItemParser.readJSONObject(j));
+//					}
+//				}
+//				
+//			}catch(JSONException e){
+//				e.printStackTrace();
+//			}
+//			catch(Exception e){
+//				e.printStackTrace();
+//			}
+//			return shoppingList;
+//		}
+//		
+//		@Override
+//		protected void onPostExecute(ShoppingList list){
+//			mShoppingList.merge(list);
+//			ShoppingListFragment.this.refresh();
+//			Log.d(TAG, String.format("Fetched %d items", list.size()) );
+//		}
+//
+//		
+//	}
 	
 }
