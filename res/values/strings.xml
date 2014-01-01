@@ -22,5 +22,11 @@
     <string name="item_move">Move to cart</string>
     <string name="settings_metric">Use metric units</string>
     <string name="title_settings">Settings</string>
-
+    <string name="prefs_general">General</string>
+    <string name="prefs_server">Server Settings</string>
+    <string name="pref_sync_remote">Sync to remote server</string>
+    <string name="pref_server_url">Server URL</string>
+    <string name="prefs_server_list_path">Remote list path</string>
+	<string name="default_server_url">http://benjamin-api-test.stage54.limelyte.com</string>
+	<string name="default_server_list_path">/list.json</string>
 </resources>

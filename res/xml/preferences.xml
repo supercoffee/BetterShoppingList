@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
     <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-        <CheckBoxPreference android:summaryOn="Metric units will be used" android:title="@string/settings_metric" android:summaryOff="Imperial units will be used" android:defaultValue="false" android:key="pref_metric"/>
+        <PreferenceCategory android:title="@string/prefs_general">
+	        <CheckBoxPreference android:summaryOn="Metric units will be used" 
+	            android:title="@string/settings_metric" 
+	            android:summaryOff="Imperial units will be used" 
+	            android:defaultValue="false" 
+	            android:key="pref_metric"/>    
+	            
+	        </PreferenceCategory>
+        <PreferenceCategory android:title="@string/prefs_server">
+            <CheckBoxPreference android:title="@string/pref_sync_remote" 
+                android:key="pref_sync_remote"/>
+            <EditTextPreference android:dependency="pref_sync_remote" 
+                android:title="@string/pref_server_url" 
+                android:key="pref_server_url" android:defaultValue="@string/default_server_url"/>
+            
+            <EditTextPreference android:dependency="pref_sync_remote"
+                android:title="@string/prefs_server_list_path"
+                android:key="pref_server_list_path" android:defaultValue="@string/default_server_list_path"/>
+            
+        </PreferenceCategory>
     </PreferenceScreen>

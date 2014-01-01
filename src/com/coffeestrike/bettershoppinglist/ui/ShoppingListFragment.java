@@ -2,16 +2,8 @@ package com.coffeestrike.bettershoppinglist.ui;
 
 import java.util.ArrayList;
 
-import com.coffeestrike.bettershoppinglist.R;
-import com.coffeestrike.bettershoppinglist.R.id;
-import com.coffeestrike.bettershoppinglist.R.layout;
-import com.coffeestrike.bettershoppinglist.R.menu;
-import com.coffeestrike.bettershoppinglist.models.Item;
-import com.coffeestrike.bettershoppinglist.models.ShoppingList;
-
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
@@ -31,6 +23,10 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.coffeestrike.bettershoppinglist.R;
+import com.coffeestrike.bettershoppinglist.models.Item;
+import com.coffeestrike.bettershoppinglist.models.ShoppingList;
 
 
 /**

@@ -1,10 +1,9 @@
 package com.coffeestrike.bettershoppinglist.ui;
 
-import com.coffeestrike.bettershoppinglist.R;
-import com.coffeestrike.bettershoppinglist.R.xml;
-
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+
+import com.coffeestrike.bettershoppinglist.R;
 
 public class SettingsFragment extends PreferenceFragment {
 	
