@@ -9,12 +9,6 @@ import android.util.Log;
 
 import com.coffeestrike.bettershoppinglist.models.Item;
 
-/**
- * Splits the resulting JSON object from HTTP GET
- * into individual JSON objects representing list items.
- * @author ben
- *
- */
 public class JSONUtils {
 	
 	private static final String JSON_DESCRIPTION = "title"; //what are we shopping for
@@ -32,6 +26,8 @@ public class JSONUtils {
 	 */
 	private static final String JSON_ID = "id";
 	private static final String TAG = "com.coffeestrike.betttershoppinglist.JSONItemParser";
+	
+	
 	public static JSONObject createJSONObject(Item item) throws JSONException{
 		JSONObject jsonObj = new JSONObject();
 

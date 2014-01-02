@@ -5,15 +5,21 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Observable;
-import java.util.Observer;
 import java.util.UUID;
+
+import android.os.Bundle;
 
 /**
  * @author Benjamin Daschel
- * Extension of ArrayList with ability to save and load from file
  *
  */
 public class ShoppingList extends Observable implements Serializable, Item.OnStatusChangedListener{
+	
+	public static final String EXTRA_OPERATION = "operation";
+	public static final String EXTRA_DATA = "item";
+	public static final int ADD = 1;
+	public static final int DELETE = 2;
+	public static final int CLEAR = 3;
 	
 	/**
 	 * 
@@ -109,27 +115,6 @@ public class ShoppingList extends Observable implements Serializable, Item.OnSta
 		}
 		
 	}
-//
-//	@Override
-//	public void add(int index, Item item) {
-//		item.setStatusListener(this);
-//		super.add(index, item);
-//	}
-//
-//	@Override
-//	public boolean add(Item item) {
-//		item.setStatusListener(this);
-//		return super.add(item);
-//	}
-//
-//	@Override
-//	public Item remove(int index) {
-//		Item result =  super.remove(index);
-//		if(size() == 1 && findListDivider() != -1){
-//			clear();
-//		}
-//		return result;
-//	}
 
 	public ArrayList<Item> getBaseList() {
 		return mItemList;
@@ -138,12 +123,19 @@ public class ShoppingList extends Observable implements Serializable, Item.OnSta
 	public void add(int index, Item item){
 		item.setStatusListener(this);
 		mItemList.add(index, item);
-		notifyObservers();
+		notifyObserversAddItem(item);
 	}
 	
 	public void add(Item item){
 		mItemList.add(item);
-		notifyObservers();
+		notifyObserversAddItem(item);
+	}
+	
+	private void notifyObserversAddItem(Item item){
+		Bundle bundle = new  Bundle();
+		bundle.putInt(EXTRA_OPERATION, ADD);
+		bundle.putSerializable(EXTRA_DATA, item);
+		notifyObservers(bundle);
 	}
 	
 	public Item remove(int index){
@@ -154,7 +146,11 @@ public class ShoppingList extends Observable implements Serializable, Item.OnSta
 		if(divIndex == mItemList.size() -1 && divIndex != -1){
 			 mItemList.remove(divIndex);
 		}
-		notifyObservers();
+		
+		Bundle bundle = new  Bundle();
+		bundle.putInt(EXTRA_OPERATION, DELETE);
+		bundle.putSerializable(EXTRA_DATA, result);
+		notifyObservers(bundle);
 		
 		return result;
 	}
@@ -174,7 +170,10 @@ public class ShoppingList extends Observable implements Serializable, Item.OnSta
 			mGarbageQ.add(item);
 		}
 		mItemList.clear();
-		notifyObservers();
+		
+		Bundle bundle = new  Bundle();
+		bundle.putInt(EXTRA_OPERATION, CLEAR);
+		notifyObservers(bundle);
 	}
 
 	public int size() {

@@ -28,8 +28,9 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 	private OnStatusChangedListener mStatusListener;
 	
 	/*
-	 * This may not be defined until the item is retrieved from a server.
+	 * This may not be set until the item is retrieved from a server.
 	 * In fact, this is completely normal.
+	 * If the value hasn't been set, it will default to zero.
 	 */
 	private int mJSONId;
 
