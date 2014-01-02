@@ -24,7 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.coffeestrike.bettershoppinglist.R;
-import com.coffeestrike.bettershoppinglist.extra.JSONResults;
+import com.coffeestrike.bettershoppinglist.extra.JSONUtils;
 import com.coffeestrike.bettershoppinglist.models.SyncManager;
 
 public class SyncPreferencesActivity extends Activity {

@@ -1,21 +1,11 @@
 package com.coffeestrike.bettershoppinglist.ui;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
@@ -38,8 +28,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.coffeestrike.bettershoppinglist.R;
-import com.coffeestrike.bettershoppinglist.extra.JSONItemParser;
-import com.coffeestrike.bettershoppinglist.extra.JSONResults;
 import com.coffeestrike.bettershoppinglist.extra.ListManager;
 import com.coffeestrike.bettershoppinglist.models.Item;
 import com.coffeestrike.bettershoppinglist.models.ItemSyncObserver;

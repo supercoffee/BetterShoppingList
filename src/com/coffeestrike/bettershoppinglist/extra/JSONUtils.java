@@ -1,5 +1,7 @@
 package com.coffeestrike.bettershoppinglist.extra;
 
+import java.util.Iterator;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -7,9 +9,16 @@ import android.util.Log;
 
 import com.coffeestrike.bettershoppinglist.models.Item;
 
-public class JSONItemParser {
+/**
+ * Splits the resulting JSON object from HTTP GET
+ * into individual JSON objects representing list items.
+ * @author ben
+ *
+ */
+public class JSONUtils {
 	
 	private static final String JSON_DESCRIPTION = "title"; //what are we shopping for
+	
 	private static final String JSON_QUANTITY = "quantity"; // quantity of the item
 	private static final String JSON_UOM = "units"; //unit of measure
 	private static final String JSON_CHECKED = "checked"; //has the item been checked off the list
@@ -23,7 +32,6 @@ public class JSONItemParser {
 	 */
 	private static final String JSON_ID = "id";
 	private static final String TAG = "com.coffeestrike.betttershoppinglist.JSONItemParser";
-	
 	public static JSONObject createJSONObject(Item item) throws JSONException{
 		JSONObject jsonObj = new JSONObject();
 
@@ -69,5 +77,20 @@ public class JSONItemParser {
 		
 		return item;
 	}
+	
+	public static JSONObject[] splitResults(JSONObject results) throws JSONException{
+		results = results.getJSONObject("results");
+		JSONObject [] allItems = new JSONObject[results.length()];
+		
+		@SuppressWarnings("unchecked")
+		Iterator<String> iter = results.keys();
+		
+		for(int i = 0; i < allItems.length; i++){
+			allItems[i] = results.getJSONObject(iter.next());
+		}
+		
+		return allItems;
+	}
+
 
 }

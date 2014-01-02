@@ -18,22 +18,30 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.coffeestrike.bettershoppinglist.R;
-import com.coffeestrike.bettershoppinglist.extra.JSONResults;
+import com.coffeestrike.bettershoppinglist.extra.JSONUtils;
 import com.coffeestrike.bettershoppinglist.ui.SettingsActivity;
 
 public class SyncManager {
 	
 	private static SyncManager sSyncManager;
 	
+	public static SyncManager getInstance(Context context){
+		if(sSyncManager== null){
+			sSyncManager = new SyncManager(context);
+		}
+		return sSyncManager;
+		
+	}
+
 	private Context mAppContext;
 
 	private String mServerURL;
-
+	
+	
 	private String mRemoteListPath;
 	
 	
 	private static final String TAG = "SyncManager";
-	
 	
 	private SyncManager(Context context){
 		mAppContext = context.getApplicationContext();
@@ -44,14 +52,6 @@ public class SyncManager {
 				mAppContext.getResources().getString(R.string.default_server_url));
 		mRemoteListPath = prefs.getString(SettingsActivity.KEY_SERVER_LIST_PATH, 
 				mAppContext.getResources().getString(R.string.default_server_list_path));
-	}
-	
-	public static SyncManager getInstance(Context context){
-		if(sSyncManager== null){
-			sSyncManager = new SyncManager(context);
-		}
-		return sSyncManager;
-		
 	}
 	
 	public void clearServerList(){
@@ -76,11 +76,11 @@ public class SyncManager {
 					JSONObject[] itemsFromServer = null;
 					
 					try {
-						itemsFromServer = JSONResults.splitResults(results);
+						itemsFromServer = JSONUtils.splitResults(results);
 						
 						if(itemsFromServer != null){
 							for(JSONObject j : itemsFromServer){
-								requestDelete(j);
+								deleteItem(j);
 							}
 
 							return itemsFromServer.length;
@@ -113,49 +113,12 @@ public class SyncManager {
 		
 	}
 	
-	public JSONObject getServerContents(){
-		HttpURLConnection  httpConnection = null;
-		InputStream iStream = null;
-		StringBuilder contentBuilder = new StringBuilder();
-		BufferedReader reader = null;
-		try {
-			httpConnection= (HttpURLConnection) new URL(new URL(mServerURL), mRemoteListPath)
-			.openConnection();
-			iStream = httpConnection.getInputStream();
-			reader = new BufferedReader(new InputStreamReader(iStream));
-			String s;
-			
-			while( (s = reader.readLine()) != null){
-				contentBuilder.append(s);
-			}
-			
-			reader.close();
-
-			
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally{
-			if(httpConnection != null){
-				httpConnection.disconnect();
-			}
-		}
-		
-		try{
-			return new JSONObject(contentBuilder.toString());
-		} catch(JSONException e){
-			return null;
-		}
-	}
-
-	
 	/**
 	 * Request that the the server delete the item
 	 * specified by param j
 	 * @param j Item to delete from server
 	 */
-	public void requestDelete(JSONObject j){
+	public void deleteItem(JSONObject j){
 		
 		HttpURLConnection connection = null;
 		try {
@@ -192,6 +155,7 @@ public class SyncManager {
 		
 	}
 
+	
 	/**
 	 * Uses HTTP GET to retrieve an individual item.
 	 * @param serverURL
@@ -202,7 +166,7 @@ public class SyncManager {
 		//TODO stub
 		return null;
 	}
-	
+
 	/**
 	 * Uses HTTP GET command to retrieve the entire list.
 	 * 
@@ -210,8 +174,50 @@ public class SyncManager {
 	 * @return
 	 */
 	public JSONObject[] getList(){
-		//TODO stub
+		JSONObject contents = getServerContents();
+		try {
+			JSONUtils.readJSONObject(contents);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
+	}
+	
+	public JSONObject getServerContents(){
+		HttpURLConnection  httpConnection = null;
+		InputStream iStream = null;
+		StringBuilder contentBuilder = new StringBuilder();
+		BufferedReader reader = null;
+		try {
+			httpConnection= (HttpURLConnection) new URL(new URL(mServerURL), mRemoteListPath)
+			.openConnection();
+			iStream = httpConnection.getInputStream();
+			reader = new BufferedReader(new InputStreamReader(iStream));
+			String s;
+			
+			while( (s = reader.readLine()) != null){
+				contentBuilder.append(s);
+			}
+			
+			reader.close();
+
+			
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally{
+			if(httpConnection != null){
+				httpConnection.disconnect();
+			}
+		}
+		
+		try{
+			return new JSONObject(contentBuilder.toString());
+		} catch(JSONException e){
+			return null;
+		}
 	}
 	
 	/**
