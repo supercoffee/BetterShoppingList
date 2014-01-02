@@ -13,8 +13,8 @@ import org.json.JSONObject;
  */
 public class JSONResults {
 	
-	public static JSONObject[] splitResults(JSONObject httpResults) throws JSONException{
-		JSONObject results = httpResults.getJSONObject("results");
+	public static JSONObject[] splitResults(JSONObject results) throws JSONException{
+		results = results.getJSONObject("results");
 		JSONObject [] allItems = new JSONObject[results.length()];
 		
 		@SuppressWarnings("unchecked")

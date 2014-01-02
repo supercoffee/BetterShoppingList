@@ -1,0 +1,27 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/button_force_sync_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/force_sync_down" 
+        android:onClick="forceSyncDown"/>
+
+    <Button
+        android:id="@+id/button_force_sync_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/force_sync_up" 
+        android:onClick="forceSyncUp"/>
+
+    <Button
+        android:id="@+id/button_clear_server_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/clear_server_list" 
+        android:onClick="clearServerList"/>
+
+</LinearLayout>

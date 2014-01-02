@@ -18,6 +18,13 @@
             <EditTextPreference android:dependency="pref_sync_remote"
                 android:title="@string/pref_server_list_path"
                 android:key="pref_server_list_path" android:defaultValue="@string/default_server_list_path"/>
-            
+            <Preference 
+                android:title="@string/pref_more_sync_opts" 
+                android:dependency="pref_sync_remote">
+                 <intent 
+                 	android:action="bettershoppinglist.OPEN_SYNC_PREFS"/>
+            </Preference>
+               
+
         </PreferenceCategory>
     </PreferenceScreen>
