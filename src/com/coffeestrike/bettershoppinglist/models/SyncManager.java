@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -22,6 +23,14 @@ import com.coffeestrike.bettershoppinglist.R;
 import com.coffeestrike.bettershoppinglist.extra.JSONUtils;
 import com.coffeestrike.bettershoppinglist.ui.SettingsActivity;
 
+/**
+ * 
+ * connection.setChunkedStreamingMode(0) has been commented out
+ * in several places, because it seems to cause an EOFException.
+ * 
+ * @author Benjamin Daschel
+ *
+ */
 public class SyncManager {
 	
 	private static SyncManager sSyncManager;
@@ -104,51 +113,59 @@ public class SyncManager {
 	
 	public void createNewItem(Item item){
 		
-		new AsyncTask<Item, Void, Integer>(){
+		new AsyncTask<Item, Void, Void>(){
 
 			@Override
-			protected Integer doInBackground(Item... items) {
+			protected Void doInBackground(Item... items) {
 				try {
 					JSONObject jsonItem = JSONUtils.createJSONObject(items[0]);
 					String responseMessage = postItem(jsonItem);
-					JSONObject response = new JSONObject(responseMessage);
-					
-					int newItemId = response.getInt("id");
-					items[0].setJSONId(newItemId);
-					
-					return newItemId;
+					if(responseMessage.length() > 0){
+						JSONObject response = new JSONObject(responseMessage);
+						int newItemId = response.getInt("id");
+						items[0].setJSONId(newItemId);
+					}
+					else{
+						Log.d(TAG, "POST: response from server 0 length.");
+					}
 				} catch (JSONException e) {
-					e.printStackTrace();
+					Log.e(TAG, "createNewItem", e);
 				}
-				return -1;
+				return null;
 			}
 			
-			@Override
-			protected void onPostExecute(Integer status){
-				Log.d(TAG, "POST results: " + status);
-			}
 			
 		}.execute(item);
 		
 	}
 	
 	public void updateItem(Item item){
+		
 		new AsyncTask<Item, Void, Integer>(){
 
 			@Override
 			protected Integer doInBackground(Item... items) {
+				int statusCode = -1;
 				try {
-					JSONObject JSONitem = JSONUtils.createJSONObject(items[0]);
-					return putItem(JSONitem, items[0].getJSONId());
+					JSONObject jsonItem = JSONUtils.createJSONObject(items[0]);
+					statusCode = putItem(jsonItem, items[0].getJSONId());
+					/*
+					 * If we get a 404, the item hasn't been assigned an id 
+					 * for some reason. Do a POST request instead.
+					 */
+					if(statusCode == HttpURLConnection.HTTP_NOT_FOUND){
+						Log.d(TAG, "PUT results in 404. Trying POST instead.");
+						String responseMessage = postItem(jsonItem);
+						JSONObject response = new JSONObject(responseMessage);
+						
+						int newItemId = response.getInt("id");
+						items[0].setJSONId(newItemId);
+					}
+					
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-				return -1;
-			}
-			
-			@Override
-			protected void onPostExecute(Integer status){
-				Log.d(TAG, "PUT results: " + status);
+				return statusCode;
 			}
 			
 		}.execute(item);
@@ -355,10 +372,15 @@ public class SyncManager {
 	private String postItem(JSONObject item){
 		String response = "";
 		String serverURLString = mServerURL + mRemoteListPath;
-		
+		StringBuilder builder = new StringBuilder();
+		HttpURLConnection connection = null;
+		OutputStreamWriter writer = null;
+		InputStream iStream = null;
+		BufferedReader reader = null;
+		int responseCode = -1;
 		try{
 			URL url = new URL(serverURLString);
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection = (HttpURLConnection) url.openConnection();
 		
 			/*
 			 * These parameters are set based on advice from 
@@ -366,20 +388,49 @@ public class SyncManager {
 			 * http://developer.android.com/reference/java/net/HttpURLConnection.html
 			 */
 			connection.setDoOutput(true);
-			connection.setChunkedStreamingMode(0);
-			
-			OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+			connection.setDoInput(true);
+//			connection.setChunkedStreamingMode(0);
+		}catch(MalformedURLException e){
+			Log.e(TAG, "URL derp!", e);
+		} catch (IOException e) {
+			Log.e(TAG, "Failed opening URL.", e);
+		}
+		
+		/*
+		 * Send the data to the server
+		 */
+		try {
+			writer = new OutputStreamWriter(connection.getOutputStream());
 			writer.write(item.toString());
 			writer.close();
+		} catch (IOException e) {
+			Log.e(TAG, "Failed weriting output stream.", e);
+		}
+
+		/*
+		 * Read the response from the server.
+		 */
+		try {
+			iStream = connection.getInputStream();
 			
-			response = connection.getResponseMessage();
+			reader = new BufferedReader(new InputStreamReader(iStream));
+			String s;
+			while( (s = reader.readLine()) != null){
+				builder.append(s);
+			}
+			reader.close();
+			responseCode = connection.getResponseCode();
+		} catch (IOException e) {
+			Log.e(TAG, "Failed reading input stream.", e);
+		}
+		
+		response = builder.toString();
+		if(connection != null){
+			Log.d(TAG, "POST results: " + responseCode);
 			connection.disconnect();
 		}
-		catch(MalformedURLException e){
-			Log.e(TAG, "postItem()", e);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+
+		
 		return response;
 	}
 	
@@ -403,8 +454,12 @@ public class SyncManager {
 			 * http://developer.android.com/reference/java/net/HttpURLConnection.html
 			 */
 			connection.setDoOutput(true);
-			connection.setChunkedStreamingMode(0);
+//			connection.setChunkedStreamingMode(0);
 			connection.setRequestMethod("PUT");
+//			if (Build.VERSION.SDK != null
+//					&& Build.VERSION.SDK_INT > 13) {
+//					connection.setRequestProperty("Connection", "close");
+//					}
 			
 			OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
 			writer.write(item.toString());
@@ -412,6 +467,8 @@ public class SyncManager {
 			
 			statusCode = connection.getResponseCode();
 			connection.disconnect();
+			
+			Log.d(TAG, "PUT results: "+ statusCode);
 		}
 		catch(MalformedURLException e){
 			Log.e(TAG, "postItem()", e);

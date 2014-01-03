@@ -111,7 +111,7 @@ public class EditItemDialog extends DialogFragment {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				//adjust the items values before continuing
-				mItem.setDescription(description.getText());
+				mItem.setDescription(description.getText().toString());
 				mItem.setQty(Integer.parseInt(quantity.getText().toString()));
 				mItem.setUnitOfMeasure((String) uomSpinner.getSelectedItem());
 				sendResult(Activity.RESULT_OK);	

@@ -28,9 +28,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.coffeestrike.bettershoppinglist.R;
-import com.coffeestrike.bettershoppinglist.extra.ListManager;
 import com.coffeestrike.bettershoppinglist.models.Item;
 import com.coffeestrike.bettershoppinglist.models.ItemSyncObserver;
+import com.coffeestrike.bettershoppinglist.models.ListManager;
 import com.coffeestrike.bettershoppinglist.models.ShoppingList;
 
 

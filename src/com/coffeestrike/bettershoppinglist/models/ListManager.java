@@ -1,4 +1,4 @@
-package com.coffeestrike.bettershoppinglist.extra;
+package com.coffeestrike.bettershoppinglist.models;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,10 +10,6 @@ import java.util.Observer;
 
 import android.content.Context;
 import android.util.Log;
-
-import com.coffeestrike.bettershoppinglist.models.ShoppingList;
-import com.coffeestrike.bettershoppinglist.models.ShoppingListObserver;
-import com.coffeestrike.bettershoppinglist.models.ShoppingListSyncObserver;
 
 /*
  * This class is a singleton.  Only one will ever be allowed
@@ -45,8 +41,8 @@ public class ListManager {
 		if (sListManager == null){
 			sListManager = new ListManager(context);
 			sListManager.mAllLists = new ArrayList<ShoppingList>();
+			sListManager.createObservers();
 		}
-		sListManager.createObservers();
 		return sListManager;
 	}
 	
@@ -151,6 +147,9 @@ public class ListManager {
 		}
 		ShoppingList s = mAllLists.get(position);
 		attachObservers(s);
+		for(Item i: s){
+			i.addObserver(new ItemSyncObserver(mAppContext));
+		}
 		return s;
 	}
 	

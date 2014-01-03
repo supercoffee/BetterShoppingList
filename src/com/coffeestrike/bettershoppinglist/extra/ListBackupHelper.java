@@ -1,5 +1,7 @@
 package com.coffeestrike.bettershoppinglist.extra;
 
+import com.coffeestrike.bettershoppinglist.models.ListManager;
+
 import android.app.backup.BackupAgentHelper;
 import android.app.backup.FileBackupHelper;
 

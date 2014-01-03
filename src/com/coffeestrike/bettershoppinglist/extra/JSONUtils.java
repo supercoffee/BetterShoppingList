@@ -25,7 +25,7 @@ public class JSONUtils {
 	 * create it upon POST.
 	 */
 	private static final String JSON_ID = "id";
-	private static final String TAG = "com.coffeestrike.betttershoppinglist.JSONItemParser";
+	private static final String TAG = "JSONItemParser";
 	
 	
 	public static JSONObject createJSONObject(Item item) throws JSONException{

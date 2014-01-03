@@ -13,8 +13,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 import com.coffeestrike.bettershoppinglist.R;
-import com.coffeestrike.bettershoppinglist.extra.ListManager;
 import com.coffeestrike.bettershoppinglist.models.Item;
+import com.coffeestrike.bettershoppinglist.models.ListManager;
 import com.coffeestrike.bettershoppinglist.models.ShoppingList;
 
 

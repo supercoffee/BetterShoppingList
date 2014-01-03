@@ -13,7 +13,7 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 	}
 	
 	private static final long serialVersionUID = -8439535938970924273L;
-	private static final String TAG = "com.coffeestrike.bettershoppinglist.Item";
+	private static final String TAG = "Item";
 	/*
 	 * Only status 0 and 1 are used at this time. 
 	 * Essentially, this field is always converted to
@@ -47,10 +47,15 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 	public static final String EXTRA_ITEM = "Item";
 	
 	public Item(){
-		this("");
+		super();
+		mDescription = "";
+		mQuantity = 1;
+		mUnitOfMeasure = sDefaultUomList[0];
+		mId = UUID.randomUUID();
 	}
 
 	public Item(String description){
+		super();
 		mDescription = description;
 		mQuantity = 1;
 		mUnitOfMeasure = sDefaultUomList[0];
@@ -58,6 +63,7 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 	}
 	
 	public Item(String description, int quantity){
+		super();
 		mDescription = description;
 		mQuantity = quantity;
 		mUnitOfMeasure = sDefaultUomList[0];
@@ -117,28 +123,31 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 		return false;
 	}
 
-	public void setDescription(CharSequence description) {
-		if (description != null) {
-			mDescription = description.toString();
+	public void setDescription(String description) {
+		if (description != null && !description.equals(mDescription) ){
+			mDescription = description;
 			notifyObservers();
+
 		}
 	}
 
 	public void setJSONId(int jSONId) {
 		mJSONId = jSONId;
-		notifyObservers();
 	}
 
 	public void setQty(int qty) {
-		mQuantity = qty;
-		notifyObservers();
+		if (qty != mQuantity) {
+			mQuantity = qty;
+			notifyObservers();
+		}
 	}
 
 	public void setStatus(int status) {
-		mStatus = status;
-		notifyObservers();
-		mStatusListener.onStatusChanged(this);
-		Log.d(TAG, String.format("Status of item %s set to %d", getId().toString(), status));
+		if(status != mStatus){
+			mStatus = status;
+			notifyObservers();
+			mStatusListener.onStatusChanged(this);
+		}
 		
 	}
 	
@@ -147,8 +156,10 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 	}
 
 	public void setUnitOfMeasure(String s) {
-		mUnitOfMeasure = s;
-		notifyObservers();
+		if(! s.equals(mUnitOfMeasure)){
+			mUnitOfMeasure = s;
+			notifyObservers();
+		}
 	}
 	
 	@Override
@@ -166,5 +177,12 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 		return builder.toString();
 	}
 
+	@Override
+	public void notifyObservers() {
+		setChanged();
+		super.notifyObservers();
+	}
+
+	
 
 }

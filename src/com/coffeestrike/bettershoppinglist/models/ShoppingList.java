@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Observable;
 import java.util.UUID;
 
@@ -13,7 +14,7 @@ import android.os.Bundle;
  * @author Benjamin Daschel
  *
  */
-public class ShoppingList extends Observable implements Serializable, Item.OnStatusChangedListener{
+public class ShoppingList extends Observable implements Iterable<Item>, Serializable, Item.OnStatusChangedListener{
 	
 	public static final String EXTRA_OPERATION = "operation";
 	public static final String EXTRA_DATA = "item";
@@ -35,6 +36,7 @@ public class ShoppingList extends Observable implements Serializable, Item.OnSta
 
 	
 	public ShoppingList(){
+		super();
 		mItemList = new ArrayList<Item>();
 		mListId = UUID.randomUUID();
 		mGarbageQ = new ArrayDeque<Item>();
@@ -42,6 +44,7 @@ public class ShoppingList extends Observable implements Serializable, Item.OnSta
 	}
 	
 	protected ShoppingList(UUID id){
+		super();
 		mItemList = new ArrayList<Item>();
 		mListId = id;
 		mGarbageQ = new ArrayDeque<Item>();
@@ -187,6 +190,33 @@ public class ShoppingList extends Observable implements Serializable, Item.OnSta
 	public Item pollGarbageQueue(){
 		return mGarbageQ.poll();
 	}
+	
+	public int garbageQueueSize(){
+		return mGarbageQ.size();
+	}
+	
+	public boolean isGarbageEmpty(){
+		return mGarbageQ.size() == 0;
+	}
 
+	@Override
+	public void notifyObservers() {
+		setChanged();
+		super.notifyObservers();
+	}
+
+	@Override
+	public void notifyObservers(Object data) {
+		setChanged();
+		super.notifyObservers(data);
+	}
+
+	@Override
+	public Iterator<Item> iterator() {
+		return mItemList.iterator();
+	}
+
+	
+	
 
 }
