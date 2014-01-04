@@ -31,6 +31,7 @@
 	<string name="default_server_list_path">/list.json</string>
 	<string name="force_sync_down">Force sync from server</string>
 	<string name="force_sync_up">Force sync to server</string>
+	<string name="force_sync">Force Sync</string>
 	<string name="clear_server_list">Clear server-side list</string>
 	<string name="pref_more_sync_opts">More Sync options</string>
 </resources>

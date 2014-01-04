@@ -23,9 +23,10 @@ public class ItemSyncObserver extends ItemObserver {
 			syncManagerInstance = SyncManager.getInstance(mAppContext);
 		}
 		
-		Item item = (Item) observable;
-		
-		syncManagerInstance.updateItem(item);
+		if (syncManagerInstance.isSyncEnabled()) {
+			Item item = (Item) observable;
+			syncManagerInstance.updateItem(item);
+		}
 
 	}
 

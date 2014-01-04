@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import com.coffeestrike.bettershoppinglist.models.Item;
+import com.coffeestrike.bettershoppinglist.models.ShoppingList;
 
 public class JSONUtils {
 	
@@ -34,7 +35,8 @@ public class JSONUtils {
 		jsonObj.accumulate(JSON_DESCRIPTION, item.getDescription().toString());
 		jsonObj.accumulate(JSON_QUANTITY, item.getQty());
 		jsonObj.accumulate(JSON_UOM, item.getUnitOfMeasure());
-		jsonObj.accumulate(JSON_CHECKED, item.getStatus() == 1);
+//		jsonObj.accumulate(JSON_CHECKED, item.getStatus() == 1);
+		jsonObj.accumulate(JSON_CHECKED, item.isChecked());
 
 		/*
 		 * We dont need to include the ID field in the JSON object because the server
@@ -60,13 +62,14 @@ public class JSONUtils {
 			item.setUnitOfMeasure(jsonObj.getString(JSON_UOM));
 		}
 		if (jsonObj.has(JSON_CHECKED)) {
-			item.setStatus(jsonObj.getBoolean(JSON_CHECKED) ? 0 : 1);
-			
+//			item.setStatus(jsonObj.getBoolean(JSON_CHECKED) ? 1 : 0);
+			item.setChecked(jsonObj.getBoolean(JSON_CHECKED));
+		}	
 		/*
 		 * Needed when the object is modified so the server
 		 * knows which record to update or delete.
 		 */
-		}
+		
 		if (jsonObj.has(JSON_ID)) {
 			item.setJSONId(jsonObj.getInt(JSON_ID));
 		}
@@ -86,6 +89,23 @@ public class JSONUtils {
 		}
 		
 		return allItems;
+	}
+
+	public static ShoppingList shoppingListFromArray(JSONObject[] itemsList) {
+		ShoppingList shoppingList = new ShoppingList();
+		
+		if (itemsList != null) {
+			for (JSONObject j : itemsList) {
+				try {
+					Item item = readJSONObject(j);
+					shoppingList.add(item);
+				} catch (JSONException e) {
+					Log.e(TAG, "shoppingListFromArray", e);
+				}
+
+			}
+		}
+		return shoppingList;
 	}
 
 

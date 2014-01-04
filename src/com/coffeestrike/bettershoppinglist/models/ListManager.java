@@ -27,6 +27,8 @@ public class ListManager {
 	private Context mAppContext;
 
 	private ArrayList<Observer> mObservers;
+	
+	private ShoppingList mLastUsedList;
 
 	
 	protected ListManager(Context context){
@@ -131,7 +133,7 @@ public class ListManager {
 		return titles;
 	}
 	
-	public void newList(){
+	private void newList(){
 		mAllLists.add(new ShoppingList());
 	}
 	
@@ -150,7 +152,19 @@ public class ListManager {
 		for(Item i: s){
 			i.addObserver(new ItemSyncObserver(mAppContext));
 		}
+		setLastUsedList(s);
 		return s;
+	}
+	
+	private void setLastUsedList(ShoppingList lastUsed){
+		mLastUsedList = lastUsed;
+	}
+	
+	public ShoppingList getLastUsedList(){
+		if(mLastUsedList == null){
+			throw new IllegalStateException("No lists loaded yet");
+		}
+		return mLastUsedList;
 	}
 	
 	

@@ -16,11 +16,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.coffeestrike.bettershoppinglist.R;
 import com.coffeestrike.bettershoppinglist.extra.JSONUtils;
+import com.coffeestrike.bettershoppinglist.extra.OnDownloadFinishedListener;
 import com.coffeestrike.bettershoppinglist.ui.SettingsActivity;
 
 /**
@@ -31,7 +33,7 @@ import com.coffeestrike.bettershoppinglist.ui.SettingsActivity;
  * @author Benjamin Daschel
  *
  */
-public class SyncManager {
+public class SyncManager implements OnDownloadFinishedListener{
 	
 	private static SyncManager sSyncManager;
 	
@@ -48,6 +50,8 @@ public class SyncManager {
 	private String mRemoteListPath;
 	private SharedPreferences mPreferences;
 	
+	public static final String EXTRA_SHOPPING_LIST = "remote-list";
+	
 	
 	private static final String TAG = "SyncManager";
 	
@@ -60,11 +64,6 @@ public class SyncManager {
 				mAppContext.getResources().getString(R.string.default_server_url));
 		mRemoteListPath = mPreferences.getString(SettingsActivity.KEY_SERVER_LIST_PATH, 
 				mAppContext.getResources().getString(R.string.default_server_list_path));
-	}
-	
-	public boolean isSyncEnabled(){
-		return mPreferences.getBoolean(mAppContext.getResources().getString(R.string.pref_sync_remote), 
-				false);
 	}
 	
 	public void clearServerList(){
@@ -139,64 +138,40 @@ public class SyncManager {
 		
 	}
 	
-	public void updateItem(Item item){
+	/**
+	 * Request that the the server delete the item
+	 * specified by param j
+	 * @param j Item to delete from server
+	 */
+	private void deleteItem(int itemId){
 		
-		new AsyncTask<Item, Void, Integer>(){
-
-			@Override
-			protected Integer doInBackground(Item... items) {
-				int statusCode = -1;
-				try {
-					JSONObject jsonItem = JSONUtils.createJSONObject(items[0]);
-					statusCode = putItem(jsonItem, items[0].getJSONId());
-					/*
-					 * If we get a 404, the item hasn't been assigned an id 
-					 * for some reason. Do a POST request instead.
-					 */
-					if(statusCode == HttpURLConnection.HTTP_NOT_FOUND){
-						Log.d(TAG, "PUT results in 404. Trying POST instead.");
-						String responseMessage = postItem(jsonItem);
-						JSONObject response = new JSONObject(responseMessage);
-						
-						int newItemId = response.getInt("id");
-						items[0].setJSONId(newItemId);
-					}
-					
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-				return statusCode;
-			}
+		HttpURLConnection connection = null;
+		try {
+			String itemPath = String.format(mServerURL + mRemoteListPath.split("\\.")[0]
+					+ "/%d.json", itemId);
+			Log.d(TAG, "Requesting delete for URL\n" + itemPath);
 			
-		}.execute(item);
-	}
-	
-	public ShoppingList getShoppingList(){
-		
-		ShoppingList list = new ShoppingList();
-	
-		new AsyncTask<ShoppingList, Void, Void>(){
-
-			@Override
-			protected Void doInBackground(ShoppingList... shoppingLists) {
-				ShoppingList shoppingList = shoppingLists[0];
-				JSONObject[] theList = getList();
-				
-				for(JSONObject j : theList){
-					try {
-						shoppingList.add(JSONUtils.readJSONObject(j));
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				
-				return null;
-			}
+			URL itemURL = new URL(itemPath);
 			
-		}.execute();
+			connection = (HttpURLConnection) itemURL.openConnection();
+			connection.setRequestMethod("DELETE");
+			
+			connection.connect();
+			
+			Log.i(TAG, ""+connection.getResponseCode());
+			
+		} catch (MalformedURLException e) {
+			Log.e(TAG, "URL derp!", e);
+		} catch (IOException e) {
+			Log.e(TAG, "Failed to DELETE for item:" + itemId, e);
+		}
+		finally{
+			if(connection != null){
+				connection.disconnect();
+			}
+		}
 		
-		return list;
+		
 	}
 	
 	public void deleteItem(Item item){
@@ -224,46 +199,6 @@ public class SyncManager {
 		
 		
 	}
-
-	
-	/**
-	 * Request that the the server delete the item
-	 * specified by param j
-	 * @param j Item to delete from server
-	 */
-	private void deleteItem(int itemId){
-		
-		HttpURLConnection connection = null;
-		try {
-			String itemPath = String.format(mServerURL + mRemoteListPath.split("\\.")[0]
-					+ "/%d.json", itemId);
-			Log.d(TAG, "Requesting delete for URL\n" + itemPath);
-			
-			URL itemURL = new URL(itemPath);
-			
-			connection = (HttpURLConnection) itemURL.openConnection();
-			connection.setRequestMethod("DELETE");
-			
-			connection.connect();
-			
-			Log.i(TAG, ""+connection.getResponseCode());
-			
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		finally{
-			if(connection != null){
-				connection.disconnect();
-			}
-		}
-		
-		
-	}
-
 	
 	/**
 	 * Uses HTTP GET to retrieve an individual item.
@@ -291,41 +226,62 @@ public class SyncManager {
 			connection.disconnect();
 			
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(TAG, "URL derp!", e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(TAG, "Failed to GET item: " + itemId, e);
 		}
 		return null;
 	}
-
+	
 	/**
 	 * Uses HTTP GET command to retrieve the entire list.
 	 * 
 	 * @param serverURL
 	 * @return
 	 */
-	private JSONObject[] getList(){
+	public JSONObject[] getList(){
+		JSONObject[] jsonItemsArray = null;
 		try{
 			URL url = new URL(mServerURL + mRemoteListPath);
 			String contents = getServerContents(url);
 
 			JSONObject result = new JSONObject(contents);
-			JSONObject [] itemsList = JSONUtils.splitResults(result);
-			return itemsList;
+			jsonItemsArray = JSONUtils.splitResults(result);
 			
 		} catch (JSONException e) {
-			/*
-			 * Hey, thats what the docs for this Exception 
-			 * said to do. 
-			 */
-			throw new RuntimeException(e);
+			Log.e(TAG, "JSON exception", e);
 		} catch (MalformedURLException e) {
 			Log.e(TAG, "getList()", e);
 		}
-		return null;
+		
+		return jsonItemsArray;
 	}
+
+	
+	public void getRemoteList(final OnDownloadFinishedListener listener){
+		
+	
+		new AsyncTask<Void, Void, Bundle>(){
+
+			@Override
+			protected Bundle doInBackground(Void... args) {
+				JSONObject[] jsonItemsArray = getList();
+				ShoppingList remoteList = JSONUtils.shoppingListFromArray(jsonItemsArray);
+				Bundle bundle = new Bundle();
+				bundle.putSerializable(EXTRA_SHOPPING_LIST, remoteList);
+				return bundle;
+				
+			}
+			
+			@Override
+			protected void onPostExecute(Bundle bundle){
+				listener.onDownloadFinished(bundle);
+			}
+			
+		}.execute();
+		
+	}
+
 	
 	/**
 	 * Returns the results from a GET request as
@@ -362,6 +318,11 @@ public class SyncManager {
 
 		return contentBuilder.toString();
 		
+	}
+
+	public boolean isSyncEnabled(){
+		return mPreferences.getBoolean("pref_sync_remote", 
+				false);
 	}
 	
 	/**
@@ -476,6 +437,90 @@ public class SyncManager {
 			e.printStackTrace();
 		}
 		return statusCode;
+	}
+	
+	/**
+	 * GET the entire list from the server.
+	 * Merge the remote list with the local copy accounting 
+	 * for items that exist in both.
+	 * 
+	 * Then update all the items from the local list to 
+	 * the server. 
+	 */
+	public void syncAll() {
+		/*
+		 * Start the list download process in the background.
+		 * The process picks up with the no
+		 */
+		getRemoteList(this);
+		
+	}
+
+	public void updateItem(Item item){
+		
+		new AsyncTask<Item, Void, Integer>(){
+
+			@Override
+			protected Integer doInBackground(Item... items) {
+				int statusCode = -1;
+				try {
+					JSONObject jsonItem = JSONUtils.createJSONObject(items[0]);
+					statusCode = putItem(jsonItem, items[0].getJSONId());
+					/*
+					 * If we get a 404, the item hasn't been assigned an id 
+					 * for some reason. Do a POST request instead.
+					 */
+					if(statusCode == HttpURLConnection.HTTP_NOT_FOUND){
+						Log.d(TAG, "PUT results in 404. Trying POST instead.");
+						String responseMessage = postItem(jsonItem);
+						JSONObject response = new JSONObject(responseMessage);
+						
+						int newItemId = response.getInt("id");
+						items[0].setJSONId(newItemId);
+					}
+					
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				return statusCode;
+			}
+			
+		}.execute(item);
+	}
+
+	@Override
+	public void onDownloadFinished(Bundle bundle) {
+		//This happens on the UI thread
+		mergeLocalList(bundle);
+		
+		/*
+		 * Now, PUT or POST every item in the local 
+		 * list to the server.
+		 */
+		ShoppingList localList = ListManager.getInstance(mAppContext).getLastUsedList();
+		
+		for(Item localItem: localList){
+			updateItem(localItem);
+		}
+		
+	}
+
+	
+	private void mergeLocalList(Bundle bundle){
+		ShoppingList localList = ListManager.getInstance(mAppContext).getLastUsedList();
+		ShoppingList remoteList = (ShoppingList) bundle.getSerializable(EXTRA_SHOPPING_LIST);
+		
+		if(localList != null && remoteList != null){
+			for(Item remoteItem : remoteList){
+				if(! localList.contains(remoteItem)){
+					localList.add(remoteItem);
+					
+				}
+				
+				
+			}
+			
+		}
 	}
 
 	

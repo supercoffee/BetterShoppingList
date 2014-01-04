@@ -19,7 +19,11 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 	 * Essentially, this field is always converted to
 	 * boolean values when used.
 	 */
-	private int mStatus; //0 = default, 1 = found, 2 = find later
+	
+	@Deprecated
+	private int mStatus; //0 = not checked, 1 = checked
+	
+	private boolean mChecked;
 	private String mDescription;
 	private int mQuantity;
 
@@ -80,9 +84,18 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 	public boolean equals(Object o) {
 		if(this.getClass().getSimpleName().equals(o.getClass().getSimpleName())){
 			Item i = (Item) o;
-			if(i.getId().equals(this.getId())){
-				return true;
+			/*
+			 * If either items have unset JSON IDs, then compare the 
+			 * descriptions.
+			 */
+			if(i.mJSONId == 0 || mJSONId == 0){
+				return this.mDescription.equals(i.mDescription);
 			}
+			
+			else{
+				return this.mJSONId == i.mJSONId;
+			}
+			
 		}
 		return false;
 	}
@@ -103,6 +116,8 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 	public int getQty() {
 		return mQuantity;
 	}
+	
+	@Deprecated
 	public int getStatus() {
 		return mStatus;
 	}
@@ -142,11 +157,14 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 		}
 	}
 
+	@Deprecated
 	public void setStatus(int status) {
 		if(status != mStatus){
 			mStatus = status;
 			notifyObservers();
-			mStatusListener.onStatusChanged(this);
+			if (mStatusListener != null) {
+				mStatusListener.onStatusChanged(this);
+			}
 		}
 		
 	}
@@ -181,6 +199,19 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 	public void notifyObservers() {
 		setChanged();
 		super.notifyObservers();
+	}
+
+	public boolean isChecked() {
+		return mChecked;
+	}
+
+	public void setChecked(boolean checked) {
+		mChecked = checked;
+		
+		notifyObservers();
+		if (mStatusListener != null) {
+			mStatusListener.onStatusChanged(this);
+		}
 	}
 
 	

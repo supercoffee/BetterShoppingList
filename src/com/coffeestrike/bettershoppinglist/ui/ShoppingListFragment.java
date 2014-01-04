@@ -32,6 +32,7 @@ import com.coffeestrike.bettershoppinglist.models.Item;
 import com.coffeestrike.bettershoppinglist.models.ItemSyncObserver;
 import com.coffeestrike.bettershoppinglist.models.ListManager;
 import com.coffeestrike.bettershoppinglist.models.ShoppingList;
+import com.coffeestrike.bettershoppinglist.models.SyncManager;
 
 
 /**
@@ -85,6 +86,13 @@ public class ShoppingListFragment extends ListFragment {
 		}
 	}
 	
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		refresh();
+	}
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState){
@@ -146,7 +154,8 @@ public class ShoppingListFragment extends ListFragment {
 					case R.id.menu_item_move:
 						for(int position = adapter.getCount(); position >= 0; position--){
 							if(getListView().isItemChecked(position)){
-								adapter.getItem(position).setStatus(1);
+//								adapter.getItem(position).setStatus(1);
+								adapter.getItem(position).setChecked(true);
 							}
 						}
 						mode.finish();
@@ -286,17 +295,19 @@ public class ShoppingListFragment extends ListFragment {
 				
 				CheckBox checkbox = (CheckBox) convertView
 						.findViewById(R.id.item_checkBox);
-				checkbox.setChecked(item.getStatus() == 1);
+				checkbox.setChecked(item.isChecked());
 				checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 					@Override
 					public void onCheckedChanged(CompoundButton buttonView,
 							boolean isChecked) {
 						if (isChecked) {
-							item.setStatus(1);
+//							item.setStatus(1);
+							item.setChecked(true);
 						} 
 						else {
-							item.setStatus(0);
+//							item.setStatus(0);
+							item.setChecked(false);
 						}
 						notifyDataSetChanged();
 

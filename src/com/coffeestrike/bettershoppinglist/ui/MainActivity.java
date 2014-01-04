@@ -296,10 +296,10 @@ public class MainActivity extends FragmentActivity{ //implements OnNavigationLis
 	
 	*/
 	
-	private void requestBackup(){
-		BackupManager bm = new BackupManager(this);
-		bm.dataChanged();
-	}
+//	private void requestBackup(){
+//		BackupManager bm = new BackupManager(this);
+//		bm.dataChanged();
+//	}
 	
 
 }

@@ -64,11 +64,13 @@ public class ShoppingList extends Observable implements Iterable<Item>, Serializ
 	}
 
 	public void merge(ShoppingList incomingList) {
+		
 		for(Item item : incomingList.mItemList){
 			if(! mItemList.contains(item)){
 				mItemList.add(item);
 			}
 		}
+		
 	}
 
 	public void setListTitle(String listTitle) {
@@ -94,7 +96,7 @@ public class ShoppingList extends Observable implements Iterable<Item>, Serializ
 		/*The check box has been cleared
 		 * restore the item to the upper part of the list
 		 */
-		if(item.getStatus() == 0){
+		if(! item.isChecked()){
 			mItemList.remove(item);
 			mItemList.add(findListDivider(), item);
 		}
@@ -130,6 +132,7 @@ public class ShoppingList extends Observable implements Iterable<Item>, Serializ
 	}
 	
 	public void add(Item item){
+		item.setStatusListener(this);
 		mItemList.add(item);
 		notifyObserversAddItem(item);
 	}

@@ -23,33 +23,36 @@ public class ShoppingListSyncObserver extends ShoppingListObserver {
 		if(syncManagerInstance == null){
 			syncManagerInstance = SyncManager.getInstance(mAppContext);
 		}
-
-		ShoppingList shoppingList = (ShoppingList) observable;
-		
 		/*
-		 * Now we have to decide what happened to the shopping list
-		 * so we know what to change server side.
+		 * Check if sync is enabled. If not, do nothing and call it a day.
 		 */
-		
-		Bundle params = (Bundle) data;
-		int operation = params.getInt(ShoppingList.EXTRA_OPERATION);
-		Item item = (Item) params.getSerializable(ShoppingList.EXTRA_DATA);
-		
-		switch(operation){
-			case ShoppingList.ADD:
-				addItem(item);
-				break;
-			case ShoppingList.DELETE:
-				removeItem(item);
-				break;
-			case ShoppingList.CLEAR:
-				clearList(shoppingList);
-				break;
-			default:
-				break;
+		if(syncManagerInstance.isSyncEnabled()){
+
+			ShoppingList shoppingList = (ShoppingList) observable;
+			
+			/*
+			 * Now we have to decide what happened to the shopping list
+			 * so we know what to change server side.
+			 */
+			
+			Bundle params = (Bundle) data;
+			int operation = params.getInt(ShoppingList.EXTRA_OPERATION);
+			Item item = (Item) params.getSerializable(ShoppingList.EXTRA_DATA);
+			
+			switch(operation){
+				case ShoppingList.ADD:
+					addItem(item);
+					break;
+				case ShoppingList.DELETE:
+					removeItem(item);
+					break;
+				case ShoppingList.CLEAR:
+					clearList(shoppingList);
+					break;
+				default:
+					break;
+			}
 		}
-		
-		
 		
 	}
 
