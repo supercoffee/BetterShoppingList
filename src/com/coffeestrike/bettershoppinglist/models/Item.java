@@ -39,7 +39,7 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 	private int mQuantity;
 	private long mTimeStamp;
 	private String mUnitOfMeasure;
-	
+	@Deprecated
 	protected UUID mId;
 	private OnStatusChangedListener mStatusListener;
 	
@@ -143,6 +143,7 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 		return mDescription;
 	}
 	
+	@Deprecated
 	public UUID getId() {
 		return mId;
 	}
