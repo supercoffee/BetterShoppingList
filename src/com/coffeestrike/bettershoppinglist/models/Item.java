@@ -1,8 +1,12 @@
 package com.coffeestrike.bettershoppinglist.models;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Observable;
 import java.util.UUID;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.util.Log;
 
@@ -13,7 +17,14 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 	}
 	
 	private static final long serialVersionUID = -8439535938970924273L;
-	private static final String TAG = "Item";
+	
+	private static final String JSON_DESCRIPTION = "title"; //what are we shopping for
+	
+	private static final String JSON_QUANTITY = "quantity"; // quantity of the item
+	private static final String JSON_UOM = "units"; //unit of measure
+	private static final String JSON_CHECKED = "checked"; //has the item been checked off the list
+	private static final String JSON_TIMESTAMP = "time"; //last time updated/created
+
 	/*
 	 * Only status 0 and 1 are used at this time. 
 	 * Essentially, this field is always converted to
@@ -26,9 +37,10 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 	private boolean mChecked;
 	private String mDescription;
 	private int mQuantity;
-
-	protected UUID mId;
+	private long mTimeStamp;
 	private String mUnitOfMeasure;
+	
+	protected UUID mId;
 	private OnStatusChangedListener mStatusListener;
 	
 	/*
@@ -50,28 +62,55 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 
 	public static final String EXTRA_ITEM = "Item";
 	
+	public static JSONObject toJSON(Item item) throws JSONException{
+		JSONObject result = new JSONObject();
+	
+		result.put(JSON_DESCRIPTION, item.mDescription)
+			.put(JSON_QUANTITY, item.mQuantity)
+			.put(JSON_UOM, item.mUnitOfMeasure)
+			.put(JSON_CHECKED, item.mChecked)
+			.put(JSON_TIMESTAMP, item.mTimeStamp);
+
+		return result;
+		
+	}
+	
+	public static Item fromJSON(JSONObject jObject) throws JSONException{
+		Item result = new Item();
+
+		if(jObject.has(JSON_DESCRIPTION)){
+			result.mDescription = jObject.getString(JSON_DESCRIPTION);
+		}
+		if(jObject.has(JSON_QUANTITY)){
+			result.mQuantity =jObject.getInt(JSON_QUANTITY) ;
+		}
+		if(jObject.has(JSON_UOM)){
+			result.mUnitOfMeasure = jObject.getString(JSON_UOM);
+		}
+		if(jObject.has(JSON_CHECKED)){
+			result.mChecked = jObject.getBoolean(JSON_CHECKED);
+		}
+		if(jObject.has(JSON_TIMESTAMP)){
+			result.mTimeStamp = jObject.getLong(JSON_TIMESTAMP);
+		}
+		
+		return result;
+	}
+	
 	public Item(){
-		super();
-		mDescription = "";
-		mQuantity = 1;
-		mUnitOfMeasure = sDefaultUomList[0];
-		mId = UUID.randomUUID();
+		this("", 1);
 	}
 
 	public Item(String description){
-		super();
-		mDescription = description;
-		mQuantity = 1;
-		mUnitOfMeasure = sDefaultUomList[0];
-		mId = UUID.randomUUID();
+		this(description, 1);
 	}
 	
 	public Item(String description, int quantity){
-		super();
 		mDescription = description;
 		mQuantity = quantity;
 		mUnitOfMeasure = sDefaultUomList[0];
 		mId = UUID.randomUUID();
+		setTimeStamp();
 	}
 	
 
@@ -124,9 +163,21 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 	public OnStatusChangedListener getStatusListener() {
 		return mStatusListener;
 	}
+	/**
+	 * Give the time when this Item was last modified, or created.  
+	 * @return the time in milliseconds when Item was last modified.
+	 */
+	public long getTimeStamp() {
+		return mTimeStamp;
+	}
 	public String getUnitOfMeasure() {
 		return mUnitOfMeasure;
 	}
+
+	public boolean isChecked() {
+		return mChecked;
+	}
+
 	public boolean isDivider() {
 		return false;
 	}
@@ -138,9 +189,25 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 		return false;
 	}
 
+	@Override
+	public void notifyObservers() {
+		setChanged();
+		super.notifyObservers();
+	}
+
+	public void setChecked(boolean checked) {
+		mChecked = checked;
+		setTimeStamp();
+		notifyObservers();
+		if (mStatusListener != null) {
+			mStatusListener.onStatusChanged(this);
+		}
+	}
+	
 	public void setDescription(String description) {
 		if (description != null && !description.equals(mDescription) ){
 			mDescription = description;
+			setTimeStamp();
 			notifyObservers();
 
 		}
@@ -149,10 +216,11 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 	public void setJSONId(int jSONId) {
 		mJSONId = jSONId;
 	}
-
+	
 	public void setQty(int qty) {
 		if (qty != mQuantity) {
 			mQuantity = qty;
+			setTimeStamp();
 			notifyObservers();
 		}
 	}
@@ -168,18 +236,42 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 		}
 		
 	}
-	
+
 	public void setStatusListener(OnStatusChangedListener statusListener) {
 		this.mStatusListener = statusListener;
+	}
+
+	/**
+	 * Sets the time stamp to the current time when called.
+	 * Programmers who subclass Item must call setTimeStamp() to 
+	 * update the time where appropriate.
+	 */
+	protected void setTimeStamp() {
+		mTimeStamp = new Date().getTime();
+	}
+	
+	/*
+	 * Why have this method?
+	 * If we retrieve an item from a server, we should 
+	 * set its time stamp to be the same as the copy on the server.
+	 * This should avoid any unnecessary re-sync operations.
+	 */
+	public void setTimeStamp(long time){
+		mTimeStamp = time;
+	}
+	
+	public void setTimeStamp(Date date){
+		mTimeStamp = date.getTime();
 	}
 
 	public void setUnitOfMeasure(String s) {
 		if(! s.equals(mUnitOfMeasure)){
 			mUnitOfMeasure = s;
+			setTimeStamp();
 			notifyObservers();
 		}
 	}
-	
+
 	@Override
 	public String toString(){
 		StringBuilder builder = new StringBuilder();
@@ -193,25 +285,6 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 		builder.append(mJSONId);
 		
 		return builder.toString();
-	}
-
-	@Override
-	public void notifyObservers() {
-		setChanged();
-		super.notifyObservers();
-	}
-
-	public boolean isChecked() {
-		return mChecked;
-	}
-
-	public void setChecked(boolean checked) {
-		mChecked = checked;
-		
-		notifyObservers();
-		if (mStatusListener != null) {
-			mStatusListener.onStatusChanged(this);
-		}
 	}
 
 	

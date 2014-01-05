@@ -51,18 +51,68 @@ public class ShoppingList extends Observable implements Iterable<Item>, Serializ
 		//mFilename = mListId.toString();
 	}
 
+	public void add(int index, Item item){
+		item.setStatusListener(this);
+		mItemList.add(index, item);
+		notifyObserversAddItem(item);
+	}
+
+	public void add(Item item){
+		item.setStatusListener(this);
+		mItemList.add(item);
+		notifyObserversAddItem(item);
+	}
+
+	/*
+	 * Place the Items in a deletion queue.
+	 * The observer needs to know the IDs of the
+	 * items so the server knows which IDs to remove.
+	 */
+	public void clear() {
+		for(Item item : mItemList){
+			mGarbageQ.add(item);
+		}
+		mItemList.clear();
+		
+		Bundle bundle = new  Bundle();
+		bundle.putInt(EXTRA_OPERATION, CLEAR);
+		notifyObservers(bundle);
+	}
+
+	public boolean contains(Item item) {
+		return mItemList.contains(item);
+	}
+
 	public int findListDivider(){
 		return mItemList.indexOf(new Divider());
+	}
+
+	public int garbageQueueSize(){
+		return mGarbageQ.size();
+	}
+
+
+	public ArrayList<Item> getBaseList() {
+		return mItemList;
 	}
 
 	public UUID getListId() {
 		return mListId;
 	}
-
+	
 	public String getListTitle() {
 		return mListTitle;
 	}
-
+	
+	public boolean isGarbageEmpty(){
+		return mGarbageQ.size() == 0;
+	}
+	
+	@Override
+	public Iterator<Item> iterator() {
+		return mItemList.iterator();
+		}
+	
 	public void merge(ShoppingList incomingList) {
 		
 		for(Item item : incomingList.mItemList){
@@ -72,15 +122,26 @@ public class ShoppingList extends Observable implements Iterable<Item>, Serializ
 		}
 		
 	}
-
-	public void setListTitle(String listTitle) {
-		mListTitle = listTitle;
+	
+	@Override
+	public void notifyObservers() {
+		setChanged();
+		super.notifyObservers();
 	}
 
-	public void sortAlpha() {
-		Collections.sort(mItemList);
+	@Override
+	public void notifyObservers(Object data) {
+		setChanged();
+		super.notifyObservers(data);
 	}
-
+	
+	
+	private void notifyObserversAddItem(Item item){
+		Bundle bundle = new  Bundle();
+		bundle.putInt(EXTRA_OPERATION, ADD);
+		bundle.putSerializable(EXTRA_DATA, item);
+		notifyObservers(bundle);
+	}
 
 	@Override
 	public void onStatusChanged(Item item) {
@@ -121,27 +182,12 @@ public class ShoppingList extends Observable implements Iterable<Item>, Serializ
 		
 	}
 
-	public ArrayList<Item> getBaseList() {
-		return mItemList;
-	}
-	
-	public void add(int index, Item item){
-		item.setStatusListener(this);
-		mItemList.add(index, item);
-		notifyObserversAddItem(item);
-	}
-	
-	public void add(Item item){
-		item.setStatusListener(this);
-		mItemList.add(item);
-		notifyObserversAddItem(item);
-	}
-	
-	private void notifyObserversAddItem(Item item){
-		Bundle bundle = new  Bundle();
-		bundle.putInt(EXTRA_OPERATION, ADD);
-		bundle.putSerializable(EXTRA_DATA, item);
-		notifyObservers(bundle);
+	/**
+	 * Get "deleted" items back.
+	 * @return deleted items in FIFO order
+	 */
+	public Item pollGarbageQueue(){
+		return mGarbageQ.poll();
 	}
 	
 	public Item remove(int index){
@@ -160,63 +206,34 @@ public class ShoppingList extends Observable implements Iterable<Item>, Serializ
 		
 		return result;
 	}
-
-	public boolean contains(Item item) {
-		return mItemList.contains(item);
-	}
 	
-	
-	/*
-	 * Place the Items in a deletion queue.
-	 * The observer needs to know the IDs of the
-	 * items so the server knows which IDs to remove.
+	/**
+	 * Replaces the existing item at the specified
+	 * index with the parameter item.
+	 * Calling this method does not notify observers,
+	 * because it is not a structural change in the list.
+	 * @param item
+	 * @param index
 	 */
-	public void clear() {
-		for(Item item : mItemList){
-			mGarbageQ.add(item);
+	public void replace(Item item, int index){
+		if(index < 0 || index >= mItemList.size()){
+			throw new IndexOutOfBoundsException(""+index);
 		}
-		mItemList.clear();
+		mItemList.set(index, item);
 		
-		Bundle bundle = new  Bundle();
-		bundle.putInt(EXTRA_OPERATION, CLEAR);
-		notifyObservers(bundle);
+		
+	}
+
+	public void setListTitle(String listTitle) {
+		mListTitle = listTitle;
 	}
 
 	public int size() {
 		return mItemList.size();
 	}
 
-	/**
-	 * Get "deleted" items back.
-	 * @return deleted items in FIFO order
-	 */
-	public Item pollGarbageQueue(){
-		return mGarbageQ.poll();
-	}
-	
-	public int garbageQueueSize(){
-		return mGarbageQ.size();
-	}
-	
-	public boolean isGarbageEmpty(){
-		return mGarbageQ.size() == 0;
-	}
-
-	@Override
-	public void notifyObservers() {
-		setChanged();
-		super.notifyObservers();
-	}
-
-	@Override
-	public void notifyObservers(Object data) {
-		setChanged();
-		super.notifyObservers(data);
-	}
-
-	@Override
-	public Iterator<Item> iterator() {
-		return mItemList.iterator();
+	public void sortAlpha() {
+		Collections.sort(mItemList);
 	}
 
 	

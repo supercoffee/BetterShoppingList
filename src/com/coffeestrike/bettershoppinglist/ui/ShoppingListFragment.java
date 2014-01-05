@@ -46,20 +46,16 @@ import com.coffeestrike.bettershoppinglist.models.SyncManager;
  */
 public class ShoppingListFragment extends ListFragment {
 	
-	public static String TAG = "ShoppingListFragment";
+	
+	public static final String TAG = "ShoppingListFragment";
+
 	private ShoppingList mShoppingList;
-	private String mServerURL;
-	private String mRemoteListPath;
-	private ShoppingList mRemoteList;
 	private Context mAppContext;
 	private ShoppingListAdapter mListAdapter;
 	private ItemSyncObserver mItemSyncObserver;
 	public static final int NEW_ITEM = 0;
 	public static final int EDIT_ITEM = 1;
-	@SuppressWarnings("unused")
-	private static final String EXTRA_ITEM = "com.coffeestrike.bettershoppinglist.ShoppingListFragment";
-	
-	
+
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
@@ -302,11 +298,9 @@ public class ShoppingListFragment extends ListFragment {
 					public void onCheckedChanged(CompoundButton buttonView,
 							boolean isChecked) {
 						if (isChecked) {
-//							item.setStatus(1);
 							item.setChecked(true);
 						} 
 						else {
-//							item.setStatus(0);
 							item.setChecked(false);
 						}
 						notifyDataSetChanged();
