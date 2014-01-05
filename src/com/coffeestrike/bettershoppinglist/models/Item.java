@@ -108,7 +108,7 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 	public Item(String description, int quantity){
 		mDescription = description;
 		mQuantity = quantity;
-		mUnitOfMeasure = sDefaultUomList[0];
+		mUnitOfMeasure = UnitsOfMeasure.getUnits()[0];
 		mId = UUID.randomUUID();
 		setTimeStamp();
 	}

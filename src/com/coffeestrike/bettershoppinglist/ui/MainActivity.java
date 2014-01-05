@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import com.coffeestrike.bettershoppinglist.R;
 import com.coffeestrike.bettershoppinglist.models.Item;
 import com.coffeestrike.bettershoppinglist.models.ListManager;
+import com.coffeestrike.bettershoppinglist.models.UnitsOfMeasure;
 
 
 /**
@@ -43,7 +44,7 @@ public class MainActivity extends FragmentActivity{
 			uomResId = R.array.units_of_measure_metric;
 		}
 		
-		Item.sDefaultUomList = getResources().getStringArray(uomResId);
+		UnitsOfMeasure.setUnits(getResources().getStringArray(uomResId));
 
 		FragmentManager fm = getSupportFragmentManager();
 		
