@@ -5,11 +5,6 @@ import java.util.Date;
 import java.util.Observable;
 import java.util.UUID;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.util.Log;
-
 public class Item extends Observable implements Serializable, Comparable<Item>{
 	
 	public interface OnStatusChangedListener{

@@ -135,13 +135,6 @@ public class ShoppingList extends Observable implements Iterable<Item>, Serializ
 		super.notifyObservers(data);
 	}
 	
-	
-	private void notifyObserversAddItem(Item item){
-		Bundle bundle = new  Bundle();
-		bundle.putInt(EXTRA_OPERATION, ADD);
-		bundle.putSerializable(EXTRA_DATA, item);
-		notifyObservers(bundle);
-	}
 
 	@Override
 	public void onStatusChanged(Item item) {

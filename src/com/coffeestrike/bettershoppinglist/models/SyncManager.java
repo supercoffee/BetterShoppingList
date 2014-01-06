@@ -15,7 +15,6 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -47,29 +46,30 @@ public class SyncManager implements OnDownloadFinishedListener{
 	}
 
 	private Context mAppContext;
-	private String mServerURL;
-	private String mRemoteListPath;
 	private SharedPreferences mPreferences;
 	private ItemCreator mItemCreator;
 	private SyncFinishedListener mSyncFinishedListener;
 	
 	public static final String EXTRA_SHOPPING_LIST = "remote-list";
 	
-	
 	private static final String TAG = "SyncManager";
 	
 	private SyncManager(Context context){
 		mAppContext = context.getApplicationContext();
-		
 		mPreferences = PreferenceManager.getDefaultSharedPreferences(mAppContext);
-		
-		mServerURL = mPreferences.getString(SettingsActivity.KEY_SERVER_URL_KEY,
-				mAppContext.getResources().getString(R.string.default_server_url));
-		mRemoteListPath = mPreferences.getString(SettingsActivity.KEY_SERVER_LIST_PATH, 
-				mAppContext.getResources().getString(R.string.default_server_list_path));
 		mItemCreator = ItemCreator.getInstance(mAppContext);
 	}
 	
+	public String getServerURL() {
+		return mPreferences.getString(SettingsActivity.KEY_SERVER_URL_KEY,
+				mAppContext.getResources().getString(R.string.default_server_url));
+	}
+
+	public String getRemoteListPath() {
+		return mPreferences.getString(SettingsActivity.KEY_SERVER_LIST_PATH, 
+				mAppContext.getResources().getString(R.string.default_server_list_path));
+	}
+
 	public void clearServerList(){
 	
 		new AsyncTask<Void, Void, Integer>(){
@@ -151,7 +151,7 @@ public class SyncManager implements OnDownloadFinishedListener{
 		
 		HttpURLConnection connection = null;
 		try {
-			String itemPath = String.format(mServerURL + mRemoteListPath.split("\\.")[0]
+			String itemPath = String.format(getServerURL() + getRemoteListPath().split("\\.")[0]
 					+ "/%d.json", itemId);
 			Log.d(TAG, "Requesting delete for URL\n" + itemPath);
 			
@@ -205,39 +205,6 @@ public class SyncManager implements OnDownloadFinishedListener{
 	}
 	
 	/**
-	 * Uses HTTP GET to retrieve an individual item.
-	 * @param serverURL
-	 * @param itemId
-	 * @return
-	 */
-	private JSONObject getItem(int itemId){
-		String itemURLString = String.format((mServerURL + mRemoteListPath.split("\\.")[0] 
-				+ "/%d.json"), itemId);
-		StringBuilder builder = new StringBuilder();
-		try {
-			
-			URL url = new URL(itemURLString);
-			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-			InputStream iStream = connection.getInputStream();
-			
-			BufferedReader reader = new BufferedReader(new InputStreamReader(iStream));
-			String s;
-			while( (s = reader.readLine()) != null){
-				builder.append(s);
-			}
-			
-			reader.close();
-			connection.disconnect();
-			
-		} catch (MalformedURLException e) {
-			Log.e(TAG, "URL derp!", e);
-		} catch (IOException e) {
-			Log.e(TAG, "Failed to GET item: " + itemId, e);
-		}
-		return null;
-	}
-	
-	/**
 	 * Uses HTTP GET command to retrieve the entire list.
 	 * 
 	 * @param serverURL
@@ -246,7 +213,7 @@ public class SyncManager implements OnDownloadFinishedListener{
 	public JSONObject[] getList(){
 		JSONObject[] jsonItemsArray = null;
 		try{
-			URL url = new URL(mServerURL + mRemoteListPath);
+			URL url = new URL(getServerURL() + getRemoteListPath());
 			String contents = getServerContents(url);
 
 			JSONObject result = new JSONObject(contents);
@@ -349,7 +316,7 @@ public class SyncManager implements OnDownloadFinishedListener{
 	 */
 	private String postItem(JSONObject item){
 		String response = "";
-		String serverURLString = mServerURL + mRemoteListPath;
+		String serverURLString = getServerURL() + getRemoteListPath();
 		StringBuilder builder = new StringBuilder();
 		HttpURLConnection connection = null;
 		OutputStreamWriter writer = null;
@@ -419,7 +386,7 @@ public class SyncManager implements OnDownloadFinishedListener{
 	 */
 	private int putItem(JSONObject item, int id){
 		int statusCode = 0;
-		String serverURLString = String.format(mServerURL + mRemoteListPath.split("\\.")[0]
+		String serverURLString = String.format(getServerURL() + getRemoteListPath().split("\\.")[0]
 				+ "/%d.json", id);
 		
 		try{
@@ -469,7 +436,6 @@ public class SyncManager implements OnDownloadFinishedListener{
 		if (isSyncEnabled()) {
 			/*
 			 * Start the list download process in the background.
-			 * The process picks up with the no
 			 */
 			setSyncFinishedListener(listener);
 			getRemoteList(this);
@@ -574,6 +540,8 @@ public class SyncManager implements OnDownloadFinishedListener{
 	public void setSyncFinishedListener(SyncFinishedListener syncFinishedListener) {
 		mSyncFinishedListener = syncFinishedListener;
 	}
+
+
 
 	
 }
