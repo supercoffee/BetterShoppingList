@@ -23,6 +23,7 @@ import android.util.Log;
 import com.coffeestrike.bettershoppinglist.R;
 import com.coffeestrike.bettershoppinglist.extra.JSONUtils;
 import com.coffeestrike.bettershoppinglist.extra.OnDownloadFinishedListener;
+import com.coffeestrike.bettershoppinglist.extra.SyncFinishedListener;
 import com.coffeestrike.bettershoppinglist.ui.SettingsActivity;
 
 /**
@@ -34,7 +35,7 @@ import com.coffeestrike.bettershoppinglist.ui.SettingsActivity;
  *
  */
 public class SyncManager implements OnDownloadFinishedListener{
-	
+
 	private static SyncManager sSyncManager;
 	
 	public static SyncManager getInstance(Context context){
@@ -49,6 +50,8 @@ public class SyncManager implements OnDownloadFinishedListener{
 	private String mServerURL;
 	private String mRemoteListPath;
 	private SharedPreferences mPreferences;
+	private ItemCreator mItemCreator;
+	private SyncFinishedListener mSyncFinishedListener;
 	
 	public static final String EXTRA_SHOPPING_LIST = "remote-list";
 	
@@ -64,6 +67,7 @@ public class SyncManager implements OnDownloadFinishedListener{
 				mAppContext.getResources().getString(R.string.default_server_url));
 		mRemoteListPath = mPreferences.getString(SettingsActivity.KEY_SERVER_LIST_PATH, 
 				mAppContext.getResources().getString(R.string.default_server_list_path));
+		mItemCreator = ItemCreator.getInstance(mAppContext);
 	}
 	
 	public void clearServerList(){
@@ -117,7 +121,7 @@ public class SyncManager implements OnDownloadFinishedListener{
 			@Override
 			protected Void doInBackground(Item... items) {
 				try {
-					JSONObject jsonItem = JSONUtils.createJSONObject(items[0]);
+					JSONObject jsonItem = mItemCreator.createJSONObject(items[0]);
 					String responseMessage = postItem(jsonItem);
 					if(responseMessage.length() > 0){
 						JSONObject response = new JSONObject(responseMessage);
@@ -266,7 +270,20 @@ public class SyncManager implements OnDownloadFinishedListener{
 			@Override
 			protected Bundle doInBackground(Void... args) {
 				JSONObject[] jsonItemsArray = getList();
-				ShoppingList remoteList = JSONUtils.shoppingListFromArray(jsonItemsArray);
+				ShoppingList remoteList = new ShoppingList();
+				if(jsonItemsArray != null){
+					for(JSONObject obj: jsonItemsArray){
+						try {
+							Item item = mItemCreator.createItem(obj);
+							remoteList.add(item);
+						} catch (JSONException e) {
+							Log.e(TAG, "Failed to create Item from JSON", e);
+						}
+					}
+				}
+				else{
+					Log.d(TAG, "Server returned empty list.");
+				}
 				Bundle bundle = new Bundle();
 				bundle.putSerializable(EXTRA_SHOPPING_LIST, remoteList);
 				return bundle;
@@ -415,12 +432,13 @@ public class SyncManager implements OnDownloadFinishedListener{
 			 * http://developer.android.com/reference/java/net/HttpURLConnection.html
 			 */
 			connection.setDoOutput(true);
+			/*
+			 * Causes intermittent IOExecptions when enabled.
+			 * TODO investigate weird IOExceptions
+			 */
 //			connection.setChunkedStreamingMode(0);
 			connection.setRequestMethod("PUT");
-//			if (Build.VERSION.SDK != null
-//					&& Build.VERSION.SDK_INT > 13) {
-//					connection.setRequestProperty("Connection", "close");
-//					}
+
 			
 			OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
 			writer.write(item.toString());
@@ -447,12 +465,15 @@ public class SyncManager implements OnDownloadFinishedListener{
 	 * Then update all the items from the local list to 
 	 * the server. 
 	 */
-	public void syncAll() {
-		/*
-		 * Start the list download process in the background.
-		 * The process picks up with the no
-		 */
-		getRemoteList(this);
+	public void syncAll(SyncFinishedListener listener) {
+		if (isSyncEnabled()) {
+			/*
+			 * Start the list download process in the background.
+			 * The process picks up with the no
+			 */
+			setSyncFinishedListener(listener);
+			getRemoteList(this);
+		}
 		
 	}
 
@@ -464,7 +485,7 @@ public class SyncManager implements OnDownloadFinishedListener{
 			protected Integer doInBackground(Item... items) {
 				int statusCode = -1;
 				try {
-					JSONObject jsonItem = JSONUtils.createJSONObject(items[0]);
+					JSONObject jsonItem = mItemCreator.createJSONObject(items[0]);
 					statusCode = putItem(jsonItem, items[0].getJSONId());
 					/*
 					 * If we get a 404, the item hasn't been assigned an id 
@@ -492,6 +513,9 @@ public class SyncManager implements OnDownloadFinishedListener{
 	public void onDownloadFinished(Bundle bundle) {
 		//This happens on the UI thread
 		mergeLocalList(bundle);
+		if(mSyncFinishedListener != null){
+			mSyncFinishedListener.onSyncFinished();
+		}
 		
 		/*
 		 * Now, PUT or POST every item in the local 
@@ -499,9 +523,16 @@ public class SyncManager implements OnDownloadFinishedListener{
 		 */
 		ShoppingList localList = ListManager.getInstance(mAppContext).getLastUsedList();
 		
+		/*
+		 * Now the local list has all the newest versions of the 
+		 * item. Update all the items to ensure that  the server
+		 * has the same information.
+		 */
 		for(Item localItem: localList){
 			updateItem(localItem);
 		}
+		
+		
 		
 	}
 
@@ -512,15 +543,36 @@ public class SyncManager implements OnDownloadFinishedListener{
 		
 		if(localList != null && remoteList != null){
 			for(Item remoteItem : remoteList){
+				/*
+				 * If the item existed in the remote list,
+				 * but no in the local list, add it to the local list.
+				 */
 				if(! localList.contains(remoteItem)){
 					localList.add(remoteItem);
-					
+				}
+				/*
+				 * If the item existed in both lists and the 
+				 * remote item is newer, replace it in the local list.
+				 */
+				else{
+					int index = localList.indexOf(remoteItem);
+					if(remoteItem.isNewer(localList.get(index))) {
+						localList.replace(remoteItem, index);
+					}
 				}
 				
 				
 			}
 			
 		}
+	}
+
+	public SyncFinishedListener getSyncFinishedListener() {
+		return mSyncFinishedListener;
+	}
+
+	public void setSyncFinishedListener(SyncFinishedListener syncFinishedListener) {
+		mSyncFinishedListener = syncFinishedListener;
 	}
 
 	

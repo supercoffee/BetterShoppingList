@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -28,8 +26,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.coffeestrike.bettershoppinglist.R;
+import com.coffeestrike.bettershoppinglist.extra.SyncFinishedListener;
 import com.coffeestrike.bettershoppinglist.models.Item;
-import com.coffeestrike.bettershoppinglist.models.ItemSyncObserver;
+import com.coffeestrike.bettershoppinglist.models.ItemCreator;
 import com.coffeestrike.bettershoppinglist.models.ListManager;
 import com.coffeestrike.bettershoppinglist.models.ShoppingList;
 import com.coffeestrike.bettershoppinglist.models.SyncManager;
@@ -44,7 +43,7 @@ import com.coffeestrike.bettershoppinglist.models.SyncManager;
  * @author Benjamin Daschel
  *
  */
-public class ShoppingListFragment extends ListFragment {
+public class ShoppingListFragment extends ListFragment implements SyncFinishedListener{
 	
 	
 	public static final String TAG = "ShoppingListFragment";
@@ -52,7 +51,6 @@ public class ShoppingListFragment extends ListFragment {
 	private ShoppingList mShoppingList;
 	private Context mAppContext;
 	private ShoppingListAdapter mListAdapter;
-	private ItemSyncObserver mItemSyncObserver;
 	public static final int NEW_ITEM = 0;
 	public static final int EDIT_ITEM = 1;
 
@@ -86,6 +84,7 @@ public class ShoppingListFragment extends ListFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
+		SyncManager.getInstance(mAppContext).syncAll(this);
 		refresh();
 	}
 
@@ -95,8 +94,6 @@ public class ShoppingListFragment extends ListFragment {
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
 		mAppContext = getActivity().getApplicationContext();
-		mItemSyncObserver = new ItemSyncObserver(mAppContext);
-//		mShoppingList = ((MainActivity)getActivity()).getShoppingList();
 		mShoppingList = ListManager.getInstance(mAppContext).getList(0);
 		mListAdapter = new ShoppingListAdapter(mShoppingList.getBaseList());
 		setListAdapter(mListAdapter);
@@ -173,7 +170,7 @@ public class ShoppingListFragment extends ListFragment {
 			
 			@Override
 			public void onClick(View v) {
-				showEditItemDialog(new Item());
+				showEditItemDialog(ItemCreator.getInstance(mAppContext).createItem());
 			}
 		});
 
@@ -195,7 +192,7 @@ public class ShoppingListFragment extends ListFragment {
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch(item.getItemId()){
 			case R.id.button_add_item:
-				showEditItemDialog(new Item());
+				showEditItemDialog(ItemCreator.getInstance(mAppContext).createItem());
 				return true;
 			case R.id.sort_alpha:
 				mShoppingList.sortAlpha();
@@ -233,7 +230,6 @@ public class ShoppingListFragment extends ListFragment {
 		 * Items are created from UI interaction.
 		 */
 		if(!mShoppingList.contains(item)){
-			item.addObserver(mItemSyncObserver);
 			mShoppingList.add(0, item);
 		}
 		refresh();
@@ -328,6 +324,12 @@ public class ShoppingListFragment extends ListFragment {
 	 */
 	public void refresh() {
 		((ShoppingListAdapter)getListAdapter()).notifyDataSetChanged();
+	}
+
+	@Override
+	public void onSyncFinished() {
+		refresh();
+		
 	}
 	
 	

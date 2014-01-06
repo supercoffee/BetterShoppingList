@@ -18,12 +18,6 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 	
 	private static final long serialVersionUID = -8439535938970924273L;
 	
-	private static final String JSON_DESCRIPTION = "title"; //what are we shopping for
-	
-	private static final String JSON_QUANTITY = "quantity"; // quantity of the item
-	private static final String JSON_UOM = "units"; //unit of measure
-	private static final String JSON_CHECKED = "checked"; //has the item been checked off the list
-	private static final String JSON_TIMESTAMP = "time"; //last time updated/created
 
 	/*
 	 * Only status 0 and 1 are used at this time. 
@@ -50,52 +44,7 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 	 */
 	private int mJSONId;
 
-	/*
-	 * This array should be replaced with a list 
-	 * defined in XML once the activity starts.
-	 */
-	public static String[] sDefaultUomList = {
-		"Each",
-		"Dozen",
-		"Gallon",
-	};
-
 	public static final String EXTRA_ITEM = "Item";
-	
-	public static JSONObject toJSON(Item item) throws JSONException{
-		JSONObject result = new JSONObject();
-	
-		result.put(JSON_DESCRIPTION, item.mDescription)
-			.put(JSON_QUANTITY, item.mQuantity)
-			.put(JSON_UOM, item.mUnitOfMeasure)
-			.put(JSON_CHECKED, item.mChecked)
-			.put(JSON_TIMESTAMP, item.mTimeStamp);
-
-		return result;
-		
-	}
-	
-	public static Item fromJSON(JSONObject jObject) throws JSONException{
-		Item result = new Item();
-
-		if(jObject.has(JSON_DESCRIPTION)){
-			result.mDescription = jObject.getString(JSON_DESCRIPTION);
-		}
-		if(jObject.has(JSON_QUANTITY)){
-			result.mQuantity =jObject.getInt(JSON_QUANTITY) ;
-		}
-		if(jObject.has(JSON_UOM)){
-			result.mUnitOfMeasure = jObject.getString(JSON_UOM);
-		}
-		if(jObject.has(JSON_CHECKED)){
-			result.mChecked = jObject.getBoolean(JSON_CHECKED);
-		}
-		if(jObject.has(JSON_TIMESTAMP)){
-			result.mTimeStamp = jObject.getLong(JSON_TIMESTAMP);
-		}
-		
-		return result;
-	}
 	
 	public Item(){
 		this("", 1);
@@ -188,6 +137,10 @@ public class Item extends Observable implements Serializable, Comparable<Item>{
 			return true;
 		}
 		return false;
+	}
+	
+	public boolean isNewer(Item item){
+		return this.mTimeStamp > item.mTimeStamp;
 	}
 
 	@Override

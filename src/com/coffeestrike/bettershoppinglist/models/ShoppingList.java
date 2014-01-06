@@ -54,13 +54,13 @@ public class ShoppingList extends Observable implements Iterable<Item>, Serializ
 	public void add(int index, Item item){
 		item.setStatusListener(this);
 		mItemList.add(index, item);
-		notifyObserversAddItem(item);
+		//notifyObserversAddItem(item);
 	}
 
 	public void add(Item item){
 		item.setStatusListener(this);
 		mItemList.add(item);
-		notifyObserversAddItem(item);
+//		notifyObserversAddItem(item);
 	}
 
 	/*
@@ -234,6 +234,14 @@ public class ShoppingList extends Observable implements Iterable<Item>, Serializ
 
 	public void sortAlpha() {
 		Collections.sort(mItemList);
+	}
+
+	public int indexOf(Item item) {
+		return mItemList.indexOf(item);
+	}
+
+	public Item get(int index) {
+		return mItemList.get(index);
 	}
 
 	

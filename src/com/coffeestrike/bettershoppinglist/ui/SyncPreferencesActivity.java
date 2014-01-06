@@ -62,40 +62,10 @@ public class SyncPreferencesActivity extends Activity{
 		}
 	}
 	
-//	/**
-//	 * Calls a PUT command for every item in the local list.
-//	 * If the item doesn't exist on the server yet,
-//	 * a POST command is used instead.
-//	 * Does not erase items on the server first.
-//	 * @param v
-//	 */
-//	public void forceSyncUp(View v){
-//		Log.d(TAG, "forceSyncUp");
-//		//TODO implement force push
-//	}
-//	
-//	/**
-//	 * Download the entire list from the server, then perform
-//	 * a merge operation with the local list.  Items which exist locally but
-//	 * not remotely are left in tact (not deleted).
-//	 * @param v
-//	 */
-//	public void forceSyncDown(View v){
-//		Log.d(TAG, "forceSyncDown");
-//		
-//		/*
-//		 * After completion of this call, the SyncManager makes
-//		 * a callback to the notifyDownloadFinished(Bundle) method.
-// 		 */
-//		mSyncManager.getRemoteList(this);
-//		
-//		
-//	}
-	
 	public void forceSync(View v){
 		//TODO write the sync method
 		
-		mSyncManager.syncAll();
+		mSyncManager.syncAll(null);
 		Log.d(TAG, "User invoked force sync.");
 	}
 	
